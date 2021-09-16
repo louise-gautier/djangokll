@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
+</head>
+<body>
+    {% include 'dkllapp/section_menu.html' %}
+    {% include 'dkllapp/jeu_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+            <h5 style="padding-left: 12px;"><b style="color: #E0E2E2;">En bref</b></h5>
+            <br>
+            <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
+                Normalement si tu es ici, tu sais déjà que Koh-Lanta est une émission de télévision française de téléréalité diffusée sur TF1, et que Joseph reste le pire <a href="https://www.youtube.com/watch?v=Mt5q-ur8Ncc"><b style="color: #E0E2E2;">rageux</b></a> que l’histoire n’ait jamais connu.</p>
+            <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
+                Ce qu'on te propose à KLL c'est de mettre un peu d’étincelles lors des visionnages et de défier tes amis !</p>
+            <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
+                Chaque semaine, l’émission est passée au crible par la Tribu KLL, et les résultats de tes ligues dépendent des vrais résultats des candidats au cours des émissions.</p>
+            <br>
+            <h5 style="padding-left: 12px;"><b style="color: #E0E2E2;">En étapes</b></h5>
+            <br>
+            <button type="button" class="collapsible_block" id="ligues">Les ligues 👑 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">La première étape consiste à créer ta ligue. Pour cela rien de plus simple, tu peux te rendre sur ton profil et cliquer sur le lien "Créer une ligue" ou le faire directement <a href="{% url 'dkllapp:creation_ligue' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+                <p style="line-height: 22px; text-align: justify;">Une fois la ligue créée, invite tes amis en leur donnant le code de la ligue. Tu peux le trouver dans ton profil à  "Mes ligues" ou dans l'onglet "⚙️ Détails" de la ligue en question.</p>
+                <p style="line-height: 22px; text-align: justify;">Pour rejoindre une ligue avec un code, tu peux aller dans ton profil et cliquer sur "Rejoindre une ligue" ou le faire directement <a href="{% url 'dkllapp:rejoindre_ligue' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+            </div>
+            <button type="button" class="collapsible_block" id="poulains" style="margin-top: 10px;">Les Poulains 🦄 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">Une fois tous tes amis réunis dans une ligue, vous allez pouvoir choisir vos Poulains 🦄 : un poulain est un ptit gars qui paye pas de mine mais sur qui tu mets une piécette car tu sens qu’il peut aller loin (comme la petite Alexandra dont la cote devait être à 2000 en début de saison).</p>
+                <p style="line-height: 22px; text-align: justify;">A l'issue du premier épisode, tu devras donc choisir 5 candidats, qui te permettront d’accumuler des points tout au long de la saison.</p>
+            </div>
+            <button type="button" class="collapsible_block" id="podiumgagnant" style="margin-top: 10px;">Le Podium 🏅 et le Gagnant 🏆 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">En plus de tes Poulains, tu pourras également désigner à partir de la réunification les candidats qui seront selon toi sur le podium, et qui seront intégrés au décompte des points à partir de cet épisode.</p>
+                <p style="line-height: 22px; text-align: justify;">Tu pourras enfin choisir à partir de l’épisode 9 le candidat qui sera selon toi le grand gagnant de cette saison, et qui te rapportera un bonus de points lors de la finale.</p>
+            </div>
+            <button type="button" class="collapsible_block" id="reglesevenements" style="margin-top: 10px;">Les règles et évènements 📋 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">Chaque événement qui se passe dans l’émission est enregistré sur la base de règles prédéfinies, que tu peux consulter dans l'onglet “Règles du jeu > Barème" ou directement <a href="{% url 'dkllapp:regles' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+                <p style="line-height: 22px; text-align: justify;">Par exemple, une règle stipule qu'un candidat qui se blesse lors d’une épreuve perd 1 point. A chaque fois qu'un candidat se blessera, chaque joueur qui a choisi ce candidat comme Poulain 🦄 perdra 1 point.</p>
+            </div>
+            <button type="button" class="collapsible_block" id="reglesvotes" style="margin-top: 10px;">Nouvelles règles et votes 📃 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">Au fil des épisodes, des nouvelles règles seront ajoutées aux existantes. Et parce que KLL ne serait rien sans sa commu, ce sont les joueurs qui choisiront cette règle.</p>
+                <p style="line-height: 22px; text-align: justify;">Mieux encore, ce sont les joueurs qui l’écriront. Tu peux suggérer une règle à tout moment dans le menu “La Commu > Suggestions” ou directement <a href="{% url 'dkllapp:suggestions' %}"><b style="color: #E0E2E2;">ici</b></a>. Toutes les règles suggérées seront modérées par la Tribu KLL, puis soumises à un vote. Celles récoltant le plus de voix seront ajoutées pour le reste de la saison.</p>
+                <p style="line-height: 22px; text-align: justify;">Le vote se fait par likes, dans l'onglet "Suggestions”. Tu as le droit à autant de votes que tu le souhaites.</p>
+                <p style="line-height: 22px; text-align: justify;">Il y aura donc des nouvelles règles choisies par tous les joueurs et qui s'appliqueront à toutes les ligues du jeu*.</p>
+                <p style="line-height: 22px; font-size: 12px; text-align: justify;"><i>*Le barème de chaque règle pourra être adapté par la tribu avant publication.</i></p>
+            </div>
+            <button type="button" class="collapsible_block" id="pronos" style="margin-top: 10px;">Pronos Totemoooo 🗿 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">Chaque semaine tu as le choix de rendre ton émission encore plus intense grâce aux pronos !</p>
+                <p style="line-height: 22px; text-align: justify;">Dans la page « <a href="{% url 'dkllapp:pronos' %}"><b style="color: #E0E2E2;">Mes Pronos</b></a> », tu peux répondre à la question de la semaine, et tenter de gagner des points bonus.</p>
+                <p style="line-height: 22px; text-align: justify;">La question concerne un seul épisode, et tu as jusqu’au vendredi 21h pour y répondre.</p>
+                <p style="line-height: 22px; text-align: justify;">Les flashback ne sont pas comptabilisés.</p>
+                <p style="line-height: 22px; text-align: justify;">Attention, si tu as faux à certains pronos, ils pourront te faire perdre des points ! Tu pourras consulter le détail du barème avant de te jeter à l’eau.</p>
+                <p style="line-height: 22px; text-align: justify;">Famille, vie sociale, santé financière. Etes-vous prêt à tout miser ? Pour être aidé, appelez le 09-74-75-13-13 (appel non surtaxé).</p>
+            </div>
+        <br>
+        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:kauhlantaligue@gmail.com" style="min-width: 240px; color: #E0E2E2; text-decoration: underline;">kauhlantaligue@gmail.com</a>.</p>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+    <script src="{% static 'dkllapp/js/collapsible-standard.js' %}"></script>
+    <script src="{% static 'dkllapp/js/url-uncollapse.js' %}"></script>
+</body>
+</html>

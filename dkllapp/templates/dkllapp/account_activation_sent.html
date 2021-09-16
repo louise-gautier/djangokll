@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
+</head>
+<body>
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p>Please confirm your email address to complete the registration. </p>
+        <br>
+        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:kauhlantaligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">kauhlantaligue@gmail.com</a>.</p>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+    <script src="{% static 'dkllapp/js/collapsible-standard.js' %}"></script>
+    <script src="{% static 'dkllapp/js/share.js' %}"></script>
+    <script src="{% static 'dkllapp/js/url-uncollapse.js' %}"></script>
+</body>
+</html>

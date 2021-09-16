@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
+</head>
+<body>
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p>Test Mail</p>
+        <br>
+        <form action="/home_mail/" method="post">
+            {% csrf_token %}
+            <input id="sujet" type="text" name="sujet" maxlength="100" required>
+            <input id="corps" type="text" name="corps" maxlength="100" required>
+            <input type="submit" value="OK">
+        </form>
+        <br>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+    <script src="{% static 'dkllapp/js/collapsible-standard.js' %}"></script>
+    <script src="{% static 'dkllapp/js/share.js' %}"></script>
+    <script src="{% static 'dkllapp/js/url-uncollapse.js' %}"></script>
+</body>
+</html>

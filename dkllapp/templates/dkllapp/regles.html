@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
+</head>
+<body>
+    {% include 'dkllapp/section_menu.html' %}
+    {% include 'dkllapp/jeu_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p style="padding-left: 24px;"><b>Règles actives pouvant rapporter des points :</b></p>
+
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="55%" style="padding: 10px;">Enoncé</th>
+                        <th width="15%" style="text-align: center; font-size: 16px">🦄</th>
+                        <th width="15%" style="text-align: center; font-size: 16px">🏅</th>
+                        <th width="15%" style="text-align: center; font-size: 16px">🏆</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regle in regles %}
+                    <tr>
+                        <td style="padding: 10px;">{{ regle.contenu }}</td>
+                        <td style="text-align: center; font-size: 16px">{{ regle.points_1 }}</td>
+                        <td style="text-align: center; font-size: 16px">{{ regle.points_2 }}</td>
+                        <td style="text-align: center; font-size: 16px">{{ regle.points_3 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <p style="padding-left: 8px; font-size: 12px;">🦄 : Points attribués aux Poulains</p>
+            <p style="padding-left: 8px; font-size: 12px;">🏅 : Points attribués aux Podiums</p>
+            <p style="padding-left: 8px; font-size: 12px;">🏆 : Points attribués au Gagnant</p>
+            <br>
+            <br>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

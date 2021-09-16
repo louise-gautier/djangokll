@@ -1,0 +1,49 @@
+html,
+body {
+  position: fixed;
+  overflow: hidden;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  background-color: aqua;
+}
+
+body > .mainwrapper {
+  background-color: #1D2020;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  width: 100vw;
+  height: 87vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
+}
+
+h1{
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #1D2020;
+}
+
+h3{
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #1D2020;
+}
+
+p{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #1D2020;
+}
+
+button, button:focus{
+  outline: none;
+}
+
+.colors{
+    color: #1D2020; /* gris foncé */
+    color: #272B2C; /* gris moyen */
+    color: #E0E2E2; /* gris clair des textes */
+    color: #EC4A48; /* rouge tcl */
+}
+

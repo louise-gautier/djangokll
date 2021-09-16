@@ -1,0 +1,29 @@
+<div class="container-fluid" style="display: flex; padding-top: 2px; padding-bottom: 3px;">
+            <a class="nav-link link text-primary display-4"
+                href="{% url 'dkllapp:generales' %}"
+                style="color: #2B3F60; padding: 8px; font-size: 15px;">
+            {% if page == 'generales' %}
+            <b>Règles</b>
+            {% else %}
+            Règles
+            {% endif %}
+        </a>
+        <a class="nav-link link text-primary display-4"
+           href="{% url 'dkllapp:regles' %}"
+           style="color: #2B3F60; padding: 8px; font-size: 15px;">
+            {% if page == 'regles' %}
+            <b>Barème</b>
+            {% else %}
+            Barème
+            {% endif %}
+        </a>
+        <a class="nav-link link text-primary display-4"
+           href="{% url 'dkllapp:candidats' %}"
+           style="color: #2B3F60; padding: 8px; font-size: 15px;">
+            {% if page == 'candidats' %}
+            <b>Candidats</b>
+            {% else %}
+            Candidats
+            {% endif %}
+        </a>
+</div>

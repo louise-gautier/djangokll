@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Results DjangoOne</title>
+</head>
+<body>
+    <h1>Page Results</h1>
+
+    <h3>{{ question.question_text }}</h3>
+    <ul>
+    {% for choice in question.choice_set.all %}
+        <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    {% endfor %}
+    </ul>
+
+    <a href="{% url 'dkllapp:detail' question.id %}">Vote again?</a>
+    <br>
+    <a href="{% url 'dkllapp:index' %}">Go back to home?</a>
+
+</body>
+</html>

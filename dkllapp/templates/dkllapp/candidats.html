@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
+</head>
+<body>
+    {% include 'dkllapp/section_menu.html' %}
+    {% include 'dkllapp/jeu_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p style="padding-left: 24px;"><b>Présentation des candidats de la Saison 23 All Star</b></p>
+        <br>
+        <button type="button" class="collapsible_flex" style="margin-top: 10px;">
+            <div class="container_contestant_small">
+                <img src="{% static 'dkllapp/img/tribus/jaune.png' %}" class="contestant_img_small">
+            </div>
+            &nbsp; Tribu Jaune - nom
+            <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;">
+        </button>
+                <div class="content" style="flex-flow: row wrap;">
+            <br>
+            {% for candidat in candidats %}
+            {% if candidat.brigade == 'Jaune' %}
+            <div class="card" style="width: 130px; margin: 10px auto 10px auto;">
+                <div>
+                    <div style="display: flex; ">
+                        <div class="container_contestant" style="margin-left: auto; margin-right: auto;">
+                            <img src={{candidat.chemin_img}} class="contestant_img">
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="font-size: 20px; text-align: center;"><strong>{{ candidat.nom }}</strong></p>
+                        <p class="mbr-fonts-style mb-3 display-4" style="text-align: center;">{{ candidat.age }} ans, <br> Tribu {{ candidat.brigade }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <button type="button" class="collapsible_flex" style="margin-top: 10px;">
+            <div class="container_contestant_small">
+                <img src="{% static 'dkllapp/img/tribus/rouge.png' %}" class="contestant_img_small">
+            </div>
+            &nbsp; Tribu Rouge - Oro
+            <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;">
+        </button>
+                <div class="content" style="flex-flow: row wrap;">
+            <br>
+            {% for candidat in candidats %}
+            {% if candidat.brigade == 'Rouge' %}
+            <div class="card" style="width: 130px; margin: 10px auto 10px auto;">
+                <div>
+                    <div style="display: flex; ">
+                        <div class="container_contestant" style="margin-left: auto; margin-right: auto;">
+                            <img src={{candidat.chemin_img}} class="contestant_img">
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="font-size: 20px; text-align: center;"><strong>{{ candidat.nom }}</strong></p>
+                        <p class="mbr-fonts-style mb-3 display-4" style="text-align: center;">{{ candidat.age }} ans, <br> Tribu {{ candidat.brigade }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+        <button type="button" class="collapsible_flex">
+            <div class="container_contestant_small">
+                <img src="{% static 'dkllapp/img/tribus/wings.png' %}" class="contestant_img_small">
+            </div>
+            &nbsp; Partis trop tôt
+            <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;">
+        </button>
+        <div class="content" style="flex-flow: row wrap;">
+            <br>
+            {% for candidat in candidats %}
+            {% if candidat.brigade == 'Grise' %}
+            <div class="card" style="width: 130px; margin: 10px auto 10px auto;">
+                <div>
+                    <div style="display: flex; ">
+                        <div class="container_contestant" style="margin-left: auto; margin-right: auto;">
+                            <img src={{candidat.chemin_img}} class="contestant_img">
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="font-size: 20px; text-align: center;"><strong>{{ candidat.nom }}</strong></p>
+                        <p class="mbr-fonts-style mb-3 display-4" style="text-align: center;">{{ candidat.age }} ans</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+    <script src="{% static 'dkllapp/js/collapsible-candidats.js' %}"></script>
+</body>
+</html>

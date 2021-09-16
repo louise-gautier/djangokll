@@ -1,0 +1,12 @@
+django
+django-heroku
+django-crispy-forms
+gunicorn==20.1.0
+whitenoise
+dj-database-url
+psycopg2
+python-decouple
+django-utils-six
+django-webpush
+six
+requests
