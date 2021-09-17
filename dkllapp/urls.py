@@ -46,6 +46,6 @@ urlpatterns = [
     path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     path('<int:question_id>/vote/', views.vote, name='vote'),
 
-    path('sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
+    path('home_push/sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
