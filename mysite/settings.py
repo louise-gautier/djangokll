@@ -167,4 +167,5 @@ EMAIL_HOST_PASSWORD = config('MAILGUN_SMTP_PASSWORD')
 DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
 EMAIL_USE_TLS = True
 
+
 #fin settings
