@@ -3,42 +3,38 @@
 {% load static %}
 <head>
     {% include 'dkllapp/head.html' %}
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
 </head>
-<body>
+<body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
         <br>
-        <button type="button" class="collapsible_block" id="user">
-            <div class="container_contestant_small">
-                <img src="{% static 'dkllapp/img/kitchen/admin.png' %}" class="picto_img">
-            </div>
-            <b>{{ user.username }}</b>
-            &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;">
+            <div style="padding-left: 30px;">
+                <div style="display: flex; align-items: center;">
+                    <img class="picto_profile" src="{% static 'dkllapp/img/kitchen/admin.png' %}">
+                    <b style="padding-left: 15px;">{{ user.username }}</b>
+                </div>
+                <br>
+                <p>@ : <b>{{ user.email }}</b></p>
+                <div style="display: flex;"><form id="form" action="" method="POST">
+                    {{ form.csrf_token }}
+                    <label class="switch" style="margin-bottom: 0px;">
+                        {% if user.mail == True %}
+                            <input type="checkbox" checked id='mail' name='mail' onchange="document.getElementById('form').submit()"><span class="slider round"></span>
+                        {% else %}
+                            <input type="checkbox" id='mail' name='mail' onchange="document.getElementById('form').submit()"><span class="slider round" style="background-color: #272B2C;"></span>
+                        {% endif %}
+                    </label>
+                </form>
+                <p style="padding-left: 10px; font-size: 12px;">Je souhaite recevoir les mails de la Tribu</p></div>
 
-        </button>
-        <div class="content">
+                <a href="{% url 'dkllapp:nouveau_login' %}">Changer mon identifiant</a>
             <br>
-            <p style="padding-left: 10px;">Login : <b>{{ user.username }}</b></p>
-            <p style="padding-left: 10px;">Adresse e-mail : <b>{{ user.email }}</b></p>
-            <div style="display: flex; padding-left: 10px;"><form id="form" action="" method="POST">
-                {{ form.csrf_token }}
-                <label class="switch" style="margin-bottom: 0px;">
-                    {% if user.mail == True %}
-                        <input type="checkbox" checked id='mail' name='mail' onchange="document.getElementById('form').submit()"><span class="slider round"></span>
-                    {% else %}
-                        <input type="checkbox" id='mail' name='mail' onchange="document.getElementById('form').submit()"><span class="slider round" style="background-color: #272B2C;"></span>
-                    {% endif %}
-                </label>
-            </form>
-            <p style="padding-left: 10px;">Je souhaite recevoir les mails de la Tribu</p></div>
+                <a href="{% url 'dkllapp:nouveau_mdp' %}">Changer mon mot de passe</a>
+            <br>
+                <a href="{% url 'dkllapp:picto' %}">Changer mon picto</a>
+            <br>
+                <a href="/logout" style="color: #62B8B1;">Déconnexion</a>
 
-            <a href="{% url 'dkllapp:nouveau_mdp' %}" class="btn btn-warning display-4" style="min-width: 240px;">Changer mon mot de passe</a>
-            <a href="{% url 'dkllapp:picto' %}" class="btn btn-warning display-4" style="min-width: 240px;">Changer mon picto</a>
-            <a href="/logout" class="btn btn-warning display-4" style="min-width: 240px; background-color: #62B8B1;">Déconnexion</a>
         </div>
         <button type="button" class="collapsible_block" id="ligues" style="margin-top: 10px;">
             <div class="container_contestant_small" style="width: 30px;">
@@ -123,8 +119,5 @@
         <br>
     </div>
     {% include 'dkllapp/body_scripts.html' %}
-    <script src="{% static 'dkllapp/js/collapsible-standard.js' %}"></script>
-    <script src="{% static 'dkllapp/js/share.js' %}"></script>
-    <script src="{% static 'dkllapp/js/url-uncollapse.js' %}"></script>
 </body>
 </html>

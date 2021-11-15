@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.timezone import now
+from django.contrib.postgres.fields import ArrayField
 
 
 class UserProfile(models.Model):
@@ -32,26 +34,89 @@ class Candidat(models.Model):
 class Ligue(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField(max_length=128)
-
-# ---------------------------- TEST model classes -----------------------------
-
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-    def was_published_recently(self):
-        now = timezone.now()
-        return now - datetime.timedelta(days=1) <= self.pub_date <= now
-                                                    # pas d'erreur de type
-
-    def __str__(self):
-        return self.question_text
+    insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+class Choix(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    candidat = models.ForeignKey('Candidat', on_delete=models.RESTRICT)
+    type = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
 
-    def __str__(self):
-        return self.choice_text
+
+class Regle(models.Model):
+    contenu = models.CharField(max_length=128)
+    points_1 = models.IntegerField(default=0)
+    points_2 = models.IntegerField(default=0)
+    points_3 = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Evenement(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    regle = models.ForeignKey('Regle', on_delete=models.RESTRICT)
+    candidat = models.ForeignKey('Candidat', on_delete=models.RESTRICT)
+    episode = models.IntegerField(default=0)
+    typage = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Membre(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    ligue = models.ForeignKey('Ligue', on_delete=models.RESTRICT)
+
+
+class Equipe(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    ligue = models.ForeignKey('Ligue', on_delete=models.RESTRICT)
+    episode = models.IntegerField(default=0)
+    candidat = models.ForeignKey('Candidat', on_delete=models.RESTRICT)
+    type = models.IntegerField(default=0)
+
+
+class Mur(models.Model):
+    ligue = models.ForeignKey('Ligue', on_delete=models.RESTRICT)
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    message = models.CharField(max_length=999)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Notif(models.Model):
+    message = models.CharField(max_length=999)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Coeur(models.Model):
+    mur = models.ForeignKey('Mur', on_delete=models.RESTRICT)
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    coeur = models.BooleanField(default=False)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Quotidien(models.Model):
+    question = models.CharField(max_length=999)
+    propositions = ArrayField(models.CharField(max_length=999))
+    reponse = models.CharField(max_length=999)
+    episode = models.IntegerField(default=0)
+    bonus = models.IntegerField(default=0)
+    malus = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Pronostic(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
+    quotidien = models.ForeignKey('Quotidien', on_delete=models.RESTRICT)
+    pronostic = models.CharField(max_length=999)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Episode(models.Model):
+    nom = models.CharField(max_length=100)
+    valeur = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class ActivationChoix(models.Model):
+    nom = models.CharField(max_length=100)
+    etat = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)

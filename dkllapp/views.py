@@ -26,11 +26,9 @@ from webpush import send_user_notification
 import json
 
 from .forms import NewUserForm, MailForm
-from .models import Question, Choice, Candidat, Ligue
+from .models import Candidat, Ligue, Mur, Notif
 from .token import account_activation_token
 
-
-url_mail = os.environ['TRUSTIFI_URL']+'/api/i/v1/email'
 
 ##########################################REGISTRATION ET LOGIN################################
 
@@ -150,8 +148,6 @@ def home_mail(request):
     return render(request, 'dkllapp/home_mail.html', {user: user})
 
 
-
-
 #######Test web push notifications #####
 
 @require_GET
@@ -197,6 +193,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         """Return the last five published questions."""
         return Question.objects.order_by('-pub_date')[:5]
 
+
 ##########################################admin################################
 @login_required
 def admin(request):
@@ -213,15 +210,56 @@ def ligues(request):
                   template_name="dkllapp/index.html",
                   context={'ligues': ligues})
 
-##########################################générales################################
+
+@login_required
+def mur(request, ligue_id):
+    ligues = Ligue.objects.all()
+    mur = Mur.objects\
+        .filter(ligue_id=ligue_id)\
+        .values('id', 'ligue_id', 'user_id', 'user__user__username', 'user__img', 'message', 'insert_datetime')
+    print('mur', mur)
+    notif = Notif.objects.latest('insert_datetime')
+    return render(request=request,
+                  template_name="dkllapp/mur.html",
+                  context={'ligues': ligues, 'page': 'mur',
+                           'ligue_id': ligue_id, 'mur': mur, 'notif': notif})
 
 
 @login_required
+def equipe(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/equipe.html",
+                  context={'ligues': ligues, 'page': 'equipe',
+                           'ligue_id': ligue_id})
+
+
+@login_required
+def classement(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/classement.html",
+                  context={'ligues': ligues, 'page': 'classement',
+                           'ligue_id': ligue_id})
+
+
+@login_required
+def details(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/details.html",
+                  context={'ligues': ligues, 'page': 'details',
+                           'ligue_id': ligue_id})
+
+
+##########################################générales################################
+
+@login_required
 def generales(request):
-    generales = 'generales'
+    ligues = Ligue.objects.all()
     return render(request=request,
                   template_name="dkllapp/generales.html",
-                  context={'generales': generales})
+                  context={'ligues': ligues})
 
 
 @login_required
@@ -268,10 +306,31 @@ def profil(request):
 
 
 @login_required
+def bareme(request):
+    return render(request=request,
+                  template_name="dkllapp/bareme.html",
+                  context={})
+
+@login_required
+def faq(request):
+    return render(request=request,
+                  template_name="dkllapp/faq.html",
+                  context={})
+
+
+@login_required
+def nouveau_login(request):
+    nouveau_login = 'nouveau_login'
+    return render(request=request,
+                  template_name="dkllapp/nouveau_login.html",
+                  context={'nouveau_login': nouveau_login})
+
+
+@login_required
 def nouveau_mdp(request):
     nouveau_mdp = 'nouveau_mdp'
     return render(request=request,
-                  template_name="dkllapp/index.html",
+                  template_name="dkllapp/nouveau_mdp.html",
                   context={'nouveau_mdp': nouveau_mdp})
 
 
@@ -281,14 +340,6 @@ def picto(request):
     return render(request=request,
                   template_name="dkllapp/index.html",
                   context={'picto': picto})
-
-
-@login_required
-def nouveau_mdp(request):
-    nouveau_mdp = 'nouveau_mdp'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'nouveau_mdp': nouveau_mdp})
 
 
 @login_required
@@ -306,35 +357,4 @@ def rejoindre_ligue(request):
                   template_name="dkllapp/index.html",
                   context={'rejoindre_ligue': rejoindre_ligue})
 
-
-class DetailView(LoginRequiredMixin, generic.DetailView):
-    login_url = '/login/'
-    model = Question
-    template_name = 'dkllapp/detail.html'
-
-
-@login_required
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'dkllapp/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('dkllapp:results', args=(question.id,)))
-
-
-class ResultsView(LoginRequiredMixin, generic.DetailView):
-    login_url = '/login/'
-    model = Question
-    template_name = 'dkllapp/results.html'
 

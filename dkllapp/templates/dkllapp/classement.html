@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+
+<div class="mainwrapper">
+        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            {% if ligue == 'vide' %}
+            {% include 'ligue_vide.html' %}
+            <br>
+            {% else %}
+                <p style="padding-left: 16px;"><b>Classement de la {{ ligue.nom }}</b></p>
+                <table cellspacing="0" style="">
+                    <thead>
+                        <tr>
+                            <th width="10%" style="text-align: center;"></th>
+                            <th width="45%" style="font-size: 15px; padding-left: 15px;">Joueur</th>
+                            <th width="15%" style="font-size: 15px; text-align: center;" >🦄️</th>
+                            <th width="15%" style="font-size: 15px; text-align: center;" >🔥</th>
+                            <th width="15%" style="font-size: 15px; text-align: center;" >⭐</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for joueur in classement %}
+                        <tr>
+                            <td style="text-align: center; padding-top: 16px;">
+                                <div class="circle_div" style="margin-bottom: 0px;">
+                                    {% if joueur.rang == 1 %}
+                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
+                                    {% elif joueur.rang == last %}
+                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
+                                    {% else %}
+                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td style="font-size: 15px; word-wrap: break-word;">
+                                <div style="display: flex; align-items: center;">
+                                    <div class="container_picto_seul"><div class="picto_seul">
+                                        <img class="picto_img" src="#">
+                                        <!--filename=joueur.img-->
+                                    </div></div>
+                                    <p style="margin: 0 0 0 10px;">{{ joueur.username }}</p>
+                                </div>
+                            </td>
+                            <td style="font-size: 15px; text-align: center;">{{ joueur.sum_somme }}</td>
+                            <td style="font-size: 15px; text-align: center;">{{ joueur.sum_bonus }}</td>
+                            <td style="font-size: 15px; text-align: center;"><b>{{ joueur.total }}</b></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <p style="padding-left: 8px;">🦄️ &nbsp; : Points marqués grâce aux Candidats</p>
+                <p style="padding-left: 8px;">🔥 &nbsp; : Bonus marqués grâce aux Pronos</p>
+                <p style="padding-left: 8px;">⭐ &nbsp; : Total des points</p>
+
+            {% endif %}
+
+            <br>
+            <br>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/ligue_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>
