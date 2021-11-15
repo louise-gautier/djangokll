@@ -1,0 +1,33 @@
+{
+  "name": "miri-ui-kit-free",
+  "version": "1.0.0",
+  "description": "Bootstrap 4 Miri UI Design Kit",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bootstrap4",
+    "miri-ui",
+    "design-kit",
+    "ui-kit"
+  ],
+  "author": "Bootstrapdash",
+  "license": "Bootstrapdash Licence<https://www.bootstrapdash.com/license/>",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "node-sass": "^4.13.0"
+  },
+  "dependencies": {
+    "@mdi/font": "^4.5.95",
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.16.0"
+  }
+}
