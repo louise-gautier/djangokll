@@ -1,21 +1,56 @@
-{% extends "dkllapp/header.html" %}
-{% block content %}
-{% load crispy_forms_tags %}
-<!--Login--> 
-<div class="container py-5">
-  <h1>Login</h1>
-  <form method="POST">
-    {% csrf_token %}
-    {{ login_form|crispy }}
-    {% if messages %}
-      <ul class="messages">
-          {% for message in messages %}
-          <p>{{ message }}</p>
-          {% endfor %}
-      </ul>
-    {% endif %}
-    <button class="btn btn-primary" type="submit">Login</button>
-  </form>
-  <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    <div class="mainwrapper">
+        {% load crispy_forms_tags %}
+        <!--Login-->
+        <div class="container py-5">
+            <div style = "width: 150px; height: auto;">
+                <a class="navbar-brand" style="height: auto;" href="{% url 'dkllapp:index' %}">
+                    <img style="height: 80px;" src="/static/dkllapp/img/icon-long.png" alt="Kauh Lanta Ligue">
+                </a>
+            </div>
+            <h1 style="color: white;">Connexion</h1>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div id="div_id_username" class="control-group">
+                    <label for="id_username" class="control-label requiredField">Identifiant<span class="asteriskField">*</span></label>
+                    <div class="controls">
+                        <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username"
+                               maxlength="150" class="textinput textInput" required="" id="id_username">
+                    </div>
+                </div>
+                <br>
+                <div id="div_id_password" class="control-group">
+                    <label for="id_password" class="control-label requiredField">Mot de Passe<span class="asteriskField">*</span></label>
+                    <div class="controls">
+                        <input type="password" name="password" autocomplete="current-password"
+                               class="textinput textInput" required="" id="id_password">
+                    </div>
+                </div>
+                {% if messages %}
+                <br>
+                <ul class="messages">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+                </ul>
+                {% endif %}
+                <br>
+                <button class="btn btn-success" type="submit">Login</button>
+            </form>
+            <br>
+            <p class="text-center">Pas encore inscrit ? <a href="/register">Créer un compte</a>.</p>
+            <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:kauhlantaligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">kauhlantaligue@gmail.com</a>.</p>
+        </div>
+        <br>
+        <br>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

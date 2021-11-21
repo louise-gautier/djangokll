@@ -21,3 +21,7 @@ class NewUserForm(UserCreationForm):
 class MailForm(forms.Form):
     sujet = forms.CharField(label='sujet', max_length=100)
     corps = forms.CharField(label='corps', max_length=100)
+
+
+class LigueCreationForm(forms.Form):
+    nom = forms.CharField(label='nom', max_length=100)

@@ -1,11 +1,8 @@
-import datetime
 import uuid
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 from django.utils.timezone import now
 from django.contrib.postgres.fields import ArrayField
 
@@ -28,7 +25,11 @@ class Candidat(models.Model):
     nom = models.CharField(max_length=128)
     age = models.IntegerField(default=0)
     description = models.CharField(max_length=999)
-    brigade = models.CharField(max_length=128)
+    equipe_tv = models.CharField(max_length=128)
+    statut = models.CharField(max_length=128)
+    statut_bool = models.BooleanField(default=True)
+    form_id = models.CharField(max_length=128)
+    chemin_img = models.CharField(max_length=128)
 
 
 class Ligue(models.Model):

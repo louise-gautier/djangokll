@@ -25,14 +25,53 @@ from django.views.decorators.csrf import csrf_exempt
 from webpush import send_user_notification
 import json
 
-from .forms import NewUserForm, MailForm
-from .models import Candidat, Ligue, Mur, Notif
+from .forms import NewUserForm, MailForm, LigueCreationForm
+from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre
 from .token import account_activation_token
 
 
+#v############################### FONCTIONS GENERIQUES #########################################
+def is_admin(user_id):
+    admins = [1, 5, 8, 9]
+    bool_admin = False
+    if user_id in admins:
+        bool_admin = True
+    return bool_admin
+
+
+def episode_en_cours():
+    ep = Episode.objects.values('valeur').latest('insert_datetime')
+    return ep['valeur']
+
+
+def is_poulains():
+    etat = ActivationChoix.objects.filter(id=1).values().latest('insert_datetime')['etat']
+    if etat == 1:
+        activation_poulains = True
+    else:
+        activation_poulains = False
+    return activation_poulains
+
+
+def is_podium():
+    etat = ActivationChoix.objects.filter(id=2).values().latest('insert_datetime')['etat']
+    if etat == 1:
+        activation_podium = True
+    else:
+        activation_podium = False
+    return activation_podium
+
+
+def is_gagnant():
+    etat = ActivationChoix.objects.filter(id=3).values().latest('insert_datetime')['etat']
+    if etat == 1:
+        activation_gagnant = True
+    else:
+        activation_gagnant = False
+    return activation_gagnant
+
+
 ##########################################REGISTRATION ET LOGIN################################
-
-
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -115,8 +154,187 @@ def logout_request(request):
 
 
 ##########################################FIN REGISTRATION ET LOGIN################################
+######################################HOME - INDEX################################
+@login_required
+def index(request):
+    ligues = Ligue.objects.all()
+    notif = Notif.objects.latest('insert_datetime')
+    choix_user = Choix.objects \
+        .filter(user_id=request.user.id) \
+        .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                'candidat__statut', 'candidat__statut_bool')
+
+    return render(request=request,
+                  template_name="dkllapp/index.html",
+                  context={'ligues': ligues, 'notif': notif, 'choix_user': choix_user,
+                           'before_creation': 'index'})
 
 
+##########################################Admin################################
+@login_required
+def admin(request):
+    admin = 'admin'
+    return render(request=request,
+                  template_name="dkllapp/index.html",
+                  context={'admin': admin})
+
+
+##########################################Ligues################################
+@login_required
+def mur(request, ligue_id):
+    ligues = Ligue.objects.all()
+    mur = Mur.objects\
+        .filter(ligue_id=ligue_id)\
+        .values('id', 'ligue_id', 'user_id', 'user__user__username', 'user__img', 'message', 'insert_datetime')
+    print('mur', mur)
+    notif = Notif.objects.latest('insert_datetime')
+    return render(request=request,
+                  template_name="dkllapp/mur.html",
+                  context={'ligues': ligues, 'page': 'mur',
+                           'ligue_id': ligue_id, 'mur': mur, 'notif': notif})
+
+
+@login_required
+def equipe(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/equipe.html",
+                  context={'ligues': ligues, 'page': 'equipe',
+                           'ligue_id': ligue_id})
+
+
+@login_required
+def resultat(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/resultat.html",
+                  context={'ligues': ligues, 'page': 'resultat',
+                           'ligue_id': ligue_id})
+
+
+@login_required
+def details(request, ligue_id):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/details.html",
+                  context={'ligues': ligues, 'page': 'details',
+                           'ligue_id': ligue_id})
+
+
+##########################################Profil################################
+@login_required
+def profil(request):
+    ligues = Ligue.objects.all()
+    print(request.user.id)
+    candidats = Candidat.objects.all()
+    choix_user = Choix.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
+    return render(request=request,
+                  template_name="dkllapp/profil.html",
+                  context={'candidats': candidats, 'ligues': ligues,
+                           'choix_user': choix_user, 'before_creation': 'profil'})
+
+
+@login_required
+def choix(request):
+    candidats = Candidat.objects.all()
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/profil.html",
+                  context={'candidats': candidats, 'ligues': ligues})
+
+
+##########################################Règles################################
+@login_required
+def generales(request):
+    ligues = Ligue.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/generales.html",
+                  context={'ligues': ligues})
+
+@login_required
+def bareme(request):
+    return render(request=request,
+                  template_name="dkllapp/bareme.html",
+                  context={})
+
+
+@login_required
+def candidats(request):
+    candidats = Candidat.objects.all()
+    return render(request=request,
+                  template_name="dkllapp/candidats.html",
+                  context={'candidats': candidats})
+
+
+@login_required
+def faq(request):
+    return render(request=request,
+                  template_name="dkllapp/faq.html",
+                  context={})
+
+
+@login_required
+def pronos(request):
+    pronos = 'pronos'
+    return render(request=request,
+                  template_name="dkllapp/index.html",
+                  context={'pronos': pronos})
+
+
+@login_required
+def nouveau_login(request):
+    nouveau_login = 'nouveau_login'
+    return render(request=request,
+                  template_name="dkllapp/nouveau_login.html",
+                  context={'nouveau_login': nouveau_login})
+
+
+@login_required
+def nouveau_mdp(request):
+    nouveau_mdp = 'nouveau_mdp'
+    return render(request=request,
+                  template_name="dkllapp/nouveau_mdp.html",
+                  context={'nouveau_mdp': nouveau_mdp})
+
+
+@login_required
+def picto(request):
+    picto = 'picto'
+    return render(request=request,
+                  template_name="dkllapp/index.html",
+                  context={'picto': picto})
+
+
+@login_required
+def creation_ligue(request, before):
+    form = LigueCreationForm()
+    if form.validate_on_submit():
+        nouvelle_ligue = Ligue(nom=form.nom.data)
+        nouvelle_ligue.save()
+        nouveau_membre = Membre(user=request.user, ligue=nouvelle_ligue)
+        #mail ou web push à prévoir
+        if before == "profil":
+            return redirect('dkllapp:profile')
+        else:
+            return redirect('dkllapp:index')
+    return render(request=request,
+                  template_name="dkllapp/creation_ligue.html",
+                  context={'form': form})
+
+
+@login_required
+def rejoindre_ligue(request):
+    rejoindre_ligue = 'rejoindre_ligue'
+    return render(request=request,
+                  template_name="dkllapp/index.html",
+                  context={'rejoindre_ligue': rejoindre_ligue})
+
+
+######################################TESTS#################################################
+############################################################################################
+############################################################################################
 def home_mail(request):
     user = request.user
 
@@ -176,185 +394,4 @@ def send_push(request):
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
-
-
-########################Test mail
-
-
-##########################################Home################################
-
-
-class IndexView(LoginRequiredMixin, generic.ListView):
-    login_url = '/login/'
-    template_name = 'dkllapp/index.html'
-    context_object_name = 'latest_question_list'
-
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
-
-
-##########################################admin################################
-@login_required
-def admin(request):
-    admin = 'admin'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'admin': admin})
-
-##########################################ligues################################
-@login_required
-def ligues(request):
-    ligues = Ligue.objects.all
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'ligues': ligues})
-
-
-@login_required
-def mur(request, ligue_id):
-    ligues = Ligue.objects.all()
-    mur = Mur.objects\
-        .filter(ligue_id=ligue_id)\
-        .values('id', 'ligue_id', 'user_id', 'user__user__username', 'user__img', 'message', 'insert_datetime')
-    print('mur', mur)
-    notif = Notif.objects.latest('insert_datetime')
-    return render(request=request,
-                  template_name="dkllapp/mur.html",
-                  context={'ligues': ligues, 'page': 'mur',
-                           'ligue_id': ligue_id, 'mur': mur, 'notif': notif})
-
-
-@login_required
-def equipe(request, ligue_id):
-    ligues = Ligue.objects.all()
-    return render(request=request,
-                  template_name="dkllapp/equipe.html",
-                  context={'ligues': ligues, 'page': 'equipe',
-                           'ligue_id': ligue_id})
-
-
-@login_required
-def classement(request, ligue_id):
-    ligues = Ligue.objects.all()
-    return render(request=request,
-                  template_name="dkllapp/classement.html",
-                  context={'ligues': ligues, 'page': 'classement',
-                           'ligue_id': ligue_id})
-
-
-@login_required
-def details(request, ligue_id):
-    ligues = Ligue.objects.all()
-    return render(request=request,
-                  template_name="dkllapp/details.html",
-                  context={'ligues': ligues, 'page': 'details',
-                           'ligue_id': ligue_id})
-
-
-##########################################générales################################
-
-@login_required
-def generales(request):
-    ligues = Ligue.objects.all()
-    return render(request=request,
-                  template_name="dkllapp/generales.html",
-                  context={'ligues': ligues})
-
-
-@login_required
-def regles(request):
-    regles = 'generales'
-    return render(request=request,
-                  template_name="dkllapp/regles.html",
-                  context={'regles': regles})
-
-
-@login_required
-def candidats(request):
-    candidats = Candidat.objects.all
-    return render(request=request,
-                  template_name="dkllapp/candidats.html",
-                  context={'candidats': candidats})
-
-##########################################La commu################################
-
-
-@login_required
-def suggestions(request):
-    suggestions = 'suggestions'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'suggestions': suggestions})
-
-
-@login_required
-def pronos(request):
-    pronos = 'pronos'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'pronos': pronos})
-
-
-@login_required
-def profil(request):
-    candidats = Candidat.objects.all
-    ligues = Ligue.objects.all
-    return render(request=request,
-                  template_name="dkllapp/profil.html",
-                  context={'candidats': candidats, 'ligues': ligues})
-
-
-@login_required
-def bareme(request):
-    return render(request=request,
-                  template_name="dkllapp/bareme.html",
-                  context={})
-
-@login_required
-def faq(request):
-    return render(request=request,
-                  template_name="dkllapp/faq.html",
-                  context={})
-
-
-@login_required
-def nouveau_login(request):
-    nouveau_login = 'nouveau_login'
-    return render(request=request,
-                  template_name="dkllapp/nouveau_login.html",
-                  context={'nouveau_login': nouveau_login})
-
-
-@login_required
-def nouveau_mdp(request):
-    nouveau_mdp = 'nouveau_mdp'
-    return render(request=request,
-                  template_name="dkllapp/nouveau_mdp.html",
-                  context={'nouveau_mdp': nouveau_mdp})
-
-
-@login_required
-def picto(request):
-    picto = 'picto'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'picto': picto})
-
-
-@login_required
-def creation_ligue(request):
-    creation_ligue = 'creation_ligue'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'creation_ligue': creation_ligue})
-
-
-@login_required
-def rejoindre_ligue(request):
-    rejoindre_ligue = 'rejoindre_ligue'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'rejoindre_ligue': rejoindre_ligue})
-
 

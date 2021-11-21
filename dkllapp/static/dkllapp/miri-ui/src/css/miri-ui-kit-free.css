@@ -143,11 +143,11 @@ sup {
   top: -.5em; }
 
 a {
-  color: #444bf8;
+  color: #00c9a6;
   text-decoration: none;
   background-color: transparent; }
   a:hover {
-    color: #0911e7;
+    color: #444bf8;
     text-decoration: underline; }
 
 a:not([href]):not([tabindex]) {
@@ -551,12 +551,33 @@ pre {
     border-radius: 50%;
 }
 
+.candidat_profile{
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.profile_pill{
+    display: flex;
+    background-color: #272B2C;
+    border-radius: 10%;
+}
+
 .picto_mur{
     width: 35px;
     height: 35px;
     border-radius: 50%;
 }
 
+.btn-profil-container {
+    width: calc(100% - 30px);
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: fit-content(40%);
+    grid-gap: 15px;
+}
 
 .row {
   display: -webkit-box;
@@ -8436,7 +8457,7 @@ footer {
       left: -30px;
       top: 2px;
       font-family: "Material Design Icons";
-      color: #000000;
+      color: white;
       text-align: center;
       line-height: 26px; }
 
@@ -9095,7 +9116,7 @@ input[type=range] {
 
 .nav-pills.nav-pills-icon-text .show .nav-link, .nav-pills.nav-pills-icon-text .nav-link.active {
   color: #ffffff;
-  background-color: #62B8B1; }
+  background-color: #00c9a6; }
 
 .tab-content-vertical {
   padding-top: 0; }
