@@ -31,20 +31,18 @@
                 </div>
                 <br>
                 <div class="btn-profil-container">
-
                         <a href="{% url 'dkllapp:nouveau_login' %}">
-                            <button type="button" class="btn btn-success btn-sm" style="width: 100%;">Changer mon identifiant</button>
+                            <button type="button" class="btn btn-danger btn-sm" style="width: 100%;">Changer mon identifiant</button>
                         </a>
                         <a href="{% url 'dkllapp:nouveau_mdp' %}">
-                            <button type="button" class="btn btn-success btn-sm" style="width: 100%;">Changer mon mot de passe</button>
+                            <button type="button" class="btn btn-danger btn-sm" style="width: 100%;">Changer mon mot de passe</button>
                         </a>
                         <a href="{% url 'dkllapp:picto' %}">
-                            <button type="button" class="btn btn-success btn-sm" style="width: 100%;">Changer mon picto</button>
+                            <button type="button" class="btn btn-danger btn-sm" style="width: 100%;">Changer mon picto</button>
                         </a>
                         <a href="/logout">
                             <button type="button" class="btn btn-warning btn-sm" style="width: 100%;"><b>Déconnexion</b></button>
                         </a>
-
                 </div>
         </div>
         <button type="button" class="collapsible_block" id="ligues" style="margin-top: 10px;">
@@ -57,11 +55,11 @@
         <div class="content">
             <br>
             <div style="padding-left: 15px; padding-right: 15px; display: flex; justify-content: space-evenly;">
-                <a type href="{% url 'dkllapp:creation_ligue' before_creation %}">
-                    <button type="button" class="btn btn-success btn-sm">Créer une ligue</button></a>
+                <a type href="{% url 'dkllapp:creation_ligue' %}">
+                    <button type="button" class="btn btn-danger btn-sm">Créer une ligue</button></a>
                 &nbsp &nbsp
                 <a href="{% url 'dkllapp:rejoindre_ligue' %}">
-                    <button type="button" class="btn btn-success btn-sm">Rejoindre une ligue</button></a>
+                    <button type="button" class="btn btn-danger btn-sm">Rejoindre une ligue</button></a>
             </div>
             <br>
             {% for ligue in ligues %}
@@ -70,13 +68,12 @@
                     <tbody>
                         <tr class="tr2">
                             <td class="td2" style="padding: 10px;">
-                                <div style="display: flex; align-items: center;">
-                                    <div style="padding-left: 15px; text-align: center; width: 60%;">
-                                        <b>{{ ligue.nom }}</b>
-                                        <span style="font-size: 12px;">{{ ligue.id }}</span>
+                                <div style="display: flex; justify-content: center;">
+                                    <div style="padding-left: 15px; width: 40%;">
+                                        <b>{{ ligue.ligue__nom }}</b>
                                     </div>
-                                    <div style="padding-left: 15px;">YY pts</div>
-                                    <div style="padding-left: 15px;">3/8</div>
+                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
+                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
                                 </div>
                             </td>
                         </tr>
@@ -113,6 +110,7 @@
                 </tbody>
             </table>
             {% if is_poulains %}
+
             <p><a href="{% url 'dkllapp:choix' 1 False profil %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis tes Poulains</a></p>
             {% endif %}
             <br>
@@ -158,7 +156,7 @@
             <br>
         </div>
         <br>
-        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:kauhlantaligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">kauhlantaligue@gmail.com</a>.</p>
+        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:taupechefligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">taupechefligue@gmail.com</a>.</p>
         <br>
         <br>
     </div>

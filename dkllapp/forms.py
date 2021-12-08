@@ -25,3 +25,7 @@ class MailForm(forms.Form):
 
 class LigueCreationForm(forms.Form):
     nom = forms.CharField(label='nom', max_length=100)
+
+
+class EquipeCreationForm(forms.Form):
+    champs_a_def = forms.CharField(label='nom', max_length=100)

@@ -21,7 +21,7 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Ligues</a>
                     <div class="dropdown-menu">
                         {% for lig in ligues %}
-                        <a href="{% url 'dkllapp:mur' lig.id %}" class="dropdown-item">{{ lig.nom }}</a>
+                        <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item">{{ lig.ligue__nom }}</a>
                         {% endfor %}
                     </div>
                 <li class="nav-item">

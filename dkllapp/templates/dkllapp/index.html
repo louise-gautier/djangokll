@@ -21,7 +21,7 @@
                         <td class="td2" width="60%" style="padding: 10px;">
                             <div style="display: flex; align-items: center;">
                                 <img class="picto_mur" src="{% static 'dkllapp/img/kitchen/admin.png' %}">
-                                <div style="padding-left: 15px;"><b>Tribu KLL</b></div>
+                                <div style="padding-left: 15px;"><b>Brigade TCL</b></div>
                             </div>
                             <div style="text-align: left; padding-left: 15px; padding-top: 5px;">{{ notif.message }}</div>
                         </td>
@@ -32,11 +32,11 @@
         <br>
         <p style="padding-left: 15px;"><b>Mes ligues</b></p>
         <div style="padding-left: 15px; padding-right: 15px; display: flex; justify-content: space-evenly;">
-            <a type href="{% url 'dkllapp:creation_ligue' before_creation %}">
-                <button type="button" class="btn btn-success btn-sm">Créer une ligue</button></a>
+            <a type href="{% url 'dkllapp:creation_ligue' %}">
+                <button type="button" class="btn btn-danger btn-sm">Créer une ligue</button></a>
             &nbsp &nbsp
             <a href="{% url 'dkllapp:rejoindre_ligue' %}">
-                <button type="button" class="btn btn-success btn-sm">Rejoindre une ligue</button></a>
+                <button type="button" class="btn btn-danger btn-sm">Rejoindre une ligue</button></a>
         </div>
         <br>
         {% for ligue in ligues %}
@@ -44,16 +44,15 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" style="padding: 10px;">
-                            <div style="display: flex; align-items: center;">
-                                <div style="padding-left: 15px; text-align: center; width: 60%;">
-                                    <b>{{ ligue.nom }}</b><br>
-                                    <span style="font-size: 12px;">{{ ligue.id }}</span>
+                            <td class="td2" style="padding: 10px;">
+                                <div style="display: flex; justify-content: center;">
+                                    <div style="padding-left: 15px; width: 40%;">
+                                        <b>{{ ligue.ligue__nom }}</b>
+                                    </div>
+                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
+                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
                                 </div>
-                                <div style="padding-left: 15px;">YY pts</div>
-                                <div style="padding-left: 15px;">3/8</div>
-                            </div>
-                        </td>
+                            </td>
                     </tr>
                 </tbody>
             </table>

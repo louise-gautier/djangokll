@@ -8,20 +8,20 @@
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
         <br>
-        <form action="" method="POST" novalidate class="mbr-form form-with-styler" data-form-title="Register Form"><input type="hidden">
-            {{ form.hidden_tag() }}
-            <div class="dragArea row" style="padding: 5px;">
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    {{ form.nom(class_="form-control", placeholder="Nom de la ligue", style="max-width: 300px;") }}
-                    {% if form.nom.errors %}{% for error in form.nom.errors %}<span style="color: #62B8B1;">{{ error }}</span>{% endfor %}{% endif %}
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+                {% csrf_token %}
+                <div id="div_id_nom" class="control-group">
+                    <label for="id_nom" class="control-label requiredField">Nom de la ligue<span class="asteriskField">*</span></label>
+                    <div class="controls">
+                        <input type="text" name="nom" autofocus="" autocapitalize="none" autocomplete="nom"
+                               maxlength="150" class="textinput textInput" required="" id="id_nom">
+                    </div>
                 </div>
-            </div>
-            <div class="dragArea row" style="padding: 5px;">
-                <div class="mbr-section-btn col-md-auto col">
-                    <div>{{ form.submit(class_="btn btn-warning display-4") }}</div>
-                </div>
-            </div>
-        </form>
+                <br>
+                <button class="btn btn-danger btn-sm" type="submit">Créer</button>
+            </form>
+        </div>
     </div>
     {% include 'dkllapp/body_scripts.html' %}
 </body>
