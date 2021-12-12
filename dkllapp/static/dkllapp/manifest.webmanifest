@@ -1,7 +1,7 @@
 {
-  "short_name": "Kauh Lanta",
-  "name": "Kauh Lanta Ligue : La meilleure façon de suivre Koh Lanta",
-  "description": "Kauh Lanta Ligue est un jeu basé sur l'émission de TV Koh Lanta diffusée sur TF1",
+  "short_name": "TCL",
+  "name": "Top Chef",
+  "description": "Top Chef Ligue est un jeu basé sur l'émission de TV Top Chef diffusée sur M6",
   "icons": [
   {
       "src": "{% static 'dkllapp/img/icon512.png' %}",
