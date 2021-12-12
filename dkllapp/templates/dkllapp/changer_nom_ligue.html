@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+                {% csrf_token %}
+                <div id="div_id_nom" class="control-group">
+                    <label for="id_nom" class="control-label requiredField">Nouveau nom de la ligue {{ ligue.nom }}<span class="asteriskField">*</span></label>
+                    <div class="controls">
+                        <input type="text" name="nom" autofocus="" autocapitalize="none" autocomplete="nom"
+                               maxlength="150" class="textinput textInput" required="" id="id_nom">
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-danger btn-sm" type="submit">Changer</button>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

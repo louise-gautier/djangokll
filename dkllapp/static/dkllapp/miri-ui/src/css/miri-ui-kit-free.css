@@ -143,7 +143,7 @@ sup {
   top: -.5em; }
 
 a {
-  color: #00c9a6;
+  color: #f12459;
   text-decoration: none;
   background-color: transparent; }
   a:hover {
@@ -283,6 +283,21 @@ button::-moz-focus-inner,
   border-style: none; }
 
 .collapsible_block {
+  background-color: #272B2C;
+  color: #E0E2E2;
+  font-family: 'Jost', sans-serif;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.collapsible_flex {
   background-color: #272B2C;
   color: #E0E2E2;
   font-family: 'Jost', sans-serif;
@@ -552,6 +567,20 @@ pre {
 }
 
 .candidat_profile{
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.candidat_index{
+    width: 70px;
+    height: 70px;
+    padding: 0px;
+    border-radius: 50%;
+}
+
+.candidat_equipe_ligue{
     width: 75px;
     height: 75px;
     padding: 5px;
@@ -1676,15 +1705,36 @@ textarea.form-control {
   display: block;
   padding-left: 1.25rem; }
 
+.form-check_candidat {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 115px;
+  height: 115px; }
+
 .form-check-input {
   position: absolute;
   margin-top: 0.3rem;
-  margin-left: -1.25rem; }
+  margin-left: 0; }
+  .form-check-input:disabled ~ .form-check-label {
+    color: #bbbbbb; }
+
+.form-check-input_candidat {
+  position: absolute;
+  margin-top: 0.3rem;
+  margin-left: 0; }
   .form-check-input:disabled ~ .form-check-label {
     color: #bbbbbb; }
 
 .form-check-label {
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  padding-left: 5px; }
+
+.form-check-label_candidat {
+  margin: auto; }
 
 .form-check-inline {
   display: -webkit-inline-box;
@@ -1762,6 +1812,14 @@ textarea.form-control {
 .was-validated .form-check-input:valid ~ .valid-feedback,
 .was-validated .form-check-input:valid ~ .valid-tooltip, .form-check-input.is-valid ~ .valid-feedback,
 .form-check-input.is-valid ~ .valid-tooltip {
+  display: block; }
+
+.was-validated .form-check-input_candidat:valid ~ .form-check-label_candidat, .form-check-input_candidat.is-valid ~ .form-check-label_candidat {
+  color: #00c9a6; }
+
+.was-validated .form-check-input_candidat:valid ~ .valid-feedback,
+.was-validated .form-check-input_candidat:valid ~ .valid-tooltip, .form-check-input_candidat.is-valid ~ .valid-feedback,
+.form-check-input_candidat.is-valid ~ .valid-tooltip {
   display: block; }
 
 .was-validated .custom-control-input:valid ~ .custom-control-label, .custom-control-input.is-valid ~ .custom-control-label {
@@ -1859,6 +1917,14 @@ textarea.form-control {
 .was-validated .form-check-input:invalid ~ .invalid-feedback,
 .was-validated .form-check-input:invalid ~ .invalid-tooltip, .form-check-input.is-invalid ~ .invalid-feedback,
 .form-check-input.is-invalid ~ .invalid-tooltip {
+  display: block; }
+
+.was-validated .form-check-input_candidat:invalid ~ .form-check-label_candidat, .form-check-input_candidat.is-invalid ~ .form-check-label_candidat {
+  color: #f12459; }
+
+.was-validated .form-check-input_candidat:invalid ~ .invalid-feedback,
+.was-validated .form-check-input_candidat:invalid ~ .invalid-tooltip, .form-check-input_candidat.is-invalid ~ .invalid-feedback,
+.form-check-input_candidat.is-invalid ~ .invalid-tooltip {
   display: block; }
 
 .was-validated .custom-control-input:invalid ~ .custom-control-label, .custom-control-input.is-invalid ~ .custom-control-label {
@@ -8418,7 +8484,8 @@ footer {
     .form-check .form-check-input[type=checkbox] ~ .form-check-label::before {
       border-radius: 2px; }
     .form-check .form-check-input[type=checkbox]:checked ~ .form-check-label::before {
-      content: "\F12C"; }
+      content: "\F12C";
+       font-size: 20px;}
     .form-check .form-check-input[type=radio] ~ .form-check-label::before {
       border-radius: 50%; }
     .form-check .form-check-input[type=radio]:checked ~ .form-check-label::before {
@@ -8445,7 +8512,8 @@ footer {
     display: inline-block;
     position: relative;
     font-size: 12px;
-    line-height: 30px; }
+    line-height: 30px;
+     }
     .form-check .form-check-label::before {
       content: "";
       display: inline-block;
@@ -8460,6 +8528,53 @@ footer {
       color: white;
       text-align: center;
       line-height: 26px; }
+
+.form-check_candidat {
+   }
+  .form-check_candidat .form-check-input_candidat {
+    position: absolute;
+    z-index: -1;
+    opacity: 0; }
+    .form-check_candidat .form-check-input_candidat[type=checkbox] ~ .form-check-label_candidat::before {
+      }
+    .form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat::before {
+       }
+    .form-check_candidat .form-check-input_candidat[type=radio] ~ .form-check-label_candidat::before {
+      border-radius: 50%; }
+    .form-check_candidat .form-check-input_candidat[type=radio]:checked ~ .form-check-label_candidat::before {
+      content: "\F12F"; }
+    .form-check_candidat .form-check-input_candidat:disabled ~ .form-check-label_candidat::before {
+      opacity: 0.5; }
+    .was-validated .form-check_candidat .form-check-input_candidat:valid ~ .form-check-label_candidat::before {
+     }
+    .was-validated .form-check_candidat .form-check-input_candidat:invalid ~ .form-check-label_candidat::before {
+       }
+    .form-check_candidat .form-check-input_candidat.is-valid ~ .form-check-label_candidat::before {
+       }
+    .form-check_candidat .form-check-input_candidat.is-invalid ~ .form-check-label_candidat::before {
+       }
+  .form-check_candidat .form-check-label_candidat {
+    display: inline-block;
+    position: relative;
+    font-size: 12px;
+    line-height: 30px; }
+
+.form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat .candidat_profile {
+    outline: 5px solid #f12459;
+    }
+.form-check_candidat .form-check-input_candidat[type=checkbox] ~ .form-check-label_candidat p {
+    font-size: 14px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    }
+
+.form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat p {
+    color: #f12459;
+    }
+
+
+    .form-check_candidat .form-check-label_candidat::before {
+       }
 
 .custom-switch .custom-control-label::after {
   -webkit-transform: translateX(0.75rem);

@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from dkllapp.models import Candidat
+
 
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -27,5 +29,13 @@ class LigueCreationForm(forms.Form):
     nom = forms.CharField(label='nom', max_length=100)
 
 
+class LigueJoinForm(forms.Form):
+    ligue_id = forms.CharField(label='ligue_id', max_length=100)
+
+
+class ChoixCreationForm(forms.Form):
+    pass
+
+
 class EquipeCreationForm(forms.Form):
-    champs_a_def = forms.CharField(label='nom', max_length=100)
+    propagation = forms.BooleanField(required=False)

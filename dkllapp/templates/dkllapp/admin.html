@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p style="padding-left: 30px; color: #f12459;"><b>Page d'administration</b></p>
+        {% if isadmin == False %}
+            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
+        {% else %}
+        <button type="button" class="collapsible_block">Paramètres du jeu &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br> Episode en cours (le prochain qui sera diffusé) : {{ episode_en_cours_ }}
+            <br>
+            <a href="#" class="btn btn-danger btn-sm">Changer d'épisode</a>
+            <br>
+            <br> Accès aux choix de candidats :
+            <br>
+            <p>Form avec 6 boutons pour activer/déactiver les choix</p>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Gestion des Candidats &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <a href="#" class="btn btn-danger btn-sm">Changer des tribus</a>
+            <a href="#" class="btn btn-danger btn-sm">Changer des statuts</a>
+            <br>
+            <br>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un mail Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <p>Form mail</p>
+            <br>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un message notification Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <p>Form message</p>
+            <br>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Pronos &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <a href="#" class="btn btn-danger btn-sm">Ajouter une question</a>
+            <a href="#" class="btn btn-danger btn-sm">Modifier une question</a>
+            <a href="#" class="btn btn-danger btn-sm">Ajouter une réponse</a>
+            <br>
+            <br>
+            <p style="padding-left: 8px;">Liste des pronos :</p>
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="8%" style="text-align: center;">ID</th>
+                        <th style="text-align: center;">Question</th>
+                        <th style="text-align: center;">Propos</th>
+                        <th style="text-align: center;">Rép</th>
+                        <th width="8%" style="text-align: center;">Ep</th>
+                        <th width="8%" style="text-align: center;">+</th>
+                        <th width="8%" style="text-align: center;">-</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                    <tr>
+                        <td style="text-align: center;">{{ question.id }}</td>
+                        <td style="text-align: center;">{{ question.question }}</td>
+                        <td style="text-align: center;">{{ question.propos_propres }} </td>
+                        <td style="text-align: center;">{{ question.reponse }} </td>
+                        <td style="text-align: center;">{{ question.episode }} </td>
+                        <td style="text-align: center;">{{ question.bonus }} </td>
+                        <td style="text-align: center;">{{ question.malus }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Règles &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <a href="#" class="btn btn-danger btn-sm">Ajouter une règle</a>
+            <br>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Evènements &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <a href="#" class="btn btn-danger btn-sm">Ajouter un évènement</a>
+            <br>
+            <br>
+            <p style="padding-left: 8px;">Liste des évènements enregistrés</p>
+            <p style="padding-left: 8px; font-size: 12px;">Typages : 1 = Poulains, 2 = Podium, 3 = Gagnants, 12 = Poulains & Podium, 13 = Poulains & Gagnants, 23 = Podium & Gagnants, 123 = Poulains & Podium & Gagnants</p>
+            <table cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Ep.</th>
+                        <th style="text-align: center;">Typ.</th>
+                        <th width="30%"style="text-align: center;">Candidat</th>
+                        <th width="30%">Regle</th>
+                        <th style="text-align: center;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for evenement in evenements %}
+                    <tr>
+                        <td style="text-align: center;">Ep.{{ evenement.episode }}</td>
+                        <td style="text-align: center;">{{ evenement.typage }}</td>
+                        <td style="text-align: center;">{{ evenement.candidat }}</td>
+                        <td>{{ evenement.regle }}</td>
+                        <td style="text-align: center;">{{ evenement.admin }} {{ evenement.heure }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    <br>
+    <br>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

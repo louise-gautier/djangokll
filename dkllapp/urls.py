@@ -34,9 +34,13 @@ urlpatterns = [
     path('picto/', views.picto, name='picto'),
     path('nouveau_login/', views.nouveau_login, name='nouveau_login'),
     path('nouveau_mdp/', views.nouveau_mdp, name='nouveau_mdp'),
+
     path('creation_ligue/', views.creation_ligue, name='creation_ligue'),
     path('rejoindre_ligue/', views.rejoindre_ligue, name='rejoindre_ligue'),
-    path('faire_equipe/<before>/', views.faire_equipe, name='faire_equipe'),
+    path('changer_nom_ligue/<ligue_id>', views.changer_nom_ligue, name='changer_nom_ligue'),
+
+    path('faire_equipe/<ligue_id>/<before>/<txt>', views.faire_equipe, name='faire_equipe'),
+    path('choix/<type_choix>/<before>/<txt>', views.choix, name='choix'),
 
     path("register/", views.register_request, name="register"),
     path("login/", views.login_request, name="login"),

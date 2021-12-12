@@ -22,17 +22,19 @@ from django.views import generic
 from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django import forms
+
 from webpush import send_user_notification
 import json
 
-from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm
+from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe
 from .token import account_activation_token
 
 
 #v############################### FONCTIONS GENERIQUES #########################################
 def is_admin(user_id):
-    admins = [1, 5, 8, 9]
+    admins = [1, 2]
     bool_admin = False
     if user_id in admins:
         bool_admin = True
@@ -69,6 +71,17 @@ def is_gagnant():
     else:
         activation_gagnant = False
     return activation_gagnant
+
+
+def nbr_par_type(type_choix):
+    if type_choix == '1':
+        return 6
+    elif type_choix == '2':
+        return 3
+    elif type_choix == '3':
+        return 1
+    else:
+        return 0
 
 
 ##########################################REGISTRATION ET LOGIN################################
@@ -153,32 +166,81 @@ def logout_request(request):
     return redirect("dkllapp:index")
 
 
+def equipe_pour_une_ligue(user, ligue_id, episode, selected_candidat):
+    lignes_equipe = Equipe.objects \
+        .filter(user_id=user.id) \
+        .filter(ligue_id=ligue_id) \
+        .filter(episode=episode) \
+        .filter(type=1) \
+        .delete()
+    for candidat_id in selected_candidat:
+        nouvelle_ligne_equipe = Equipe()
+        nouvelle_ligne_equipe.user_id = user.id
+        nouvelle_ligne_equipe.ligue_id = ligue_id
+        nouvelle_ligne_equipe.episode = episode
+        nouvelle_ligne_equipe.candidat_id = candidat_id
+        nouvelle_ligne_equipe.type = 1
+        nouvelle_ligne_equipe.save()
+
+
+def choix_pour_un_type(user, type, selected_candidat):
+    lignes_equipe = Choix.objects \
+        .filter(user_id=user.id) \
+        .filter(type=type) \
+        .delete()
+    for candidat_id in selected_candidat:
+        nouvelle_ligne_choix = Choix()
+        nouvelle_ligne_choix.user_id = user.id
+        nouvelle_ligne_choix.candidat_id = candidat_id
+        nouvelle_ligne_choix.type = type
+        nouvelle_ligne_choix.save()
+
+
 ##########################################FIN REGISTRATION ET LOGIN################################
 ######################################HOME - INDEX################################
 @login_required
 def index(request):
+    poulains_ouvert = is_poulains()
+    podium_ouvert = is_podium()
+    gagnant_ouvert = is_gagnant()
     ligues = Membre.objects\
         .filter(user_id=request.user.id)\
         .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
     notif = Notif.objects.latest('insert_datetime')
     choix_user = Choix.objects \
         .filter(user_id=request.user.id) \
         .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool')
-
+    lignes_equipes = []
+    for ligue in ligues:
+        bloc_equipe = Equipe.objects\
+            .filter(user=request.user.id)\
+            .filter(episode=episode_en_cours_)\
+            .filter(ligue_id=ligue['ligue_id'])\
+            .filter(type=1)\
+            .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                    'candidat__statut', 'candidat__statut_bool')
+        for ligne in bloc_equipe:
+            ligne_equipe = {'id': ligue['ligue_id'], 'ligne': ligne}
+            lignes_equipes.append(ligne_equipe)
     return render(request=request,
                   template_name="dkllapp/index.html",
-                  context={'ligues': ligues, 'notif': notif, 'choix_user': choix_user,
-                           'before_creation': 'index'})
+                  context={'ligues': ligues, 'notif': notif, 'choix_user': choix_user, 'lignes_equipes': lignes_equipes,
+                           'before_creation': 'index',
+                           'poulains_ouvert': poulains_ouvert, 'podium_ouvert': podium_ouvert, 'gagnant_ouvert': gagnant_ouvert,
+                           'isadmin': is_admin(request.user.id)})
 
 
 ##########################################Admin################################
 @login_required
 def admin(request):
     admin = 'admin'
+    episode_en_cours_ = episode_en_cours()
     return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'admin': admin})
+                  template_name="dkllapp/admin.html",
+                  context={'admin': admin, 'episode_en_cours_': episode_en_cours_,
+                           'isadmin': is_admin(request.user.id)})
 
 
 ##########################################Ligues################################
@@ -191,11 +253,11 @@ def mur(request, ligue_id):
     mur = Mur.objects\
         .filter(ligue_id=ligue_id)\
         .values('id', 'ligue_id', 'user_id', 'user__user__username', 'user__img', 'message', 'insert_datetime')
-    print('current_ligue', current_ligue)
     notif = Notif.objects.latest('insert_datetime')
     return render(request=request,
                   template_name="dkllapp/mur.html",
-                  context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue, 'mur': mur, 'notif': notif})
+                  context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue, 'mur': mur, 'notif': notif,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -210,15 +272,15 @@ def equipe(request, ligue_id):
         .filter(ligue_id=current_ligue['id']) \
         .filter(episode=episode_en_cours_) \
         .filter(type=1) \
-        .values('id', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool', 'type')
-
-    print('equipe', equipe)
+        .values('id', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                'candidat__statut', 'candidat__statut_bool', 'type')
     return render(request=request,
                   template_name="dkllapp/equipe.html",
                   context={'ligues': ligues, 'page': 'equipe',
                            'equipe': equipe,
                            'ligue_id': ligue_id, 'before_creation': 'equipe',
-                           'episode_en_cours_': episode_en_cours_, 'current_ligue': current_ligue})
+                           'episode_en_cours_': episode_en_cours_, 'current_ligue': current_ligue,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -231,7 +293,8 @@ def resultat(request, ligue_id):
                   template_name="dkllapp/resultat.html",
                   context={'ligues': ligues, 'page': 'resultat',
                            'ligue_id': ligue_id,
-                           'current_ligue': current_ligue})
+                           'current_ligue': current_ligue,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -240,12 +303,35 @@ def details(request, ligue_id):
         .filter(user_id=request.user.id)\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
+    membres = Membre.objects.filter(ligue_id=current_ligue['id'])\
+        .values('id', 'user_id', 'user__user__username', 'user__img')
+    print(membres)
     episode_en_cours_ = episode_en_cours()
     return render(request=request,
                   template_name="dkllapp/details.html",
                   context={'ligues': ligues, 'page': 'details',
                            'ligue_id': ligue_id, 'episode_en_cours_': episode_en_cours_,
-                           'current_ligue': current_ligue})
+                           'current_ligue': current_ligue, 'membres': membres,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def changer_nom_ligue(request, ligue_id):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    if request.method == "POST":
+        form = LigueCreationForm(request.POST)
+        if form.is_valid():
+            current_ligue = Ligue.objects.filter(id=ligue_id).first()
+            current_ligue.nom = form.cleaned_data.get('nom')
+            current_ligue.save()
+            return redirect('dkllapp:details', current_ligue.id)
+    form = LigueCreationForm()
+    return render(request=request,
+                  template_name="dkllapp/changer_nom_ligue.html",
+                  context={'form': form, 'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 
 ##########################################Profil################################
@@ -261,17 +347,44 @@ def profil(request):
     return render(request=request,
                   template_name="dkllapp/profil.html",
                   context={'candidats': candidats, 'ligues': ligues,
-                           'choix_user': choix_user, 'before_creation': 'profil'})
+                           'choix_user': choix_user, 'before_creation': 'profil',
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
-def choix(request):
+def choix(request, type_choix, before, txt):
     ligues = Membre.objects\
         .filter(user_id=request.user.id)\
         .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    txt_alert = txt
+    candidats = Candidat.objects.all()\
+        .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
+    new_fields = {}
+    for candidat in candidats:
+        new_fields[candidat['form_id']] = forms.BooleanField(required=False)
+    DynamicChoixCreationForm = type('DynamicChoixCreationForm', (ChoixCreationForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicChoixCreationForm(request.POST)
+        if form.is_valid():
+            selected_candidat = []
+            for field in form.cleaned_data:
+                if "bool" in field and form.cleaned_data[field]:
+                    selected_candidat.append(int(field[4:6]))
+            if len(selected_candidat) == nbr_par_type(type_choix):
+                choix_pour_un_type(request.user, type_choix, selected_candidat)
+                if before == "profil":
+                    return redirect('dkllapp:profil')
+                else:
+                    return redirect('dkllapp:index')
+            else:
+                txt_alert = "alert"
+                return redirect('dkllapp:choix', type_choix, before, txt_alert)
+    form = DynamicChoixCreationForm()
     return render(request=request,
-                  template_name="dkllapp/profil.html",
-                  context={'candidats': candidats, 'ligues': ligues})
+                  template_name="dkllapp/choix.html",
+                  context={'form': form, 'ligues': ligues, 'candidats': candidats, 'txt_alert': txt, 'type_choix': type_choix,
+                           'isadmin': is_admin(request.user.id)})
 
 
 ##########################################Règles################################
@@ -282,7 +395,8 @@ def generales(request):
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/generales.html",
-                  context={'ligues': ligues})
+                  context={'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 @login_required
 def bareme(request):
@@ -291,7 +405,8 @@ def bareme(request):
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/bareme.html",
-                  context={'ligues': ligues})
+                  context={'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -301,7 +416,8 @@ def candidats(request):
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/candidats.html",
-                  context={'ligues': ligues})
+                  context={'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -311,7 +427,8 @@ def faq(request):
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/faq.html",
-                  context={'ligues': ligues})
+                  context={'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -319,7 +436,8 @@ def pronos(request):
     pronos = 'pronos'
     return render(request=request,
                   template_name="dkllapp/index.html",
-                  context={'pronos': pronos})
+                  context={'pronos': pronos,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -327,7 +445,8 @@ def nouveau_login(request):
     nouveau_login = 'nouveau_login'
     return render(request=request,
                   template_name="dkllapp/nouveau_login.html",
-                  context={'nouveau_login': nouveau_login})
+                  context={'nouveau_login': nouveau_login,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -335,7 +454,8 @@ def nouveau_mdp(request):
     nouveau_mdp = 'nouveau_mdp'
     return render(request=request,
                   template_name="dkllapp/nouveau_mdp.html",
-                  context={'nouveau_mdp': nouveau_mdp})
+                  context={'nouveau_mdp': nouveau_mdp,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -343,55 +463,111 @@ def picto(request):
     picto = 'picto'
     return render(request=request,
                   template_name="dkllapp/index.html",
-                  context={'picto': picto})
+                  context={'picto': picto,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
 def creation_ligue(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
     if request.method == "POST":
         form = LigueCreationForm(request.POST)
-        print('ici')
         if form.is_valid():
-            print('début if')
             nouvelle_ligue = Ligue()
             nouvelle_ligue.nom = form.cleaned_data.get('nom')
             nouvelle_ligue.save()
-            print('nouvelle_ligue.id', nouvelle_ligue.id)
             nouveau_membre = Membre()
             nouveau_membre.user_id = request.user.id
             nouveau_membre.ligue_id = nouvelle_ligue.id
             nouveau_membre.save()
-            print('nouveau_membre', nouveau_membre)
             #mail ou web push à prévoir
-            print('avant redirect')
             return redirect('dkllapp:mur', nouvelle_ligue.id)
     form = LigueCreationForm()
     return render(request=request,
                   template_name="dkllapp/creation_ligue.html",
-                  context={'form': form})
+                  context={'form': form, 'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
 def rejoindre_ligue(request):
-    rejoindre_ligue = 'rejoindre_ligue'
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    if request.method == "POST":
+        form = LigueJoinForm(request.POST)
+        if form.is_valid():
+            print('début if')
+            ligue_a_rejoindre = Ligue.objects.filter(id=form.cleaned_data.get('ligue_id')).first()
+            print('ligue_a_rejoindre', ligue_a_rejoindre)
+            if ligue_a_rejoindre:
+                deja_membre = Membre.objects \
+                    .filter(user_id=request.user.id) \
+                    .filter(id=ligue_a_rejoindre.id)
+                if deja_membre:
+                    pass
+                else:
+                    nouveau_membre = Membre()
+                    nouveau_membre.user_id = request.user.id
+                    nouveau_membre.ligue_id = ligue_a_rejoindre.id
+                    nouveau_membre.save()
+                    print('nouveau_membre', nouveau_membre)
+                    #mail ou web push à prévoir
+                    print('avant redirect')
+                    return redirect('dkllapp:mur', ligue_a_rejoindre.id)
+    form = LigueJoinForm()
     return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'rejoindre_ligue': rejoindre_ligue})
+                  template_name="dkllapp/rejoindre_ligue.html",
+                  context={'rejoindre_ligue': rejoindre_ligue, 'ligues': ligues, 'form': form,
+                           'isadmin': is_admin(request.user.id)})
 
 
 @login_required
-def faire_equipe(request, before):
-    form = EquipeCreationForm()
-    if form.validate_on_submit():
-        nouvelle_equipe = ""
-        nouvelle_equipe.save()
-        if before == "profil":
-            return redirect('dkllapp:profile')
-        else:
-            return redirect('dkllapp:equipe')
+def faire_equipe(request, ligue_id, before, txt):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
+    episode_en_cours_ = episode_en_cours()
+    txt_alert = txt
+    poulains = Choix.objects.filter(user_id=request.user.id).filter(type=1)\
+        .values('id', 'candidat__id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                'candidat__statut', 'candidat__statut_bool', 'candidat__form_id')
+    new_fields = {}
+    for poulain in poulains:
+        new_fields[poulain['candidat__form_id']] = forms.BooleanField(required=False)
+    DynamicEquipeCreationForm = type('DynamicEquipeCreationForm', (EquipeCreationForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicEquipeCreationForm(request.POST)
+        if form.is_valid():
+            selected_candidat = []
+            for field in form.cleaned_data:
+                if "bool" in field and form.cleaned_data[field]:
+                    selected_candidat.append(int(field[4:6]))
+            if 0 < len(selected_candidat) < 4:
+                if form.cleaned_data['propagation'] is False:
+                    equipe_pour_une_ligue(request.user, ligue_id, episode_en_cours_, selected_candidat)
+                else:
+                    for ligue in ligues:
+                        print('ligue', ligue)
+                        equipe_pour_une_ligue(request.user, ligue['ligue_id'], episode_en_cours_, selected_candidat)
+                if before == "equipe":
+                    return redirect('dkllapp:equipe', current_ligue['id'])
+                else:
+                    return redirect('dkllapp:index')
+            else:
+                txt_alert = "alert"
+                print('else', current_ligue['id'], before, txt_alert)
+                return redirect('dkllapp:faire_equipe', current_ligue['id'], before, txt_alert)
+
+    form = DynamicEquipeCreationForm()
     return render(request=request,
                   template_name="dkllapp/faire_equipe.html",
-                  context={'form': form})
+                  context={'form': form, 'ligues': ligues, 'poulains': poulains, 'txt_alert': txt_alert,
+                           'isadmin': is_admin(request.user.id)})
+
 
 ######################################TESTS#################################################
 ############################################################################################

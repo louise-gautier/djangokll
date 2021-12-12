@@ -13,10 +13,8 @@
         </button>
          <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                {% if isadmin == True %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dkllapp:admin' %}">Admin</a></li>
-                {% endif %}
+                    <a class="nav-link" href="{% url 'dkllapp:profil' %}">{{ user.username }}</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Ligues</a>
                     <div class="dropdown-menu">
@@ -24,19 +22,21 @@
                         <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item">{{ lig.ligue__nom }}</a>
                         {% endfor %}
                     </div>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dkllapp:profil' %}">Mon Profil</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dkllapp:classement_general' %}">Classement</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Règles du jeu</a>
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Règles</a>
                     <div class="dropdown-menu">
                         <a href="{% url 'dkllapp:generales' %}" class="dropdown-item">Générales</a>
                         <a href="{% url 'dkllapp:bareme' %}" class="dropdown-item">Barême</a>
-                        <a href="{% url 'dkllapp:candidats' %}" class="dropdown-item">Candidats</a>
+                        <a href="{% url 'dkllapp:candidats' %}" class="dropdown-item">Candidats 2022</a>
                         <a href="{% url 'dkllapp:faq' %}" class="dropdown-item">FAQ</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dkllapp:classement_general' %}"><i class="mdi mdi-podium"></i></a></li>
+                {% if isadmin == True %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dkllapp:admin' %}">Admin</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>

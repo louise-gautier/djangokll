@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div style="margin-left: 15px; margin-right: 15px;">
+            <form id="form" action="" method="POST">
+                {% csrf_token %}
+                <div style="padding-left: 15px; padding-right: 15px;">
+                    <p style="padding-left: 8px; padding-top: 8px;">Choisis ta tribu de 3 poulains :</p>
+                    <div style="display: flex; flex-flow: row wrap;">
+                        {% for field in form %}
+                        {% if field.name == 'propagation' %}
+                        {% else %}
+                        <div class="form-check_candidat">
+                            <input class="form-check-input_candidat" type="checkbox" id={{field.name}} name={{field.name}}>
+                            {% for candidat in poulains %}
+                            <script type="text/javascript">if ("{{field.name}}".substring(4,6) == ("0" + {{candidat.candidat__id}}).slice(-2)) {
+                                                                lbl = document.createElement("label");
+                                                                lbl.setAttribute("class","form-check-label_candidat")
+                                                                lbl.setAttribute("for","{{field.name}}")
+
+                                                                img = document.createElement("img");
+                                                                img.setAttribute("src", "{% static candidat.candidat__chemin_img %}");
+                                                                img.setAttribute("class", "candidat_profile");
+                                                                lbl.appendChild(img)
+                                                                p = document.createElement("p");
+                                                                p.innerText = "{{candidat.candidat__nom}}"
+                                                                lbl.appendChild(p)
+
+                                                                input_tag = document.getElementById("{{ field.name }}");
+                                                                input_tag.parentNode.insertBefore(lbl, input_tag.nextSibling.nextSibling.nextSibling);
+                                                            } else {};
+                            </script>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <br>
+                        {% endfor %}
+                    </div>
+                    {% if "alert" in txt_alert %}
+                    <p style="padding-left: 8px; padding-top: 8px; color: #f12459; font-size: 12px;">Attention, tu n'as pas sélectionné entre 1 et 3 poulains pour ton équipe.</p>
+                    {% endif %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id='propagation' name='propagation' onchange="">
+                        <label class="form-check-label" for="propagation">Propager ce choix à toutes mes ligues</label>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Valider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

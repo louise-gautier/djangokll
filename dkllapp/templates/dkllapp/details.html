@@ -9,33 +9,23 @@
 
     <div class="mainwrapper">
         <br>
-            {% if ligue == 'vide' %}
-                <p style="padding-left: 8px;"> Tu n'es pas membre d'une ligue. Pour en rejoindre ou en créer une, RDV dans ton profil ou ci-dessous.</p>
-                <br>
-                <a href="#" class="btn btn-warning display-4" style="min-width: 240px;">Crée ta ligue</a>
-                <a href="#" class="btn btn-warning display-4" style="min-width: 240px;">Rejoins une ligue</a>
-                <br>
-            {% else %}
-            <p style="padding-left: 16px; margin: 0px;"><b>Détails : {{ ligue.nom }}</b></p>
-            <br>
-            <p style="padding-left: 16px;">Code de la ligue : <b style ="color: white;">{{ ligue.id }}</b></p>
-
-            <a href="#" class="btn btn-warning display-4" style="min-width: 240px;">Changer le nom de la Ligue</a>
+            <p style="padding-left: 30px; color: #f12459;"><b>{{ current_ligue.nom }}</b></p>
+            <p style="padding-left: 30px;">Code de la ligue : <b>{{ current_ligue.id }}</b></p>
+            <a style="padding-left: 30px;" href="{% url 'dkllapp:changer_nom_ligue' ligue_id %}">
+                <button type="button" class="btn btn-danger btn-sm">Changer le nom de la Ligue</button></a>
             <br>
             <br>
             <button type="button" class="collapsible_flex" id="membres">Membres de la ligue 🦦 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content" style="flex-flow: row wrap;">
+            <p>ici les membres</p>
             {% for membre in membres %}
             <table style="width: 260px; margin: 10px;">
                 <tbody>
                 <tr>
                     <th style="text-align: center;" >
                         <div style="display: flex; align-items: center; justify-content: center;">
-                            <div class="container_picto_seul"><div class="picto_seul">
-                                <img class="picto_img" src="#">
-                                <!--filename=membre.img-->
-                            </div></div>
-                            <p style="margin: 0 0 0 5px;">{{ membre.username }}</p>
+                            <img class="picto_profile" src="{% static 'dkllapp/img/kitchen/admin.png' %}">
+                            <p style="margin: 0 0 0 5px;">{{ membre.user__user__username }}</p>
                         </div>
                     </th>
                 </tr>
@@ -87,7 +77,7 @@
             </div>
             <button type="button" class="collapsible_block" id="par_episode" style="margin-top: 10px;">Détails par épisodes ⚙️ &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
-                <select class="btn btn-warning display-4" name="episode" id="episode" onchange="window.location.href=this.value +'#par_episode';" style="margin-left: auto; margin-right: 5px;">
+                <select class="btn btn-danger btn-sm" name="episode" id="episode" onchange="window.location.href=this.value +'#par_episode';" style="margin-left: auto; margin-right: 5px;">
                 <option value="Episode" selected disabled hidden>Episode : {{ current_episode }}</option>
                 <option value="Tous">Tous</option>
                 <option value=1>1</option>
@@ -166,7 +156,6 @@
             </div>
             <br>
             <br>
-            {% endif %}
     </div>
     <br>
     <br>

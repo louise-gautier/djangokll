@@ -9,10 +9,6 @@
 
     <div class="mainwrapper" style="padding-left: 15px; padding-right: 15px;">
         <br>
-        {% if ligue == 'vide' %}
-        {% include 'ligue_vide.html' %}
-        <br>
-        {% else %}
         <p style="padding-left: 15px;"><b>Dernière notification</b></p>
         <div style="padding-left: 15px; padding-right: 15px;">
             <table class="table2" cellspacing="0" >
@@ -45,12 +41,32 @@
                 <tbody>
                     <tr class="tr2">
                             <td class="td2" style="padding: 10px;">
-                                <div style="display: flex; justify-content: center;">
-                                    <div style="padding-left: 15px; width: 40%;">
-                                        <b>{{ ligue.ligue__nom }}</b>
+                                <div style="display: flex;">
+                                    <div style="display: flex; flex-flow: wrap; width: 90%;">
+                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                            <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
+                                        </div>
+                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                            <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">YY pts (3/8)</a>
+                                        </div>
+                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                            <a href="{% url 'dkllapp:equipe' ligue.ligue_id %}">
+                                                {% for ligne_equipe in lignes_equipes %}
+                                                {% if ligne_equipe.id == ligue.ligue_id %}
+                                                <img class="candidat_equipe_ligue" src="{% static ligne_equipe.ligne.candidat__chemin_img %}">
+                                                {% endif %}
+                                                {% endfor %}
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
-                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
+                                    <div style="display: flex; width: 10%; justify-content: space-around; align-items: center; text-align: center;">
+                                        <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:details' ligue.ligue_id %}" aria-selected="true">
+                                                    <i class="mdi mdi-magnify-plus" style="margin: auto; padding: 2px;"></i></a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </td>
                     </tr>
@@ -63,66 +79,73 @@
         <p style="padding-left: 15px;"><b>Mes candidats</b></p>
         <br>
         <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🦄</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 1 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_poulains %}
-            <p><a href="{% url 'dkllapp:choix' 1 False profil %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis tes Poulains</a></p>
-            {% endif %}
-            <br>
-            <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🏅</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 2 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_podium %}
-            <p><a href="{% url 'dkllapp:choix' 2 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Podium</a></p>
-            {% endif %}
-            <br>
-            <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🏆</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 3 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_gagnant %}
-            <p><a href="{% url 'dkllapp:choix' 3 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Gagnant</a></p>
-            {% endif %}
-            <br>
-        {% endif %}
+            <tbody>
+                <tr class="tr2">
+                    <td class="td2" width=15% style="padding: 10px;">
+                        <span style="font-size: 35px;">🦄</span>
+                    </td>
+                    <td class="td2" style="padding: 10px;">
+                        {% for candidat in choix_user %}
+                        {% if candidat.type == 1 %}
+                        <img class="candidat_index" src="{% static candidat.candidat__chemin_img %}">
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="td2" width=15% style="padding: 10px;">
+                    {% if poulains_ouvert %}
+                    <a type href="{% url 'dkllapp:choix' 1 before_creation '1' %}">
+                        <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                    {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <table class="table2" cellspacing="0" >
+            <tbody>
+                <tr class="tr2">
+                    <td class="td2" width=15% style="padding: 10px;">
+                        <span style="font-size: 35px;">🏅</span>
+                    </td>
+                    <td class="td2" style="padding: 10px;">
+                        {% for candidat in choix_user %}
+                        {% if candidat.type == 2 %}
+                        <img class="candidat_index" src="{% static candidat.candidat__chemin_img %}">
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="td2" width=15% style="padding: 10px;">
+                    {% if podium_ouvert %}
+                    <a type href="{% url 'dkllapp:choix' 2 before_creation '1' %}">
+                        <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                    {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <table class="table2" cellspacing="0" >
+            <tbody>
+                <tr class="tr2">
+                    <td class="td2" width=15% style="padding: 10px;">
+                        <span style="font-size: 35px;">🏆</span>
+                    </td>
+                    <td class="td2" style="padding: 10px;">
+                        {% for candidat in choix_user %}
+                        {% if candidat.type == 3 %}
+                        <img class="candidat_index" src="{% static candidat.candidat__chemin_img %}">
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="td2" width=15% style="padding: 10px;">
+                    {% if gagnant_ouvert %}
+                    <a type href="{% url 'dkllapp:choix' 3 before_creation '1' %}">
+                        <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+        <br>
     </div>
     <br>
     <br>
