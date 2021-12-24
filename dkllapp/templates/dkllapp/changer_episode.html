@@ -8,6 +8,7 @@
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
         <br>
+        <p style="padding-left: 30px; color: #f12459;"><b>Changer d'episode</b></p>
         {% if isadmin == False %}
             <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
         {% else %}
@@ -15,18 +16,21 @@
             <form method="POST">
                 {% csrf_token %}
                 <div id="div_id_nom" class="control-group">
-                    <label for="id_ligue_id" class="control-label requiredField">Code de la ligue<span class="asteriskField">*</span></label>
+                    <label for="id_new_episode" class="control-label requiredField">Numéro d'épisode<span class="asteriskField">*</span></label>
                     <div class="controls">
-                        <input type="text" name="ligue_id" autofocus="" autocapitalize="none" autocomplete="ligue_id"
-                               maxlength="150" class="textinput textInput" required="" id="id_ligue_id">
+                        <input type="number" name="new_episode" autofocus="" autocapitalize="none" autocomplete="new_episode"
+                               min="0" class="textinput textInput" required="" id="id_new_episode">
                     </div>
                 </div>
                 <br>
-                <button class="btn btn-danger btn-sm" type="submit">Rejoindre</button>
+                <button class="btn btn-danger btn-sm" type="submit">Changer</button>
             </form>
         </div>
         {% endif %}
     </div>
+    <br>
+    <br>
+    <br>
     {% include 'dkllapp/body_scripts.html' %}
 </body>
 </html>

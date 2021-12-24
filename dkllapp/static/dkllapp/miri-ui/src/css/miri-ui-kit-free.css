@@ -183,7 +183,8 @@ svg {
   vertical-align: middle; }
 
 table {
-  border-collapse: collapse; }
+  border-collapse: collapse;
+  background-color: #272B2C; }
 
 .table2 {
    table-layout: fixed;

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p style="padding-left: 30px; color: #f12459;"><b>Changer les statuts</b></p>
+        {% if isadmin == False %}
+            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
+        {% else %}
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: flex; flex-flow: row wrap;">
+                    {% for field in form %}
+                    {% if field.name == 'statuts' %}
+                    {% else %}
+                    <div class="form-check_candidat">
+                        <input class="form-check-input_candidat" type="checkbox" id={{field.name}} name={{field.name}}>
+                        {% for candidat in candidats %}
+                        <script type="text/javascript">if ("{{field.name}}".substring(4,6) == ("0" + {{candidat.id}}).slice(-2)) {
+                                                            lbl = document.createElement("label");
+                                                            lbl.setAttribute("class","form-check-label_candidat")
+                                                            lbl.setAttribute("for","{{field.name}}")
+
+                                                            img = document.createElement("img");
+                                                            img.setAttribute("src", "{% static candidat.chemin_img %}");
+                                                            img.setAttribute("class", "candidat_profile");
+                                                            lbl.appendChild(img)
+                                                            p = document.createElement("p");
+                                                            p.innerText = "{{candidat.nom}}"
+                                                            lbl.appendChild(p)
+
+                                                            input_tag = document.getElementById("{{ field.name }}");
+                                                            input_tag.parentNode.insertBefore(lbl, input_tag.nextSibling.nextSibling.nextSibling);
+                                                        } else {};
+                        </script>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <br>
+                    {% endfor %}
+                </div>
+                <br>
+                <label style="padding-left: 15px;" for="id_statuts">Statut :&nbsp;</label>
+                <select name="statuts" id="id_statuts">
+                    <option value="En jeu">En jeu</option>
+                    <option value="Eliminé">Eliminé</option>
+                </select>
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-danger btn-sm" type="submit">Changer</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    <br>
+    <br>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

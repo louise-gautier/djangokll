@@ -14,26 +14,60 @@
         {% else %}
         <button type="button" class="collapsible_block">Paramètres du jeu &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
-            <br> Episode en cours (le prochain qui sera diffusé) : {{ episode_en_cours_ }}
             <br>
-            <a href="#" class="btn btn-danger btn-sm">Changer d'épisode</a>
+            <p>Episode en cours (le prochain qui sera diffusé) : {{ episode_en_cours_ }}</p>
+            <a href="{% url 'dkllapp:changer_episode' %}" class="btn btn-danger btn-sm">Changer d'épisode</a>
             <br>
-            <br> Accès aux choix de candidats :
             <br>
-            <p>Form avec 6 boutons pour activer/déactiver les choix</p>
+            <p>Accès aux choix de candidats :</p>
+            <form id="form_activations" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <div class="btn-profil-container">
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_poulains">Réactiver Choix Poulains</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_poulains">Désactiver Choix Poulains</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_podium">Réactiver Choix Podiums</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_podium">Désactiver Choix Podiums</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_gagnat">Réactiver Choix Gagnant</button>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_gagnat">Désactiver Choix Gagnant</button>
+                </div>
+                <br>
+            </form>
         </div>
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Gestion des Candidats &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <a href="#" class="btn btn-danger btn-sm">Changer des tribus</a>
-            <a href="#" class="btn btn-danger btn-sm">Changer des statuts</a>
+            <div class="btn-profil-container">
+                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des tribus</a>
+                <a href="{% url 'dkllapp:changer_statut' %}" class="btn btn-danger btn-sm">Changer des statuts</a>
+            </div>
             <br>
             <br>
         </div>
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un mail Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <p>Form mail</p>
+            <form id="form_mail" action="" method="POST">
+                {% csrf_token %}
+                    <label for="id_sujet" class="control-label requiredField">Sujet<span class="asteriskField">*</span></label>
+                    <input type="text" name="sujet" autofocus="" autocapitalize="none" autocomplete="sujet" maxlength="999" class="textinput textInput" required="" id="id_sujet">
+                    <br>
+                    <label for="id_corps">Corps HTML du mail :</label>
+                    <br>
+                    <textarea name="corps" maxlength="9999" required="" id="id_corps" rows="5" style="width: 100%;"></textarea>
+                    <br>
+                    <div style="display:flex; justify-content: space-around;">
+                        <div class="form-check" style="display: flex; justify-content: space-around">
+                            <input class="form-check-input" type="checkbox" name="admin" id="id_admin">
+                            <label class="form-check-label" for="id_admin">Admin</label>
+                        </div>
+                        <div class="form-check" style="display: flex; justify-content: space-around">
+                            <input type="checkbox" class="form-check-input" name="users" id="id_users"><br>
+                            <label class="form-check-label" for="id_users">Users</label>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
+            </form>
             <br>
         </div>
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un message notification Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>

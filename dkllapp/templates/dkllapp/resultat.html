@@ -14,54 +14,46 @@
             {% include 'ligue_vide.html' %}
             <br>
             {% else %}
-                <p style="padding-left: 16px;"><b>Classement de la {{ ligue.nom }}</b></p>
-                <table cellspacing="0" style="">
-                    <thead>
-                        <tr>
-                            <th width="10%" style="text-align: center;"></th>
-                            <th width="45%" style="font-size: 15px; padding-left: 15px;">Joueur</th>
-                            <th width="15%" style="font-size: 15px; text-align: center;" >🦄️</th>
-                            <th width="15%" style="font-size: 15px; text-align: center;" >🔥</th>
-                            <th width="15%" style="font-size: 15px; text-align: center;" >⭐</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for joueur in classement %}
-                        <tr>
-                            <td style="text-align: center; padding-top: 16px;">
-                                <div class="circle_div" style="margin-bottom: 0px;">
-                                    {% if joueur.rang == 1 %}
-                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
-                                    {% elif joueur.rang == last %}
-                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
-                                    {% else %}
-                                    <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
-                                    {% endif %}
-                                </div>
-                            </td>
-                            <td style="font-size: 15px; word-wrap: break-word;">
-                                <div style="display: flex; align-items: center;">
-                                    <div class="container_picto_seul"><div class="picto_seul">
-                                        <img class="picto_img" src="#">
-                                        <!--filename=joueur.img-->
-                                    </div></div>
-                                    <p style="margin: 0 0 0 10px;">{{ joueur.username }}</p>
-                                </div>
-                            </td>
-                            <td style="font-size: 15px; text-align: center;">{{ joueur.sum_somme }}</td>
-                            <td style="font-size: 15px; text-align: center;">{{ joueur.sum_bonus }}</td>
-                            <td style="font-size: 15px; text-align: center;"><b>{{ joueur.total }}</b></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <br>
-                <p style="padding-left: 8px;">🦄️ &nbsp; : Points marqués grâce aux Candidats</p>
-                <p style="padding-left: 8px;">🔥 &nbsp; : Bonus marqués grâce aux Pronos</p>
-                <p style="padding-left: 8px;">⭐ &nbsp; : Total des points</p>
-
+            <p style="padding-left: 15px; color: #f12459;"><b>{{ current_ligue.nom }}</b></p>
+            <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
+                    <tr height="50px">
+                        <th width="10%" style="text-align: center;"></th>
+                        <th width="45%" style="font-size: 15px; padding-left: 15px;">Joueur</th>
+                        <th width="15%" style="font-size: 15px; text-align: center;" >🌶️</th>
+                        <th width="15%" style="font-size: 15px; text-align: center;" >🔥</th>
+                        <th width="15%" style="font-size: 15px; text-align: center;" >⭐</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membre in membres_sorted %}
+                    <tr height="60px">
+                        <td style="text-align: center; padding-top: 16px;">
+                            <div class="circle_div" style="margin-bottom: 0px;">
+                                <span class="middle_circle round"><b>{{ membre.rang }}.</b></span>
+                            </div>
+                        </td>
+                        <td style="font-size: 15px; word-wrap: break-word;">
+                            <div style="display: flex; align-items: center;">
+                                <img class="picto_mur" src="{% static membre.img %}">
+                                <p style="margin: 0 0 0 10px;">{{ membre.username }}</p>
+                            </div>
+                        </td>
+                        <td style="font-size: 15px; text-align: center;">{{ membre.points_candidats }}</td>
+                        <td style="font-size: 15px; text-align: center;">{{ membre.sum_bonus }}</td>
+                        <td style="font-size: 15px; text-align: center;"><b>{{ membre.total }}</b></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <p>
+                <span style="padding-left: 8px; font-size:12px;">🌶️️ &nbsp; : Pilis marqués grâce aux Candidats</span><br>
+                <span style="padding-left: 8px; font-size:12px;">🔥 &nbsp; : Bonus marqués grâce aux Pronos</span><br>
+                <span style="padding-left: 8px; font-size:12px;">⭐ &nbsp; : Total des pilis</span>
+            </p>
             {% endif %}
-
             <br>
             <br>
         </div>

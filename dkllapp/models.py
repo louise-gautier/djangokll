@@ -73,6 +73,7 @@ class Equipe(models.Model):
     episode = models.IntegerField(default=0)
     candidat = models.ForeignKey('Candidat', on_delete=models.RESTRICT)
     type = models.IntegerField(default=0)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
 class Mur(models.Model):
@@ -121,3 +122,24 @@ class ActivationChoix(models.Model):
     nom = models.CharField(max_length=100)
     etat = models.IntegerField(default=0)
     insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Points(models.Model):
+    ligue_id = models.CharField(max_length=100)
+    user_id = models.IntegerField(default=0)
+    type = models.IntegerField(default=0)
+    candidat_id = models.IntegerField(default=0)
+    regle_id = models.IntegerField(default=0)
+    episode = models.IntegerField(default=0)
+    typage = models.IntegerField(default=0)
+    points_1 = models.IntegerField(default=0)
+    points_2 = models.IntegerField(default=0)
+    points_3 = models.IntegerField(default=0)
+    somme_points_poulains = models.IntegerField(default=0)
+    somme_points_podium = models.IntegerField(default=0)
+    somme_points_gagnant = models.IntegerField(default=0)
+    somme_points_selon_types = models.IntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "dkllapp_points"

@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -27,8 +28,9 @@ from django import forms
 from webpush import send_user_notification
 import json
 
-from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm
-from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe
+from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
+    EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm
+from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points
 from .token import account_activation_token
 
 
@@ -84,6 +86,19 @@ def nbr_par_type(type_choix):
         return 0
 
 
+def admin_activation_choix(type_activation, type_choix):
+    all_ac = ActivationChoix.objects.all()
+    print('0', all_ac)
+    etat_a_changer = ActivationChoix.objects.filter(nom=type_choix).first()
+    print('1', etat_a_changer)
+    if type_activation == 'activate':
+        etat_a_changer.etat = 1
+    else:
+        etat_a_changer.etat = 0
+    print('2', etat_a_changer.nom, etat_a_changer.etat)
+    etat_a_changer.save()
+
+
 ##########################################REGISTRATION ET LOGIN################################
 def register_request(request):
     if request.method == "POST":
@@ -100,15 +115,12 @@ def register_request(request):
                 'domain': current_site.domain,
                 'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user), }
-
             #mail
             subject = "Activation de ton email KLL"
             message = render_to_string('dkllapp/account_activation_email.html', context)
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user.email]
-            print("email_from", email_from, "recipient_list", recipient_list)
             send_mail(subject, message, email_from, recipient_list)
-
             return redirect('dkllapp:account_activation_sent')
 
         messages.error(request, "Unsuccessful registration. Invalid information.")
@@ -235,11 +247,148 @@ def index(request):
 ##########################################Admin################################
 @login_required
 def admin(request):
-    admin = 'admin'
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
+    if request.method == 'POST':
+        type_choix = 'activate' if '_activate_' in list(request.POST)[1] \
+            else 'deactivate' if '_deactivate_' in list(request.POST)[1] else ''
+        type_activation = 'poulains' if 'poulains' in list(request.POST)[1] \
+            else 'podium' if 'podium' in list(request.POST)[1] \
+            else 'gagnant' if 'gagnant' in list(request.POST)[1] else ''
+        if (type_choix, type_activation) == ('', ''):
+            form_mail = MailAdminForm(request.POST)
+            if form_mail.is_valid():
+                subject = form_mail.cleaned_data.get("sujet")
+                message = form_mail.cleaned_data.get("corps")
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = []
+                if form_mail.cleaned_data.get('users') is True:
+                    for user in User.objects.all().values('email'):
+                        recipient_list.append(user)
+                elif form_mail.cleaned_data.get('admin') is True:
+                    recipient_list = ['louise_gautier@orange.fr', 'louise2004gautier@gmail.com']
+                else:
+                    return redirect('dkllapp:admin')
+                send_mail(subject, message, email_from, recipient_list)
+        else:
+            admin_activation_choix(type_choix, type_activation)
+
+    form_mail = MailAdminForm()
     return render(request=request,
                   template_name="dkllapp/admin.html",
-                  context={'admin': admin, 'episode_en_cours_': episode_en_cours_,
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'form_mail': form_mail,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def changer_episode(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    if request.method == "POST":
+        form = EpisodeChangeForm(request.POST)
+        if form.is_valid():
+            episode_a_changer = Episode.objects.filter(nom='episode').first()
+            episode_a_changer.valeur = form.cleaned_data.get('new_episode')
+            episode_a_changer.save()
+            return redirect('dkllapp:admin')
+    form = EpisodeChangeForm()
+
+    # liste membre
+    # get poulains du user
+    # test len poulains (si pas 6 ne rien faire)
+    # liste des lignes equipe de l'episode
+    # test si moins d'une ligne poulains (ne rien faire si 1 ou plus) >> créer une ligne random
+    # test si nombre de lignes equipe podiums/gagnant = lignes choix podium gagnant
+
+    return render(request=request,
+                  template_name="dkllapp/changer_episode.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_, 'form': form,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def changer_equipe_tv(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    candidats = Candidat.objects.all()\
+        .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
+    new_fields = {}
+    for candidat in candidats:
+        new_fields[candidat['form_id']] = forms.BooleanField(required=False)
+    DynamicChangerEquipeTVForm = type('DynamicChangerEquipeTVForm', (ChangerEquipeTVForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicChangerEquipeTVForm(request.POST)
+        if form.is_valid():
+            selected_candidat = []
+            for field in form.cleaned_data:
+                if "bool" in field and form.cleaned_data[field]:
+                    selected_candidat.append(int(field[4:6]))
+            if len(selected_candidat) > 0:
+                for candidat in selected_candidat:
+                    candidat_a_changer = Candidat.objects.filter(id=candidat).first()
+                    candidat_a_changer.equipe_tv = form.cleaned_data.get('groupes')
+                    candidat_a_changer.save()
+                return redirect('dkllapp:admin')
+            else:
+                return redirect('dkllapp:changer_equipe_tv')
+    form = DynamicChangerEquipeTVForm()
+    print('form', form)
+    print('candidats', candidats)
+    return render(request=request,
+                  template_name="dkllapp/changer_equipe_tv.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'form': form, 'candidats': candidats,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def changer_statut(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    candidats = Candidat.objects.all()\
+        .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
+    new_fields = {}
+    for candidat in candidats:
+        new_fields[candidat['form_id']] = forms.BooleanField(required=False)
+    DynamicChangerStatutForm = type('DynamicChangerStatutForm', (ChangerStatutForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicChangerStatutForm(request.POST)
+        if form.is_valid():
+            selected_candidat = []
+            for field in form.cleaned_data:
+                if "bool" in field and form.cleaned_data[field]:
+                    selected_candidat.append(int(field[4:6]))
+            if len(selected_candidat) > 0:
+                for candidat in selected_candidat:
+                    candidat_a_changer = Candidat.objects.filter(id=candidat).first()
+                    candidat_a_changer.statut = form.cleaned_data.get('statuts')
+                    if form.cleaned_data.get('statuts') == "En jeu":
+                        candidat_a_changer.statut_bool = True
+                        candidat_a_changer.chemin_img = "dkllapp/img/contestants/" + "in/" + "{:02d}".format(candidat) + ".png"
+
+                    else:
+                        candidat_a_changer.statut_bool = False
+                        candidat_a_changer.chemin_img = "dkllapp/img/contestants/" + "out/" + "{:02d}".format(candidat) + ".png"
+                    candidat_a_changer.save()
+                return redirect('dkllapp:admin')
+            else:
+                return redirect('dkllapp:changer_statut')
+    form = DynamicChangerStatutForm()
+    print('form', form)
+    print('candidats', candidats)
+    return render(request=request,
+                  template_name="dkllapp/changer_statut.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'form': form, 'candidats': candidats,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -289,11 +438,44 @@ def resultat(request, ligue_id):
         .filter(user_id=request.user.id)\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
+
+    membres = Membre.objects.filter(ligue_id=ligue_id).values('ligue_id', 'user_id', 'user__user__username', 'user__img')
+    points = Points.objects.filter(ligue_id=ligue_id).values('ligue_id', 'user_id')\
+        .annotate(Sum('somme_points_selon_types'))
+    membres_unsorted = []
+    for membre in membres:
+        marqueur = 'lost'
+        for membre_points in points:
+            if membre_points['user_id'] == membre['user_id']:
+                membre_avec_points = {
+                    'id': membre['user_id'],
+                    'username': membre['user__user__username'],
+                    'img': membre['user__img'],
+                    'points_candidats': membre_points['somme_points_selon_types__sum']
+                }
+                membres_unsorted.append(membre_avec_points)
+                marqueur = 'found'
+            else:
+                pass
+        if marqueur == 'found':
+            pass
+        else:
+            membre_avec_points = {
+                'id': membre['user_id'],
+                'username': membre['user__user__username'],
+                'img': membre['user__img'],
+                'points_candidats': 0
+            }
+            membres_unsorted.append(membre_avec_points)
+    membres_sorted = sorted(membres_unsorted, key=lambda i: i['points_candidats'], reverse=True)
+    rang = 1
+    for joueur in membres_sorted:
+        joueur['rang'] = rang
+        rang = rang + 1
     return render(request=request,
                   template_name="dkllapp/resultat.html",
-                  context={'ligues': ligues, 'page': 'resultat',
-                           'ligue_id': ligue_id,
-                           'current_ligue': current_ligue,
+                  context={'ligues': ligues, 'page': 'resultat', 'ligue_id': ligue_id, 'current_ligue': current_ligue,
+                           'membres_sorted': membres_sorted,
                            'isadmin': is_admin(request.user.id)})
 
 
