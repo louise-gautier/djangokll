@@ -806,9 +806,12 @@ def send_push(request):
             return JsonResponse(status=400, data={"message": "Invalid data format"})
 
         user_id = data['id']
-        user = get_object_or_404(User, pk=user_id)
         payload = {'head': data['head'], 'body': data['body']}
-        send_user_notification(user=user, payload=payload, ttl=1000)
+        users = User.objects.all()
+        for user_dkllapp in users:
+            print("user_dkllapp.id", user_dkllapp.id)
+            user_push = get_object_or_404(User, pk=user_dkllapp.id)
+            send_user_notification(user=user_push, payload=payload, ttl=1000)
 
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
