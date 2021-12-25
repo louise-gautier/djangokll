@@ -27,7 +27,10 @@ from django import forms
 
 from webpush import send_user_notification
 import json
+from urllib.request import urlopen
+from urllib.request import Request
 
+from mysite.settings import PW_AUTH, PW_APPLICATION_CODE
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points
@@ -816,4 +819,3 @@ def send_push(request):
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
-

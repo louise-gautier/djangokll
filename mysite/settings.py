@@ -33,7 +33,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'gentle-ravine-06309.herokuapp.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nameless-citadel-05521.herokuapp.com', 'pilixpili.fr']
 
 # Application definition
 
@@ -122,7 +122,6 @@ WEBPUSH_SETTINGS = {
    "VAPID_PRIVATE_KEY": "dqBCVJO1fcxlHuuDQ89geELHKudfvORYPjwOtJP29e4",
    "VAPID_ADMIN_EMAIL": "kauhlantaligue@gmail.com"
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
