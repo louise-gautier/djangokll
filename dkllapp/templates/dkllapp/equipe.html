@@ -6,7 +6,6 @@
 </head>
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
-
     <div class="mainwrapper">
         <br>
         {% if ligue == 'vide' %}
@@ -16,7 +15,7 @@
             <a href="#" class="btn btn-warning display-4" style="min-width: 240px;">Rejoins une ligue</a>
             <br>
         {% else %}
-        <p style="padding-left: 15px; color: #f12459;"><b>{{ current_ligue.nom }}</b></p>
+        <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
         <p style="padding-left: 16px; margin: 0px;"><b>Ma tribu de la semaine - Episode {{ episode_en_cours_ }}</b></p>
         {% if equipe_non_faite == True %}
         <p style="padding-left: 16px; margin: 0px;">⏳ Tu n'as pas encore fait ton equipe cette semaine.</p>

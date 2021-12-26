@@ -9,7 +9,7 @@
 
     <div class="mainwrapper">
         <br>
-            <p style="padding-left: 30px; color: #f12459;"><b>{{ current_ligue.nom }}</b></p>
+            <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
             <p style="padding-left: 30px;">Code de la ligue : <b>{{ current_ligue.id }}</b></p>
             <a style="padding-left: 30px;" href="{% url 'dkllapp:changer_nom_ligue' ligue_id %}">
                 <button type="button" class="btn btn-danger btn-sm">Changer le nom de la Ligue</button></a>

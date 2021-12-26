@@ -1,0 +1,21 @@
+{
+    "name": "Pili X Pili",
+    "short_name": "pilixpili",
+    "icons": [
+        {
+            "src": "{% static 'dkllapp/img/favicon/android-chrome-192x192.png' %}",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "{% static 'dkllapp/img/favicon/android-chrome-512x512.png' %}",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#da071f",
+    "display": "standalone",
+    "start_url": "/",
+    "scope": "/"
+}
