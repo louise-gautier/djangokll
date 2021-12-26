@@ -264,6 +264,11 @@ select {
 select {
   word-wrap: normal; }
 
+.form_select {
+  text-overflow: ellipsis;
+  width: 250px;
+}
+
 button,
 [type="button"],
 [type="reset"],

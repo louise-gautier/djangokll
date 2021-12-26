@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p style="padding-left: 15px; color: #f12459;"><b>Créer ou modifier une règle</b></p>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+            {% csrf_token %}
+                <label for="id_contenu">Contenu :</label><br>
+                <textarea name="contenu" maxlength="9999" required="" id="id_contenu" rows="5" style="width: 70%;">{{ regle_a_modifier.contenu }}</textarea>
+                <br><label for="id_points_1" style="width: 75px; text-align: right;">Points 1 :</label><input type="number" style="width: 75px; margin-left: 10px;" value="{{ regle_a_modifier.points_1 }}" name="points_1" required="" id="id_points_1">
+                <br><label for="id_points_2" style="width: 75px; text-align: right;">Points 2 :</label><input type="number" style="width: 75px; margin-left: 10px;" value="{{ regle_a_modifier.points_2 }}" name="points_2" required="" id="id_points_2">
+                <br><label for="id_points_3" style="width: 75px; text-align: right;">Points 3 :</label><input type="number" style="width: 75px; margin-left: 10px;" value="{{ regle_a_modifier.points_3 }}" name="points_3" required="" id="id_points_3">
+                <br>
+                <br><button class="btn btn-danger btn-sm" type="submit">Valider</button>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

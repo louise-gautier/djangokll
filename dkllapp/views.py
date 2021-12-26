@@ -31,8 +31,10 @@ from urllib.request import urlopen
 from urllib.request import Request
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
-    EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm
-from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points
+    EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
+    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm
+from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
+    Regle
 from .token import account_activation_token
 
 
@@ -253,6 +255,10 @@ def admin(request):
         .filter(user_id=request.user.id)\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
+    regles = Regle.objects.all()
+    evenements = Evenement.objects.all().values('user__user__username', 'regle__contenu', 'candidat__nom', 'candidat__chemin_img',
+                                                'episode', 'typage', 'insert_datetime')
+
     if request.method == 'POST':
         type_choix = 'activate' if '_activate_' in list(request.POST)[1] \
             else 'deactivate' if '_deactivate_' in list(request.POST)[1] else ''
@@ -261,6 +267,8 @@ def admin(request):
             else 'gagnant' if 'gagnant' in list(request.POST)[1] else ''
         if (type_choix, type_activation) == ('', ''):
             form_mail = MailAdminForm(request.POST)
+            form_notif = NotifAdminForm(request.POST)
+            form_regle = ModifierRegleForm(request.POST)
             if form_mail.is_valid():
                 subject = form_mail.cleaned_data.get("sujet")
                 message = form_mail.cleaned_data.get("corps")
@@ -274,14 +282,27 @@ def admin(request):
                 else:
                     return redirect('dkllapp:admin')
                 send_mail(subject, message, email_from, recipient_list)
+            if form_notif.is_valid():
+                nouvelle_notif = Notif()
+                nouvelle_notif.message = form_notif.cleaned_data.get('message')
+                nouvelle_notif.save()
+                return redirect('dkllapp:admin')
+            if form_regle.is_valid():
+                nouvelle_notif = Regle.objects.filter(id=form_regle.cleaned_data.get('regle_a_modifier')).first()
+                if nouvelle_notif:
+                    return redirect('dkllapp:modifier_regle', nouvelle_notif.id)
+                else:
+                    return redirect('dkllapp:admin')
         else:
             admin_activation_choix(type_choix, type_activation)
-
     form_mail = MailAdminForm()
+    form_notif = NotifAdminForm()
+    form_regle = ModifierRegleForm()
     return render(request=request,
                   template_name="dkllapp/admin.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
-                           'form_mail': form_mail,
+                           'form_mail': form_mail, 'form_notif': form_notif, 'form_regle': form_regle,
+                           'regles': regles, 'evenements': evenements,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -350,6 +371,7 @@ def changer_equipe_tv(request):
                            'isadmin': is_admin(request.user.id)})
 
 
+
 @login_required
 def changer_statut(request):
     ligues = Membre.objects\
@@ -389,6 +411,82 @@ def changer_statut(request):
     print('candidats', candidats)
     return render(request=request,
                   template_name="dkllapp/changer_statut.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'form': form, 'candidats': candidats,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def modifier_regle(request, regle_id):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    regle_a_modifier = Regle.objects.filter(id=regle_id).first()
+    if request.method == "POST":
+        form = CreerRegleForm(request.POST)
+        if form.is_valid():
+            if regle_id == '0':
+                nouvelle_regle = Regle()
+                nouvelle_regle.contenu = form.cleaned_data.get('contenu')
+                nouvelle_regle.points_1 = form.cleaned_data.get('points_1')
+                nouvelle_regle.points_2 = form.cleaned_data.get('points_2')
+                nouvelle_regle.points_3 = form.cleaned_data.get('points_3')
+                nouvelle_regle.save()
+            elif regle_a_modifier:
+                regle_a_modifier.contenu = form.cleaned_data.get('contenu')
+                regle_a_modifier.points_1 = form.cleaned_data.get('points_1')
+                regle_a_modifier.points_2 = form.cleaned_data.get('points_2')
+                regle_a_modifier.points_3 = form.cleaned_data.get('points_3')
+                regle_a_modifier.save()
+            else:
+                pass
+            return redirect('dkllapp:admin')
+    form = CreerRegleForm()
+    return render(request=request,
+                  template_name="dkllapp/modifier_regle.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_, 'form': form,
+                           'regle_a_modifier': regle_a_modifier,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def ajouter_evenement(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id)\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    candidats = Candidat.objects.all()\
+        .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
+    regles = Regle.objects.all().values('id', 'contenu')
+    choices = [(regle['id'], regle['contenu']) for regle in regles]
+    print('regles', choices)
+    new_fields = {}
+    for candidat in candidats:
+        new_fields[candidat['form_id']] = forms.BooleanField(required=False)
+    new_fields['regle'] = forms.ChoiceField(choices=choices, required=True, widget=forms.Select(attrs={'class': "form_select"}))
+    print("new_fields['regle']", new_fields['regle'])
+    DynamicAjouterEvenementForm = type('DynamicAjouterEvenementForm', (AjouterEvenementForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicAjouterEvenementForm(request.POST)
+        if form.is_valid():
+            selected_candidat = []
+            for field in form.cleaned_data:
+                if "bool" in field and form.cleaned_data[field]:
+                    selected_candidat.append(int(field[4:6]))
+            if 0 < len(selected_candidat):
+                for candidat_id in selected_candidat:
+                    nouvel_evenenement = Evenement()
+                    nouvel_evenenement.episode = form.cleaned_data.get('episode')
+                    nouvel_evenenement.typage = form.cleaned_data.get('typage')
+                    nouvel_evenenement.user_id = request.user.id
+                    nouvel_evenenement.candidat_id = candidat_id
+                    nouvel_evenenement.regle_id = form.cleaned_data.get('regle')
+                    nouvel_evenenement.save()
+            return redirect('dkllapp:admin')
+    form = DynamicAjouterEvenementForm()
+    return render(request=request,
+                  template_name="dkllapp/ajouter_evenement.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
                            'form': form, 'candidats': candidats,
                            'isadmin': is_admin(request.user.id)})

@@ -80,3 +80,24 @@ class MailAdminForm(forms.Form):
     admin = forms.BooleanField(required=False)
     users = forms.BooleanField(required=False)
 
+
+class NotifAdminForm(forms.Form):
+    message = forms.CharField(label='corps', max_length=9999)
+
+
+class ModifierRegleForm(forms.Form):
+    regle_a_modifier = forms.CharField(label='sujet', max_length=999)
+
+
+class CreerRegleForm(forms.Form):
+    contenu = forms.CharField(label='contenu', max_length=999)
+    points_1 = forms.IntegerField(required=True)
+    points_2 = forms.IntegerField(required=True)
+    points_3 = forms.IntegerField(required=True)
+
+
+class AjouterEvenementForm(forms.Form):
+    episode = forms.IntegerField(required=True)
+    typage = forms.IntegerField(required=True)
+
+

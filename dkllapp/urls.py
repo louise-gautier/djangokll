@@ -18,6 +18,8 @@ urlpatterns = [
     path('changer_episode/', views.changer_episode, name='changer_episode'),
     path('changer_equipe_tv/', views.changer_equipe_tv, name='changer_equipe_tv'),
     path('changer_statut/', views.changer_statut, name='changer_statut'),
+    path('modifier_regle/<regle_id>', views.modifier_regle, name='modifier_regle'),
+    path('ajouter_evenement/', views.ajouter_evenement, name='ajouter_evenement'),
 
     path('mur/<ligue_id>/', views.mur, name='mur'),
     path('equipe/<ligue_id>/', views.equipe, name='equipe'),

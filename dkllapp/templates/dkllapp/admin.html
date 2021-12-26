@@ -74,6 +74,15 @@
         <div class="content">
             <br>
             <p>Form message</p>
+                        <br>
+            <form id="form_notif" action="" method="POST">
+                {% csrf_token %}
+                    <label for="id_message">Notification à envoyer :</label>
+                    <br>
+                    <textarea name="message" maxlength="9999" required="" id="id_message" rows="5" style="width: 100%;"></textarea>
+                    <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
+            </form>
             <br>
         </div>
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Pronos &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
@@ -115,19 +124,67 @@
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Règles &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <a href="#" class="btn btn-danger btn-sm">Ajouter une règle</a>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+                <form id="form_regle" action="" method="POST" style="display: contents;">
+                    {% csrf_token %}
+                    <div style="display: block; justify-content: center;">
+                        <label for="id_regle_a_modifier" class="control-label">Id :</label>
+                        <input type="text" name="regle_a_modifier" autofocus="" autocapitalize="none"
+                               autocomplete="regle_a_modifier" maxlength="999" class="textinput textInput"
+                               id="id_regle_a_modifier" style="width: 120px;">
+                        <button class="btn btn-danger btn-sm" type="submit" style="width: 150px;">Modifier une règle</button>
+                    </div>
+                    <div>
+                        <a href="{% url 'dkllapp:modifier_regle' 0 %}" class="btn btn-danger btn-sm" style="width: 150px;">Ajouter une règle</a>
+                    </div>
+                </form>
+            </div>
             <br>
+            <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
+                    <tr>
+                        <th width="8%" style="text-align: center;">ID</th>
+                        <th style="text-align: center;">Règle</th>
+                        <th width="8%" style="text-align: center;">🦄️</th>
+                        <th width="8%" style="text-align: center;">🏅</th>
+                        <th width="8%" style="text-align: center;">🏆</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regle in regles %}
+                    <tr>
+                        <td style="text-align: center;">{{ regle.id }}</td>
+                        <td style="text-align: center;">{{ regle.contenu }} </td>
+                        <td style="text-align: center;">{{ regle.points_1 }} </td>
+                        <td style="text-align: center;">{{ regle.points_2 }} </td>
+                        <td style="text-align: center;">{{ regle.points_3 }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Evènements &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <a href="#" class="btn btn-danger btn-sm">Ajouter un évènement</a>
+            <form id="form_evenement" action="" method="POST" style="display: contents;">
+                {% csrf_token %}
+                <div style="display: block; justify-content: center;">
+                    <label for="id_evenement_a_supprimer" class="control-label">Id :</label>
+                    <input type="text" name="evenement_a_supprimer" autofocus="" autocapitalize="none"
+                           autocomplete="evenement_a_supprimer" maxlength="999" class="textinput textInput"
+                           id="id_evenement_a_supprimer" style="width: 120px;">
+                    <button class="btn btn-danger btn-sm" type="submit" style="width: 150px;">Supprimer un évènement</button>
+                </div>
+                <div>
+                    <a href="{% url 'dkllapp:ajouter_evenement' %}" class="btn btn-danger btn-sm" style="width: 150px;">Ajouter un évènement</a>
+                </div>
+            </form>
             <br>
             <br>
             <p style="padding-left: 8px;">Liste des évènements enregistrés</p>
             <p style="padding-left: 8px; font-size: 12px;">Typages : 1 = Poulains, 2 = Podium, 3 = Gagnants, 12 = Poulains & Podium, 13 = Poulains & Gagnants, 23 = Podium & Gagnants, 123 = Poulains & Podium & Gagnants</p>
-            <table cellspacing="0">
-                <thead>
+            <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr>
                         <th style="text-align: center;">Ep.</th>
                         <th style="text-align: center;">Typ.</th>
@@ -139,11 +196,13 @@
                 <tbody>
                     {% for evenement in evenements %}
                     <tr>
-                        <td style="text-align: center;">Ep.{{ evenement.episode }}</td>
+                        <td style="text-align: center;">{{ evenement.episode }}</td>
                         <td style="text-align: center;">{{ evenement.typage }}</td>
-                        <td style="text-align: center;">{{ evenement.candidat }}</td>
-                        <td>{{ evenement.regle }}</td>
-                        <td style="text-align: center;">{{ evenement.admin }} {{ evenement.heure }}</td>
+                        <td style="text-align: center;"><img class="candidat_equipe_ligue" src="{% static evenement.candidat__chemin_img %}"><br>{{ evenement.candidat__nom }}</td>
+                        <td>{{ evenement.regle__contenu }}</td>
+                        <td style="text-align: center;">{{ evenement.user__user__username }}
+                                                    <br>{{ evenement.insert_datetime|date:"d/m/Y" }}
+                                                    <br>{{ evenement.insert_datetime|time:"H:i" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
