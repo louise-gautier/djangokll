@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <p class="titre_rouge"><b>Barême des Règles</b></p>
+            <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
+                    <tr height="50px">
+                        <th style="text-align: center;">Règle</th>
+                        <th width="8%" style="text-align: center;">🦄️</th>
+                        <th width="8%" style="text-align: center;">🏅</th>
+                        <th width="8%" style="text-align: center;">🏆</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regle in regles %}
+                    <tr>
+                        <td style="padding: 10px; text-align: left;">{{ regle.contenu }} </td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_1 }} </td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_2 }} </td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_3 }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/regles_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

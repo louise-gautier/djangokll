@@ -15,11 +15,10 @@
                 <button type="button" class="btn btn-danger btn-sm">Changer le nom de la Ligue</button></a>
             <br>
             <br>
-            <button type="button" class="collapsible_flex" id="membres">Membres de la ligue 🦦 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <button type="button" class="collapsible_flex" id="membres">Membres de la ligue &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content" style="flex-flow: row wrap;">
-            <p>ici les membres</p>
             {% for membre in membres %}
-            <table style="width: 260px; margin: 10px;">
+            <table style="width: 300px; margin: 10px; border-radius: 10px;">
                 <tbody>
                 <tr>
                     <th style="text-align: center;" >
@@ -31,43 +30,41 @@
                 </tr>
                 <tr>
                     <td>
-                        <div style="display:flex;">
-                            <div class="container_contestant_small" style="width: 40px;">
-                                <span class="contestant_img_small" style="font-size: 20px; width: 100%; text-align: center;">🦄</span>
-                            </div>
+                        <div style="display:flex; align-items: center; height: 150px;">
+                            <p style="margin: 0 10px 0 5px; font-size: 30px;">🦄</p>
                             <div style="display:flex; flex-flow: row wrap;">
-                            {% for candidat in membre.poulains %}
-                            <div class="container_contestant_small" style="width: 50px;">
-                                <div class="container_contestant_small">
-                                    <img src={{candidat.chemin_img}} class="contestant_img_small">
-                                </div>
-                            </div>
+                            {% for ligne in choix %}
+                            {% if ligne.user_id == membre.user_id %}
+                            {% if ligne.type == 1 %}
+                            <img class="candidat_equipe_ligue" src="{% static ligne.candidat__chemin_img %}">
+                            {% endif %}
+                            {% endif %}
                             {% endfor %}
                             </div>
                         </div>
-                        <div>
-                            <div class="container_contestant_small" style="width: 40px;">
-                                <span class="contestant_img_small" style="font-size: 20px; width: 100%; text-align: center;">🏅</span>
-                            </div>
-                            {% for candidat in membre.podium %}
-                            <div class="container_contestant_small" style="width: 40px;">
-                                <div class="container_contestant_small">
-                                    <img src={{candidat.chemin_img}} class="contestant_img_small">
-                                </div>
-                            </div>
+                        <div style="display:flex; align-items: center; height: 75px;">
+                            <p style="margin: 0 10px 0 5px; font-size: 30px;">🏅</p>
+                            <div style="display:flex; flex-flow: row wrap;">
+                            {% for ligne in choix %}
+                            {% if ligne.user_id == membre.user_id %}
+                            {% if ligne.type == 2 %}
+                            <img class="candidat_equipe_ligue" src="{% static ligne.candidat__chemin_img %}">
+                            {% endif %}
+                            {% endif %}
                             {% endfor %}
+                            </div>
                         </div>
-                        <div>
-                            <div class="container_contestant_small" style="width: 40px;">
-                                <span class="contestant_img_small" style="font-size: 20px; width: 100%; text-align: center;">🏆</span>
-                            </div>
-                            {% for candidat in membre.gagnant %}
-                            <div class="container_contestant_small" style="width: 40px;">
-                                <div class="container_contestant_small">
-                                    <img src={{candidat.chemin_img}} class="contestant_img_small">
-                                </div>
-                            </div>
+                        <div style="display:flex; align-items: center; height: 75px;">
+                            <p style="margin: 0 10px 0 5px; font-size: 30px;">🏆</p>
+                            <div style="display:flex; flex-flow: row wrap;">
+                            {% for ligne in choix %}
+                            {% if ligne.user_id == membre.user_id %}
+                            {% if ligne.type == 3 %}
+                            <img class="candidat_equipe_ligue" src="{% static ligne.candidat__chemin_img %}">
+                            {% endif %}
+                            {% endif %}
                             {% endfor %}
+                            </div>
                         </div>
                     </td>
                 <tr>
@@ -75,84 +72,75 @@
             </table>
             {% endfor %}
             </div>
-            <button type="button" class="collapsible_block" id="par_episode" style="margin-top: 10px;">Détails par épisodes ⚙️ &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <button type="button" class="collapsible_block" id="par_episode" style="margin-top: 10px;">Détails par episodes️ &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
-                <select class="btn btn-danger btn-sm" name="episode" id="episode" onchange="window.location.href=this.value +'#par_episode';" style="margin-left: auto; margin-right: 5px;">
-                <option value="Episode" selected disabled hidden>Episode : {{ current_episode }}</option>
-                <option value="Tous">Tous</option>
-                <option value=1>1</option>
-                <option value=2>2</option>
-                <option value=3>3</option>
-                <option value=4>4</option>
-                <option value=5>5</option>
-                <option value=6>6</option>
-                <option value=7>7</option>
-                <option value=8>8</option>
-                <option value=9>9</option>
-                <option value=10>10</option>
-                <option value=11>11</option>
-                <option value=12>12</option>
-                <option value=13>13</option>
-                <option value=14>14</option>
-                <option value=15>15</option>
-                <option value=16>16</option>
-                <option value=17>17</option>
-                <option value=18>18</option>
-            </select>
-            <br>
-            <table cellspacing="0">
-                <thead>
-                    <tr>
-                        <th width="5%" style="text-align: center;" ></th>
-                        <th width="25%" style="font-size: 12px; padding-left: 15px;">Joueur</th>
-                        <th width="8%" style="font-size: 12px; text-align: center;" >🟢</th>
-                        <th width="8%" style="font-size: 12px; text-align: center;" >🔴</th>
-                        <th width="8%" style="font-size: 12px; text-align: center;" >🏅</th>
-                        <th width="8%" style="font-size: 12px; text-align: center;" >🏆</th>
-                        <th width="8%" style="font-size: 12px; text-align: center;" >⭐</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for joueur in classement_episode %}
-                    <tr>
-                        <td style="text-align: center;">
-                            <div class="circle_div" style="margin-bottom: 0px;">
-                                <span class="middle_circle round"><b>{{ joueur.rang }}.</b></span>
-                            </div>
-                        </td>
-                        <td style="font-size: 12px; word-wrap: break-word;">
-                            <div style="display: flex; align-items: center;">
-                                <div class="container_picto_seul"><div class="picto_seul">
-                                        <img class="picto_img" src="#">
-                                        <!--filename=joueur.img-->
-                                </div></div>
-                                <p style="margin: 0 0 0 5px;">{{ joueur.username }}</p>
-                            </div>
-                            <div style="display: flex; align-items: center; margin: 5px;">
-                                {% for candidat in joueur.tribu %}
-                                <div style="margin-left: 10px;">
-                                    <div class="container_contestant_xsmall">
-                                        <img src={{candidat.chemin_img}} class="contestant_img_xsmall">
-                                    </div>
+                <br><p>ici une vue toucan en courbe</p>
+            </div>
+            <button type="button" class="collapsible_block" id="par_types" style="margin-top: 10px;">Détails par types️ &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <select class="btn btn-danger btn-sm" name="episode" id="episode" onchange="window.location.href='/details' + '/' + '{{current_ligue.id}}' + '/' + this.value;" style="margin-left: auto; margin-right: 5px;">
+                    <option value="Episode" selected disabled hidden>Episode : {{ current_episode }}</option>
+                    <option value="0">Tous</option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                    <option value=9>9</option>
+                    <option value=10>10</option>
+                    <option value=11>11</option>
+                    <option value=12>12</option>
+                    <option value=13>13</option>
+                    <option value=14>14</option>
+                    <option value=15>15</option>
+                    <option value=16>16</option>
+                    <option value=17>17</option>
+                    <option value=18>18</option>
+                </select>
+                <br>
+                <br>
+                <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                    <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
+                        <tr height="60px">
+                            <th width="5%" style="text-align: center;" ></th>
+                            <th width="25%" style="padding-left: 15px;">Joueur</th>
+                            <th width="8%" style="text-align: center;" >🦄</th>
+                            <th width="8%" style="text-align: center;" >🏅</th>
+                            <th width="8%" style="text-align: center;" >🏆</th>
+                            <th width="8%" style="text-align: center;" >🌶️</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for membre in membres_points %}
+                        <tr height="60px">
+                            <td style="text-align: center;">
+                                <div class="circle_div" style="margin-bottom: 0px;">
+                                    <span class="middle_circle round"><b>{{ membre.rang }}.</b></span>
                                 </div>
-                                {% endfor %}
-                            </div>
-                        </td>
-                        <td style="font-size: 14px; text-align: center;" >{{ joueur.sum_somme_pos }}</td>
-                        <td style="font-size: 14px; text-align: center;" >{{ joueur.sum_somme_neg }}</td>
-                        <td style="font-size: 14px; text-align: center;" >{{ joueur.sum_somme_pod }}</td>
-                        <td style="font-size: 14px; text-align: center;" >{{ joueur.sum_somme_gag }}</td>
-                        <td style="font-size: 14px; text-align: center;"><b>{{ joueur.sum_somme }}</b></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <p style="padding-left: 8px;">🟢 : Points gagnés grâce aux Poulains</p>
-            <p style="padding-left: 8px;">🔴 : Points perdus à cause des Poulains</p>
-            <p style="padding-left: 8px;">🏅 : Points gagnés grâce aux Podiums</p>
-            <p style="padding-left: 8px;">🏆 : Points gagnés grâce au Gagnant</p>
-            <p style="padding-left: 8px;">⭐ : Total des points</p>
+                            </td>
+                            <td style="font-size: 15px; word-wrap: break-word;">
+                                <div style="display: flex; align-items: center;">
+                                    <img class="picto_mur" src="{% static membre.img %}">
+                                    <p style="margin: 0 0 0 10px;">{{ membre.username }}</p>
+                                </div
+                            </td>
+                            <td style="text-align: center;" >{{ membre.points_poulains }}</td>
+                            <td style="text-align: center;" >{{ membre.points_podium }}</td>
+                            <td style="text-align: center;" >{{ membre.points_gagnant }}</td>
+                            <td style="text-align: center;"><b>{{ membre.points_candidats }}</b></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <p style="padding-left: 8px;">🦄 : Pilis gagnés grâce aux Poulains</p>
+                <p style="padding-left: 8px;">🏅 : Pilis gagnés grâce aux Podiums</p>
+                <p style="padding-left: 8px;">🏆 : Pilis gagnés grâce au Gagnant</p>
+                <p style="padding-left: 8px;">🌶️ : Total des Pilis</p>
             </div>
             <br>
             <br>

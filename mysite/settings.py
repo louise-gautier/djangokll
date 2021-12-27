@@ -158,14 +158,30 @@ django_heroku.settings(locals())
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = config('MAILGUN_SMTP_SERVER')
+#EMAIL_PORT = config('MAILGUN_SMTP_PORT')
+#SERVER_EMAIL = config('MAILGUN_SMTP_LOGIN')
+#EMAIL_HOST_USER = config('MAILGUN_SMTP_LOGIN')
+#EMAIL_HOST_PASSWORD = config('MAILGUN_SMTP_PASSWORD')
+#DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
+#EMAIL_USE_TLS = True
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('MAILGUN_SMTP_SERVER')
-EMAIL_PORT = config('MAILGUN_SMTP_PORT')
-SERVER_EMAIL = config('MAILGUN_SMTP_LOGIN')
-EMAIL_HOST_USER = config('MAILGUN_SMTP_LOGIN')
-EMAIL_HOST_PASSWORD = config('MAILGUN_SMTP_PASSWORD')
-DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
+EMAIL_HOST = config('AMEN_SMTP_SERVER')
+EMAIL_PORT = config('AMEN_SMTP_PORT')
+SERVER_EMAIL = config('AMEN_SMTP_LOGIN')
+EMAIL_HOST_USER = config('AMEN_SMTP_LOGIN')
+EMAIL_HOST_PASSWORD = config('AMEN_SMTP_PASSWORD')
 EMAIL_USE_TLS = True
 
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = config('MAILER_TO_GO_SMTP_SERVER')
+#EMAIL_PORT = config('MAILER_TO_GO_SMTP_PORT')
+#SERVER_EMAIL = config('MAILER_TO_GO_SMTP_LOGIN')
+#EMAIL_HOST_USER = config('MAILER_TO_GO_SMTP_LOGIN')
+#EMAIL_HOST_PASSWORD = config('MAILER_TO_GO_SMTP_PASSWORD')
+#DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
+#EMAIL_USE_TLS = True
 
 #fin settings

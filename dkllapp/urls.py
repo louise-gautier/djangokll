@@ -24,10 +24,9 @@ urlpatterns = [
     path('mur/<ligue_id>/', views.mur, name='mur'),
     path('equipe/<ligue_id>/', views.equipe, name='equipe'),
     path('resultat/<ligue_id>/', views.resultat, name='resultat'),
-    path('details/<ligue_id>/', views.details, name='details'),
+    path('details/<ligue_id>/<selected_episode>/', views.details, name='details'),
 
     path('profil/', views.profil, name='profil'),
-    path('classement_general/', views.profil, name='classement_general'),
 
     path('generales/', views.generales, name='generales'),
     path('bareme/', views.bareme, name='bareme'),
@@ -35,6 +34,8 @@ urlpatterns = [
     path('faq/', views.faq, name='faq'),
 
     path('pronos/', views.pronos, name='pronos'),
+    path('classement_general/', views.classement_general, name='classement_general'),
+    path('statistiques/', views.statistiques, name='statistiques'),
 
     path('picto/', views.picto, name='picto'),
     path('nouveau_login/', views.nouveau_login, name='nouveau_login'),

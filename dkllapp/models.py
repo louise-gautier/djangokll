@@ -65,6 +65,7 @@ class Evenement(models.Model):
 class Membre(models.Model):
     user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
     ligue = models.ForeignKey('Ligue', on_delete=models.RESTRICT)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
 class Equipe(models.Model):
@@ -143,3 +144,40 @@ class Points(models.Model):
     class Meta:
         managed = False
         db_table = "dkllapp_points"
+
+
+class Media(models.Model):
+    TYPES = [('url', 'URL'), ('image', 'Image'), ('video', 'Video Clip')]
+    type = models.CharField(max_length=100, verbose_name='Type', choices=TYPES)
+    url = models.CharField(max_length=255, verbose_name='Media URL')
+    text = models.TextField(verbose_name='Parsed media text')
+
+    class Meta:
+        verbose_name = 'Media'
+        verbose_name_plural = 'Media'
+
+    def __str__(self):
+        return self.url
+
+    def __unicode__(self):
+        return self.url
+
+
+class Blip(models.Model):
+    TYPES = [('f', 'Friends'), ('d', 'All from my department'), ('a', 'All users'),
+             ('p', 'Private message')]
+    message = models.TextField(verbose_name='Message')
+    author = models.ForeignKey(User, verbose_name='Author', related_name='author',  on_delete=models.CASCADE)
+    in_reply_to = models.ForeignKey('self', verbose_name='Reply to blip', blank=True, null=True,  on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    media = models.ManyToManyField(Media, verbose_name='Media', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Blip'
+        verbose_name_plural = 'Blips'
+
+    def __str__(self):
+        return self.message
+
+    def __unicode__(self):
+        return self.message

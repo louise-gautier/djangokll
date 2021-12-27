@@ -29,10 +29,10 @@
   </li>
   <li class="nav-item" style="padding-top: 5px; width: 25%;">
     {% if page == 'details' %}
-    <a class="nav-link active" href="{% url 'dkllapp:details' current_ligue.id %}" aria-selected="true">
+    <a class="nav-link active" href="{% url 'dkllapp:details' current_ligue.id 0 %}" aria-selected="true">
         <i class="mdi mdi-magnify-plus"></i>Détails</a>
     {% else %}
-    <a class="nav-link" href="{% url 'dkllapp:details' current_ligue.id %}" aria-selected="true">
+    <a class="nav-link" href="{% url 'dkllapp:details' current_ligue.id 0 %}" aria-selected="true">
         <i class="mdi mdi-magnify-plus"></i>Détails</a>
     {% endif %}
   </li>

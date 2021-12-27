@@ -73,8 +73,6 @@
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un message notification Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <p>Form message</p>
-                        <br>
             <form id="form_notif" action="" method="POST">
                 {% csrf_token %}
                     <label for="id_message">Notification à envoyer :</label>
@@ -166,19 +164,21 @@
         <button type="button" class="collapsible_block" style="margin-top: 10px;">Evènements &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <form id="form_evenement" action="" method="POST" style="display: contents;">
-                {% csrf_token %}
-                <div style="display: block; justify-content: center;">
-                    <label for="id_evenement_a_supprimer" class="control-label">Id :</label>
-                    <input type="text" name="evenement_a_supprimer" autofocus="" autocapitalize="none"
-                           autocomplete="evenement_a_supprimer" maxlength="999" class="textinput textInput"
-                           id="id_evenement_a_supprimer" style="width: 120px;">
-                    <button class="btn btn-danger btn-sm" type="submit" style="width: 150px;">Supprimer un évènement</button>
-                </div>
-                <div>
-                    <a href="{% url 'dkllapp:ajouter_evenement' %}" class="btn btn-danger btn-sm" style="width: 150px;">Ajouter un évènement</a>
-                </div>
-            </form>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+                <form id="form_evenement" action="" method="POST" style="display: contents;">
+                    {% csrf_token %}
+                    <div style="display: block; justify-content: center;">
+                        <label for="id_evenement_a_supprimer" class="control-label">Id :</label>
+                        <input type="text" name="evenement_a_supprimer" autofocus="" autocapitalize="none"
+                               autocomplete="evenement_a_supprimer" maxlength="999" class="textinput textInput"
+                               id="id_evenement_a_supprimer" style="width: 120px;">
+                        <button class="btn btn-danger btn-sm" type="submit" style="width: 150px;">Supprimer un évènement</button>
+                    </div>
+                    <div>
+                        <a href="{% url 'dkllapp:ajouter_evenement' %}" class="btn btn-danger btn-sm" style="width: 150px;">Ajouter un évènement</a>
+                    </div>
+                </form>
+            </div>
             <br>
             <br>
             <p style="padding-left: 8px;">Liste des évènements enregistrés</p>
@@ -186,9 +186,10 @@
             <table width="100%" cellspacing="0" style="border-radius: 10px;">
                 <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr>
-                        <th style="text-align: center;">Ep.</th>
-                        <th style="text-align: center;">Typ.</th>
-                        <th width="30%"style="text-align: center;">Candidat</th>
+                        <th style="text-align: center; font-size: 12px;">ID</th>
+                        <th style="text-align: center; font-size: 12px;">Ep.</th>
+                        <th style="text-align: center; font-size: 12px;">Typ.</th>
+                        <th width="30%" style="text-align: center;">Candidat</th>
                         <th width="30%">Regle</th>
                         <th style="text-align: center;"></th>
                     </tr>
@@ -196,11 +197,12 @@
                 <tbody>
                     {% for evenement in evenements %}
                     <tr>
+                        <td style="text-align: center;">{{ evenement.id }}</td>
                         <td style="text-align: center;">{{ evenement.episode }}</td>
                         <td style="text-align: center;">{{ evenement.typage }}</td>
-                        <td style="text-align: center;"><img class="candidat_equipe_ligue" src="{% static evenement.candidat__chemin_img %}"><br>{{ evenement.candidat__nom }}</td>
+                        <td style="text-align: center; font-size: 12px;"><img class="candidat_equipe_ligue" src="{% static evenement.candidat__chemin_img %}"><br>{{ evenement.candidat__nom }}</td>
                         <td>{{ evenement.regle__contenu }}</td>
-                        <td style="text-align: center;">{{ evenement.user__user__username }}
+                        <td style="text-align: center; font-size: 12px;">{{ evenement.user__user__username }}
                                                     <br>{{ evenement.insert_datetime|date:"d/m/Y" }}
                                                     <br>{{ evenement.insert_datetime|time:"H:i" }}</td>
                     </tr>
