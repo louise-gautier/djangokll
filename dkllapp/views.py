@@ -170,7 +170,6 @@ def register_request(request):
             user.refresh_from_db()  # load the profile instance created by the signal
             user.userprofile.img = 'dkllapp/img/kitchen/default.png'
             user.userprofile.boolemail = True
-            user.save()
             current_site = get_current_site(request)
             context = {
                 'user': user,
@@ -183,6 +182,7 @@ def register_request(request):
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user.email]
             send_mail(subject, message, email_from, recipient_list)
+            user.save()
             return redirect('dkllapp:account_activation_sent')
 
         messages.error(request, "Unsuccessful registration. Invalid information.")

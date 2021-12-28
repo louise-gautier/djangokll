@@ -3,32 +3,22 @@
 {% load static %}
 <head>
     {% include 'dkllapp/head.html' %}
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/base.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/form_choix.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/autres-contenus.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dkllapp/css/slider.css' %}">
 </head>
-<body>
+<body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
         <br>
-        <p>Please confirm your email address to complete the registration. </p>
-        <br>
-        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:kauhlantaligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">kauhlantaligue@gmail.com</a>.</p>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <p class="titre_rouge"><b>Compte créé !</b></p>
+            <p style="padding-left: 20px;">Une dernière étape : merci de confirmer ton adresse @, tu as du recevoir un e-mail en ce sens.</p>
+            <br>
+            <br>
+            <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:taupechefligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">taupechefligue@gmail.com</a>.</p>
+        </div>
     </div>
+    <br>
+    <br>
+    <br>
     {% include 'dkllapp/body_scripts.html' %}
-    <script src="{% static 'dkllapp/js/collapsible-standard.js' %}"></script>
-    <script src="{% static 'dkllapp/js/share.js' %}"></script>
-    <script src="{% static 'dkllapp/js/url-uncollapse.js' %}"></script>
 </body>
 </html>
