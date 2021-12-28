@@ -101,3 +101,6 @@ class AjouterEvenementForm(forms.Form):
     typage = forms.IntegerField(required=True)
 
 
+class MessageMurForm(forms.Form):
+    nouveau_parent = forms.CharField(label='corps', max_length=9999)
+

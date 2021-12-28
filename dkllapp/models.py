@@ -81,7 +81,9 @@ class Mur(models.Model):
     ligue = models.ForeignKey('Ligue', on_delete=models.RESTRICT)
     user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
     message = models.CharField(max_length=999)
+    parent = models.ForeignKey('Mur', on_delete=models.CASCADE, blank=True, null=True)
     insert_datetime = models.DateTimeField(default=now, blank=True)
+    last_modified = models.DateTimeField(default=now, blank=True)
 
 
 class Notif(models.Model):

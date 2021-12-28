@@ -6,9 +6,7 @@
 </head>
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
-
     <div class="mainwrapper">
-        <br>
         <div class="title" style="margin-left: 20px; margin-right: 20px; max-width: 800px; margin-left: auto; margin-right: auto;">
             <br>
             <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
@@ -30,33 +28,138 @@
             </div>
             <br>
             <p style="padding-left: 15px;"><b>Mur</b></p>
-            <br>
-            <form id="form2" action="" method="POST">
-                {{ form2.csrf_token }}
+            <form id="form" action="" method="POST">
+                {% csrf_token %}
                 <div style="padding-left: 15px; padding-right: 15px;">
-                {% for message in mur %}
                     <table class="table2" cellspacing="0" >
                         <tbody>
                             <tr class="tr2">
-                                <td class="td2" width="60%" style="padding: 10px;">
-                                    <div style="display: flex; align-items: center;">
-                                        <img class="picto_mur" src="{% static message.user__img %}">
-                                        <div style="padding-left: 15px;"><b>{{ message.user__user__username }}</b></div>
-                                        <div style="padding-left: 15px;">{{ message.insert_datetime|date:"d/m/Y h:i"  }}</div>
+                                <td class="td2" width="100%" style="padding: 0px;">
+                                    <div style="display: flex; width: 100%; align-items: center;
+                                    justify-content: space-between; padding: 10px;">
+                                        <div style="display: flex; width: 100%; align-items: center; vertical-align: middle;">
+                                            <div style="display: flex; flex-direction: column; padding-right: 5px; align-items: center;">
+                                                <img class="picto_mur" src="{% static current_user.img %}">
+                                                <b style="font-size: 13px; text-align: center; overflow-wrap: break-word;">
+                                                    {{ current_user.user__username }}
+                                                </b>
+                                            </div>
+                                            <textarea name="nouveau_parent" id="nouveau_parent" maxlength="999" rows="2" style="width: 100%; margin: auto; margin-right: 10px;"></textarea>
+                                            <button class="btn btn-danger btn-sm" type="submit" style="height: 54px;"><i class="mdi mdi-send"></i></button>
+                                        </div>
                                     </div>
-                                    <div style="text-align: left; padding-left: 15px; padding-top: 5px;">{{ message.message }}</div>
+                                </td>
+                            </tr>
+                    </table>
+                    <br>
+                    {% for message in mur %}
+                    {% if not message.parent_id %}
+                    <table class="table2" cellspacing="0">
+                        <tbody>
+                            <tr class="tr2">
+                                <td class="td2" width="100%" style="padding: 0px;">
+                                    <div style="display: flex; align-items: center;
+                                    justify-content: space-between; padding: 10px;">
+                                        <div style="display: flex; align-items: center; vertical-align: middle;">
+                                            <img class="picto_mur" src="{% static message.user__img %}">
+                                            <b style="padding-left: 15px; font-size: 13px;">
+                                                {{ message.user__user__username }}&nbsp;&nbsp;
+                                            </b>
+                                            <span style="font-size: 12px;">a écrit :</span>
+                                        </div>
+                                        <div style="padding-left: 15px; font-size: 12px; text-align: right;">
+                                            {{ message.insert_datetime|date:"d/m/Y"  }}, {{ message.insert_datetime|date:"h:i"  }}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: left; background-color: #3A4040; border-radius: 5px;
+                                    padding: 10px 0px 10px 10px; ">{{ message.message }}</div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <table cellspacing="0" style="margin-left: 30px; margin-right: 10px; width: calc(100% - 40px);">
+                        <tbody>
+                        {% for enfant in mur %}
+                        {% if enfant.parent_id == message.id %}
+                            <tr class="tr2">
+                                <td class="td2" width="100%" style="padding: 0px;">
+                                    <div style="display: flex; align-items: center;
+                                    justify-content: space-between; padding: 10px;">
+                                        <div style="display: flex; align-items: center; vertical-align: middle;">
+                                            <b style="font-size: 13px; color: #6c757d;">
+                                                {{ enfant.user__user__username }}&nbsp;&nbsp;
+                                            </b>
+                                            <span>{{ enfant.message }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                            <tr class="tr2">
+                                <td class="td2" width="100%" style="padding: 0px; background-color: #1D2020;">
+                                    <div style="display: none; width: 100%; align-items: center; justify-content: space-between; padding: 10px;">
+                                        <div id="{{message.id}}" style="width: 100%; align-items: center; vertical-align: middle;">
+                                            <b style="font-size: 13px; color: #6c757d;">
+                                                {{ current_user.user__username }}&nbsp;&nbsp;
+                                            </b>
+                                            {% for field in form %}
+                                            {% if field.name == 'nouveau_parent' %}
+                                            {% else %}
+                                            <script type="text/javascript">
+                                            if (("0000" + "{{field.name}}".substring(4)).slice(-5) == ("0000" + {{message.id}}).slice(-5)) {
 
+                                                div_button_reply = document.createElement("div");
+                                                div_button_reply.setAttribute("id", "reply_" + ("0000" + {{message.id}}).slice(-5));
+                                                div_button_reply.setAttribute("style", "display: flex; justify-content: right; padding-right: 10px; font-size: 12px;");
+                                                a_reply = document.createElement("a");
+                                                a_reply.setAttribute("id", "a_reply_" + ("0000" + {{message.id}}).slice(-5));
+                                                a_reply.setAttribute("class", "reply_link");
+                                                a_reply.setAttribute("style", "color: #DA071F;");
+                                                var a_text = document.createTextNode("Reply");
+                                                a_reply.appendChild(a_text);
+                                                div_button_reply.appendChild(a_reply);
+
+                                                div_reply = document.createElement("div");
+                                                div_reply.setAttribute("name", "div_reply");
+                                                div_reply.setAttribute("style", "display: flex; width: 100%;");
+                                                txt_area = document.createElement("textarea");
+                                                txt_area.setAttribute("name", "{{field.name}}");
+                                                txt_area.setAttribute("id", "{{field.name}}");
+                                                txt_area.setAttribute("maxlength", 999);
+                                                txt_area.setAttribute("rows", 1);
+                                                txt_area.setAttribute("style", "width: 100%; margin: auto; margin-right: 10px;");
+                                                send_button = document.createElement("button");
+                                                send_button.setAttribute("class", "btn btn-danger btn-sm");
+                                                send_button.setAttribute("type", "submit");
+                                                mdi_item = document.createElement("i");
+                                                mdi_item.setAttribute("class", "mdi mdi-send");
+                                                send_button.appendChild(mdi_item);
+                                                div_reply.appendChild(txt_area);
+                                                div_reply.appendChild(send_button);
+
+                                                div_to_append = document.getElementById("{{message.id}}");
+                                                div_to_append.appendChild(div_reply);
+                                                div_to_append.appendChild(div_button_reply);
+                                                div_to_append.parentNode.parentNode.insertBefore(div_button_reply, div_to_append.parentNode)
+                                            } else {};
+                                            </script>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <br>
-
-                {% endfor %}
-
+                    {% endif %}
+                    {% endfor %}
+                    <br>
                 </div>
                 <br>
             </form>
+            <br>
         </div>
     </div>
     <br>
@@ -64,5 +167,6 @@
     <br>
     <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/ligue_menu.html' %}</div>
     {% include 'dkllapp/body_scripts.html' %}
+    <script src="{% static 'dkllapp/js/a_display_form_mur.js' %}"></script>
 </body>
 </html>

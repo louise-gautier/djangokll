@@ -20,6 +20,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
 from django.urls import reverse
+from django.utils.timezone import now
 from django.views import generic
 
 from django.http.response import JsonResponse, HttpResponse
@@ -34,7 +35,7 @@ from urllib.request import Request
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
-    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm
+    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
     Regle, Blip, UserProfile
 from .token import account_activation_token
@@ -603,17 +604,54 @@ def mur(request, ligue_id):
         .filter(user_id=request.user.id).order_by('insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
-    # mur = Mur.objects\
-    #     .filter(ligue_id=ligue_id).order_by('-insert_datetime')\
-    #     .values('id', 'ligue_id', 'user_id', 'user__user__username', 'user__img', 'message', 'insert_datetime')
-
-    #Show the wall page
-    blips = Blip.objects.filter(Q(author=request.user, in_reply_to__isnull=True)).order_by('-date')
-
+    current_user = UserProfile.objects.filter(id=request.user.id).values('user__username', 'img')[0]
+    mur = Mur.objects\
+        .filter(ligue_id=ligue_id).order_by('-last_modified')\
+        .values('id', 'ligue_id', 'user_id', 'parent_id',
+                'user__user__username', 'user__img', 'message', 'insert_datetime', 'last_modified')
+    new_fields = {}
+    for message in mur:
+        if message['parent_id']:
+            pass
+        else:
+            field_name = 'area' + str(message['id'])
+            field_label = 'label' + str(message['id'])
+            new_fields[field_name] = forms.CharField(label=field_label, max_length=999, required=False)
+    DynamicMessageMurForm = type('DynamicMessageMurForm', (MessageMurForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicMessageMurForm(request.POST)
+        print(request.POST)
+        for field in request.POST:
+            print(field, request.POST[field])
+            if field == 'csrfmiddlewaretoken':
+                pass
+            elif request.POST[field]:
+                if field == 'nouveau_parent':
+                    print('field nouveau parent')
+                    nouveau_message = Mur()
+                    nouveau_message.user_id = request.user.id
+                    nouveau_message.ligue_id = ligue_id
+                    nouveau_message.message = request.POST[field]
+                    print('nouveau_message', nouveau_message)
+                    nouveau_message.save()
+                elif 'area' in field:
+                    print('field[4:]', field[4:])
+                    nouveau_message = Mur()
+                    nouveau_message.user_id = request.user.id
+                    nouveau_message.ligue_id = ligue_id
+                    nouveau_message.message = request.POST[field]
+                    nouveau_message.parent_id = field[4:]
+                    nouveau_message.save()
+                    parent_modifier = Mur.objects.filter(id=field[4:]).first()
+                    parent_modifier.last_modified = now()
+                    parent_modifier.save()
+        return redirect('dkllapp:mur', ligue_id)
+    form = DynamicMessageMurForm()
     notif = Notif.objects.latest('insert_datetime')
     return render(request=request,
                   template_name="dkllapp/mur.html",
                   context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue, 'mur': mur, 'notif': notif,
+                           'current_user': current_user, 'form': form,
                            'isadmin': is_admin(request.user.id)})
 
 
