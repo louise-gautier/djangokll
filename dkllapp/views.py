@@ -160,6 +160,7 @@ def points_ligue_episode(ligue_id, un_episode):
         rang = rang + 1
     return membres_sorted
 
+
 ##########################################REGISTRATION ET LOGIN################################
 def register_request(request):
     if request.method == "POST":
@@ -177,7 +178,7 @@ def register_request(request):
                 'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user), }
             #mail
-            subject = "Activation de ton email KLL"
+            subject = "Activation de ton compte Pili Pili"
             message = render_to_string('dkllapp/account_activation_email.html', context)
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user.email]
@@ -185,7 +186,7 @@ def register_request(request):
             user.save()
             return redirect('dkllapp:account_activation_sent')
 
-        messages.error(request, "Unsuccessful registration. Invalid information.")
+        messages.error(request, "Echec de la création du compte. Réessaye en respectant les critères.")
     form = NewUserForm()
     return render(request=request, template_name="dkllapp/register.html", context={"register_form": form})
 
@@ -221,14 +222,13 @@ def login_request(request):
             if user is not None:
                 if user.userprofile.email_confirmed is True:
                     login(request, user)
-                    messages.info(request, f"You are now logged in as {username}.")
                     return redirect("dkllapp:index")
                 else:
-                    messages.error(request, "Unconfirmed email.")
+                    messages.error(request, "Tu n'as pas confirmé ton e-mail.")
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.error(request, "Login ou mot de passe incorrect.")
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "Login ou mot de passe incorrect.")
     form = AuthenticationForm()
     return render(request=request, template_name="dkllapp/login.html", context={"login_form": form})
 
@@ -236,7 +236,6 @@ def login_request(request):
 @login_required
 def logout_request(request):
     logout(request)
-    messages.info(request, "You have successfully logged out.")
     return redirect("dkllapp:index")
 
 
