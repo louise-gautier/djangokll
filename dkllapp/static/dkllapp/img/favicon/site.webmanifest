@@ -1,6 +1,6 @@
 {
-    "name": "Pili X Pili",
-    "short_name": "pilixpili",
+    "name": "Pili Pili",
+    "short_name": "Pili Pili",
     "icons": [
         {
             "src": "{% static 'dkllapp/img/favicon/android-chrome-192x192.png' %}",
