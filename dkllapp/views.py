@@ -35,9 +35,9 @@ from urllib.request import Request
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
-    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm
+    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
-    Regle, Blip, UserProfile
+    Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
 from .token import account_activation_token
 
 
@@ -314,9 +314,17 @@ def admin(request):
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     regles = Regle.objects.all().order_by('insert_datetime')
+    questions = Question.objects.all().order_by('episode').order_by('-insert_datetime')
+    questions_plus = []
+    for question in questions:
+        propositions = Proposition.objects.filter(question_id=question.id)
+        repondu = False
+        for proposition in propositions:
+            if proposition.pertinence:
+                repondu = True
+        questions_plus.append({'question': question, 'propositions': propositions, 'repondu': repondu})
     evenements = Evenement.objects.all().order_by('-insert_datetime').values('id', 'user__user__username', 'regle__contenu', 'candidat__nom',
                                                                              'candidat__chemin_img', 'episode', 'typage', 'insert_datetime')
-
     if request.method == 'POST':
         type_choix = 'activate' if '_activate_' in list(request.POST)[1] \
             else 'deactivate' if '_deactivate_' in list(request.POST)[1] else ''
@@ -327,6 +335,19 @@ def admin(request):
             form_mail = MailAdminForm(request.POST)
             form_notif = NotifAdminForm(request.POST)
             form_regle = ModifierRegleForm(request.POST)
+            form_pronos = PronoAdminForm(request.POST)
+            if 'ajouter_question' in request.POST:
+                return redirect('dkllapp:ajouter_question', 0)
+            if 'modifier_question' in request.POST:
+                if request.POST['prono_choisi']:
+                    return redirect('dkllapp:ajouter_question', request.POST['prono_choisi'])
+                else:
+                    return redirect('dkllapp:admin')
+            if 'ajouter_reponse' in request.POST:
+                if request.POST['prono_choisi']:
+                    return redirect('dkllapp:ajouter_reponse', request.POST['prono_choisi'])
+                else:
+                    return redirect('dkllapp:admin')
             if form_mail.is_valid():
                 subject = form_mail.cleaned_data.get("sujet")
                 message = form_mail.cleaned_data.get("corps")
@@ -360,7 +381,7 @@ def admin(request):
                   template_name="dkllapp/admin.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
                            'form_mail': form_mail, 'form_notif': form_notif, 'form_regle': form_regle,
-                           'regles': regles, 'evenements': evenements,
+                           'regles': regles, 'evenements': evenements, 'questions_plus': questions_plus,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -475,7 +496,6 @@ def changer_equipe_tv(request):
                            'isadmin': is_admin(request.user.id)})
 
 
-
 @login_required
 def changer_statut(request):
     ligues = Membre.objects\
@@ -517,6 +537,76 @@ def changer_statut(request):
                   template_name="dkllapp/changer_statut.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
                            'form': form, 'candidats': candidats,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def ajouter_question(request, question_id):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    question = Question.objects.filter(id=question_id).first()
+    propositions = Proposition.objects.filter(question_id=question_id).all()
+    if request.method == "POST":
+        form = AjouterQuestionForm(request.POST)
+        if form.is_valid():
+            if question_id == '0':
+                question = Question()
+            question.enonce = form.cleaned_data.get('enonce')
+            question.episode = form.cleaned_data.get('episode')
+            question.bonus = form.cleaned_data.get('bonus')
+            question.malus = form.cleaned_data.get('malus')
+            question.save()
+            propositions_avant = form.cleaned_data.get('propositions')
+            propositions_decoupees = []
+            current_proposition = ""
+            for car in propositions_avant:
+                if car == ";":
+                    propositions_decoupees = propositions_decoupees + [current_proposition]
+                    current_proposition = ""
+                else:
+                    current_proposition = current_proposition + car
+            propositions_decoupees.append(current_proposition)
+            for proposition_decoupee in propositions_decoupees:
+                if Proposition.objects.filter(question_id=question_id).filter(texte=proposition_decoupee).first():
+                    pass
+                elif proposition_decoupee == "":
+                    pass
+                else:
+                    nouvelle_proposition = Proposition()
+                    nouvelle_proposition.question_id = question.id
+                    nouvelle_proposition.texte = proposition_decoupee
+                    nouvelle_proposition.save()
+            return redirect('dkllapp:admin')
+    form = AjouterQuestionForm()
+    return render(request=request,
+                  template_name="dkllapp/ajouter_question.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_, 'form': form,
+                           'question': question, 'propositions': propositions,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def ajouter_reponse(request, question_id):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    propositions = Proposition.objects.filter(question_id=question_id).all()
+    if request.method == "POST":
+        for proposition in propositions:
+            if str(proposition.id) in request.POST:
+                proposition.pertinence = True
+                proposition.save()
+            else:
+                proposition.pertinence = False
+                proposition.save()
+        return redirect('dkllapp:admin')
+    return render(request=request,
+                  template_name="dkllapp/ajouter_reponse.html",
+                  context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'propositions': propositions,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -732,6 +822,73 @@ def changer_nom_ligue(request, ligue_id):
                            'isadmin': is_admin(request.user.id)})
 
 
+##########################################Pronos################################
+@login_required
+def pronos(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
+    episode_en_cours_ = episode_en_cours()
+    questions = Question.objects.filter(episode=episode_en_cours_).order_by('-insert_datetime')
+    questions_plus = []
+    for question in questions:
+        propositions = Proposition.objects.filter(question_id=question.id)
+        guess = Guess.objects.filter(question_id=question.id).filter(user_id=request.user.id).first()
+        questions_plus.append({'question': question, 'guess': guess, 'propositions': propositions})
+    return render(request=request,
+                  template_name="dkllapp/pronos.html",
+                  context={'ligues': ligues, 'page': 'pronos', 'questions_plus': questions_plus,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def pronos_cgi(request, question_id, proposition_id):
+    current_user_guess = Guess.objects.filter(question_id=question_id).filter(user_id=request.user.id).first()
+    if current_user_guess:
+        Guess.objects.filter(question_id=question_id).filter(user_id=request.user.id).delete()
+        if proposition_id == str(current_user_guess.proposition_id):
+            pass
+        else:
+            nouveau_guess = Guess()
+            nouveau_guess.user_id = request.user.id
+            nouveau_guess.question_id = question_id
+            nouveau_guess.proposition_id = proposition_id
+            nouveau_guess.save()
+    else:
+        nouveau_guess = Guess()
+        nouveau_guess.user_id = request.user.id
+        nouveau_guess.question_id = question_id
+        nouveau_guess.proposition_id = proposition_id
+        nouveau_guess.save()
+    return redirect('dkllapp:pronos')
+
+
+@login_required
+def bonus(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
+    questions = Question.objects.order_by('-episode').order_by('-insert_datetime')
+    questions_plus = []
+    for question in questions:
+        propositions = Proposition.objects.filter(question_id=question.id)
+        repondu = False
+        for proposition in propositions:
+            if proposition.pertinence:
+                repondu = True
+        guess = Guess.objects.filter(question_id=question.id).filter(user_id=request.user.id)\
+            .values('id', 'user_id', 'question_id', 'proposition_id', 'proposition__pertinence').first()
+        questions_plus.append({'question': question, 'guess': guess,
+                               'propositions': propositions, 'repondu': repondu})
+    points_feu = PointsFeu.objects.filter(user_id=request.user.id).values('user_id', 'feu').order_by('user_id').first()
+    print(points_feu)
+    return render(request=request,
+                  template_name="dkllapp/bonus.html",
+                  context={'ligues': ligues, 'page': 'bonus',
+                           'questions_plus': questions_plus, 'points_feu': points_feu,
+                           'isadmin': is_admin(request.user.id)})
+
+
 ##########################################Profil################################
 @login_required
 def profil(request):
@@ -892,15 +1049,6 @@ def classement_general(request):
     return render(request=request,
                   template_name="dkllapp/classement_general.html",
                   context={'ligues': ligues, 'page': 'classement_general', 'membres_sorted': membres_sorted,
-                           'isadmin': is_admin(request.user.id)})
-
-
-@login_required
-def pronos(request):
-    pronos = 'pronos'
-    return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'pronos': pronos,
                            'isadmin': is_admin(request.user.id)})
 
 

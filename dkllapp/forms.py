@@ -67,7 +67,7 @@ class EquipeCreationForm(forms.Form):
 
 
 class EpisodeChangeForm(forms.Form):
-    new_episode = forms.CharField(label='new_episode', max_length=100)
+    new_episode = forms.IntegerField(label='new_episode')
 
 
 class ActivateChoiceForm(forms.Form):
@@ -86,7 +86,19 @@ class NotifAdminForm(forms.Form):
 
 
 class ModifierRegleForm(forms.Form):
-    regle_a_modifier = forms.CharField(label='sujet', max_length=999)
+    regle_a_modifier = forms.IntegerField(label='sujet')
+
+
+class PronoAdminForm(forms.Form):
+    prono_choisi = forms.IntegerField(label='prono_choisi')
+
+
+class AjouterQuestionForm(forms.Form):
+    enonce = forms.CharField(label='enonce', max_length=999)
+    propositions = forms.CharField(label='propositions', max_length=999)
+    episode = forms.IntegerField(label='episode')
+    bonus = forms.IntegerField(label='bonus')
+    malus = forms.IntegerField(label='malus')
 
 
 class CreerRegleForm(forms.Form):

@@ -43,83 +43,60 @@
             <br>
             <br>
         </div>
-        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un mail Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Gestion des Pronos &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
-            <form id="form_mail" action="" method="POST">
-                {% csrf_token %}
-                    <label for="id_sujet" class="control-label requiredField">Sujet<span class="asteriskField">*</span></label>
-                    <input type="text" name="sujet" autofocus="" autocapitalize="none" autocomplete="sujet" maxlength="999" class="textinput textInput" required="" id="id_sujet">
-                    <br>
-                    <label for="id_corps">Corps HTML du mail :</label>
-                    <br>
-                    <textarea name="corps" maxlength="9999" required="" id="id_corps" rows="5" style="width: 100%;"></textarea>
-                    <br>
-                    <div style="display:flex; justify-content: space-around;">
-                        <div class="form-check" style="display: flex; justify-content: space-around">
-                            <input class="form-check-input" type="checkbox" name="admin" id="id_admin">
-                            <label class="form-check-label" for="id_admin">Admin</label>
-                        </div>
-                        <div class="form-check" style="display: flex; justify-content: space-around">
-                            <input type="checkbox" class="form-check-input" name="users" id="id_users"><br>
-                            <label class="form-check-label" for="id_users">Users</label>
-                        </div>
+            <div class="btn-profil-container">
+                <form id="form_pronos" action="" method="POST" style="display: contents;">
+                    <input type="submit" class="btn btn-danger btn-sm" name="ajouter_question" value="Ajouter une question" />
+                    <input type="submit" class="btn btn-danger btn-sm" name="modifier_question" value="Modifier une question" />
+                    <input type="submit" class="btn btn-danger btn-sm" name="ajouter_reponse" value="Ajouter une réponse" />
+                    <div>
+                            {% csrf_token %}
+                            <div style="display: block; justify-content: center;">
+                                <label for="id_prono_choisi" class="control-label">Id :</label>
+                                <input type="number" name="prono_choisi" autofocus="" autocapitalize="none" autocomplete="prono_choisi"
+                                   min="0" class="textinput textInput"id="id_prono_choisi" style="width: 100px;">
+                            </div>
                     </div>
-                    <br>
-                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
-            </form>
+                </form>
+            </div>
             <br>
-        </div>
-        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un message notification Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
-        <div class="content">
-            <br>
-            <form id="form_notif" action="" method="POST">
-                {% csrf_token %}
-                    <label for="id_message">Notification à envoyer :</label>
-                    <br>
-                    <textarea name="message" maxlength="9999" required="" id="id_message" rows="5" style="width: 100%;"></textarea>
-                    <br>
-                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
-            </form>
-            <br>
-        </div>
-        <button type="button" class="collapsible_block" style="margin-top: 10px;">Pronos &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
-        <div class="content">
-            <br>
-            <a href="#" class="btn btn-danger btn-sm">Ajouter une question</a>
-            <a href="#" class="btn btn-danger btn-sm">Modifier une question</a>
-            <a href="#" class="btn btn-danger btn-sm">Ajouter une réponse</a>
-            <br>
-            <br>
-            <p style="padding-left: 8px;">Liste des pronos :</p>
-            <table cellspacing="0">
-                <thead>
+            <table width="100%" cellspacing="0" style="border-radius: 10px;">
+                <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr>
                         <th width="8%" style="text-align: center;">ID</th>
                         <th style="text-align: center;">Question</th>
-                        <th style="text-align: center;">Propos</th>
-                        <th style="text-align: center;">Rép</th>
+                        <th style="text-align: center;">Proposit°</th>
                         <th width="8%" style="text-align: center;">Ep</th>
                         <th width="8%" style="text-align: center;">+</th>
                         <th width="8%" style="text-align: center;">-</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for question in questions %}
+                    {% for question_plus in questions_plus %}
                     <tr>
-                        <td style="text-align: center;">{{ question.id }}</td>
-                        <td style="text-align: center;">{{ question.question }}</td>
-                        <td style="text-align: center;">{{ question.propos_propres }} </td>
-                        <td style="text-align: center;">{{ question.reponse }} </td>
-                        <td style="text-align: center;">{{ question.episode }} </td>
-                        <td style="text-align: center;">{{ question.bonus }} </td>
-                        <td style="text-align: center;">{{ question.malus }} </td>
+                        <td style="text-align: center;">{{ question_plus.question.id }}</td>
+                        <td style="text-align: center;">{{ question_plus.question.enonce }}</td>
+                        <td style="text-align: center;">
+                            {% for proposition in question_plus.propositions %}
+                            {% if proposition.pertinence %}
+                            <span style="color: #DA071F;">{{ proposition.texte }}</span>
+                            {% else %}
+                            <span>{{ proposition.texte }}</span>
+                            {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td style="text-align: center;">{{ question_plus.question.episode }} </td>
+                        <td style="text-align: center;">{{ question_plus.question.bonus }} </td>
+                        <td style="text-align: center;">{{ question_plus.question.malus }} </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <br>
         </div>
-        <button type="button" class="collapsible_block" style="margin-top: 10px;">Règles &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Gestion des Règles &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
             <div style="display: flex; align-items: center; justify-content: space-around;">
@@ -161,7 +138,7 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="collapsible_block" style="margin-top: 10px;">Evènements &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Gestion des Evènements &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
         <div class="content">
             <br>
             <div style="display: flex; align-items: center; justify-content: space-around;">
@@ -209,6 +186,46 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un mail Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <form id="form_mail" action="" method="POST">
+                {% csrf_token %}
+                    <label for="id_sujet" class="control-label requiredField">Sujet<span class="asteriskField">*</span></label>
+                    <input type="text" name="sujet" autofocus="" autocapitalize="none" autocomplete="sujet" maxlength="999" class="textinput textInput" required="" id="id_sujet">
+                    <br>
+                    <label for="id_corps">Corps HTML du mail :</label>
+                    <br>
+                    <textarea name="corps" maxlength="9999" required="" id="id_corps" rows="5" style="width: 100%;"></textarea>
+                    <br>
+                    <div style="display:flex; justify-content: space-around;">
+                        <div class="form-check" style="display: flex; justify-content: space-around">
+                            <input class="form-check-input" type="checkbox" name="admin" id="id_admin">
+                            <label class="form-check-label" for="id_admin">Admin</label>
+                        </div>
+                        <div class="form-check" style="display: flex; justify-content: space-around">
+                            <input type="checkbox" class="form-check-input" name="users" id="id_users"><br>
+                            <label class="form-check-label" for="id_users">Users</label>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
+            </form>
+            <br>
+        </div>
+        <button type="button" class="collapsible_block" style="margin-top: 10px;">Envoyer un message notification Admin &nbsp; <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;"></button>
+        <div class="content">
+            <br>
+            <form id="form_notif" action="" method="POST">
+                {% csrf_token %}
+                    <label for="id_message">Notification à envoyer :</label>
+                    <br>
+                    <textarea name="message" maxlength="9999" required="" id="id_message" rows="5" style="width: 100%;"></textarea>
+                    <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Envoyer</button>
+            </form>
+            <br>
         </div>
         {% endif %}
     </div>

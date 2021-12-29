@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <p class="titre_rouge"><b>Bonus</b></p>
+            <div style="padding-left: 15px; padding-right: 15px;">
+                <table class="table2" cellspacing="0" >
+                <tbody>
+                    <tr class="tr2">
+                        <td class="td2" width="20%" style="display: flex;
+                        align-items: center; text-aling: center; justify-content: center;
+                        width: 100%; height: 100%;
+                        padding: 10px; background-color: #DA071F;">
+                             Total : {{ points_feu.feu }} 🔥
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                <br>
+                {% for question_plus in questions_plus %}
+                <table class="table2" cellspacing="0" >
+                <tbody>
+                    <tr class="tr2">
+                        <td class="td2" width="80%" style="padding: 10px; ">
+                            <p>{{ question_plus.question.enonce }}</p>
+                            <div style="display: flex; flex-flow: row wrap;">
+                            {% if question_plus.repondu %}
+                                {% for proposition in question_plus.propositions %}
+                                    {% if proposition.pertinence %}
+                                        {% if question_plus.guess.proposition_id == proposition.id %}
+                                        <button class="btn btn-danger btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                        {% else %}
+                                        <button class="btn btn-outline-danger btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                        {% endif %}
+                                    {% elif question_plus.guess.proposition_id == proposition.id %}
+                                    <button class="btn btn-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                    {% else %}
+                                    <button class="btn btn-outline-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for proposition in question_plus.propositions %}
+                                    {% if question_plus.guess.proposition_id == proposition.id %}
+                                    <button class="btn btn-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                    {% else %}
+                                    <button class="btn btn-outline-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tr2">
+                        {% if question_plus.repondu %}
+                            {% if question_plus.guess.proposition__pertinence %}
+                            <td class="td2" width="20%" style="display: flex; align-items: center; text-aling: center; justify-content: center;
+                                                                width: 100%; height: 100%; padding: 10px; background-color: #DA071F;">
+                                 +{{question_plus.question.bonus}} 🔥
+                            </td>
+                            {% else %}
+                            <td class="td2" width="20%" style="display: flex; align-items: center; text-aling: center; justify-content: center;
+                                                                width: 100%; height: 100%; padding: 10px; background-color: #272B2C;">
+                                 {{question_plus.question.malus}} 🔥
+                            </td>
+                            {% endif %}
+                        {% else %}
+                            <td class="td2" width="20%" style="display: flex; align-items: center; text-aling: center; justify-content: center;
+                                                                width: 100%; height: 100%; padding: 10px; background-color: #272B2C;">
+                                 ? 🔥
+                            </td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+                </table>
+                <br>
+                {% endfor %}
+                <br>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/pronos_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

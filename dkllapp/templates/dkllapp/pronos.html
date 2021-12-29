@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <p class="titre_rouge"><b>Pronos en cours</b></p>
+            <div style="padding-left: 15px; padding-right: 15px;">
+                {% for question_plus in questions_plus %}
+                <p>
+                    {{ question_plus.question.enonce }}<br>
+                    <div style="display: flex;">
+                    {% for proposition in question_plus.propositions %}
+                        {% if question_plus.guess.proposition_id == proposition.id %}
+                            <form class="prono_form" id="{{ proposition.id }}" action="{% url 'dkllapp:pronos_cgi' question_plus.question.id proposition.id %}" method="get">
+                                <button type="submit" class="btn btn-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                            </form>
+                        {% else %}
+                            <form class="prono_form" id="{{ proposition.id }}" action="{% url 'dkllapp:pronos_cgi' question_plus.question.id proposition.id %}" method="get">
+                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/pronos_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

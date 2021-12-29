@@ -98,20 +98,25 @@ class Coeur(models.Model):
     insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
-class Quotidien(models.Model):
-    question = models.CharField(max_length=999)
-    propositions = ArrayField(models.CharField(max_length=999))
-    reponse = models.CharField(max_length=999)
+class Question(models.Model):
+    enonce = models.CharField(max_length=999)
     episode = models.IntegerField(default=0)
     bonus = models.IntegerField(default=0)
     malus = models.IntegerField(default=0)
     insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
-class Pronostic(models.Model):
+class Proposition(models.Model):
+    question = models.ForeignKey('Question', on_delete=models.RESTRICT)
+    texte = models.CharField(max_length=999)
+    pertinence = models.BooleanField(default=False)
+    insert_datetime = models.DateTimeField(default=now, blank=True)
+
+
+class Guess(models.Model):
     user = models.ForeignKey('UserProfile', on_delete=models.RESTRICT)
-    quotidien = models.ForeignKey('Quotidien', on_delete=models.RESTRICT)
-    pronostic = models.CharField(max_length=999)
+    question = models.ForeignKey('Question', on_delete=models.RESTRICT)
+    proposition = models.ForeignKey('Proposition', on_delete=models.RESTRICT)
     insert_datetime = models.DateTimeField(default=now, blank=True)
 
 
@@ -146,6 +151,15 @@ class Points(models.Model):
     class Meta:
         managed = False
         db_table = "dkllapp_points"
+
+
+class PointsFeu(models.Model):
+    user_id = models.IntegerField(default=0)
+    feu = models.IntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "dkllapp_points_feu"
 
 
 class Media(models.Model):

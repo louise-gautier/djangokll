@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p class="titre_rouge"><b>Ajouter une réponse</b></p>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+                {% csrf_token %}
+                {% for proposition in propositions %}
+                {% if proposition.pertinence %}
+                    <input type="submit" class="btn btn-light btn-sm" name="{{proposition.id}}" value="{{ proposition.texte }}" />
+                {% else %}
+                    <input type="submit" class="btn btn-outline-light btn-sm" name="{{proposition.id}}" value="{{ proposition.texte }}" />
+                {% endif %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

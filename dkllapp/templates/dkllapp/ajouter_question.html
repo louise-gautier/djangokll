@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <p class="titre_rouge"><b>Ajouter une question</b></p>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display: flex; flex-direction: column;">
+                    <label for="id_enonce">Enonce : </label>
+                    <textarea  id="id_enonce" name="enonce" maxlength="9999" required="" rows="2" style="width: 300px;">{{question.enonce}}</textarea>
+                    <br>
+                    <label for="id_propositions">Propositons (séparées par des ;) : </label>
+                    <textarea  id="id_propositions" name="propositions" maxlength="9999" required="" rows="2" style="width: 300px;">{% for proposition in propositions %}{{proposition.texte}};{% endfor %}</textarea>
+                    <br>
+                    <label for="id_episode">Episode : </label>
+                    <input style="width: 100px; margin-bottom: 10px;" type="number" name="episode" value={{question.episode}} required="" id="id_episode">
+                    <label for="id_bonus">Bonus : </label>
+                    <input style="width: 100px; margin-bottom: 10px;" type="number" name="bonus" value={{question.bonus}} required="" id="id_bonus">
+                    <label for="id_malus">Malus : </label>
+                    <input style="width: 100px; margin-bottom: 10px;" type="number" name="malus" value={{question.malus}} required="" id="id_malus">
+                </div>
+                <br><button class="btn btn-danger btn-sm" type="submit">Valider</button>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>
