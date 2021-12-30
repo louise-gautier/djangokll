@@ -116,3 +116,6 @@ class AjouterEvenementForm(forms.Form):
 class MessageMurForm(forms.Form):
     nouveau_parent = forms.CharField(label='corps', max_length=9999)
 
+class PictoForm(forms.Form):
+    pass
+

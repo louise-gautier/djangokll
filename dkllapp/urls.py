@@ -36,7 +36,7 @@ urlpatterns = [
     path('bonus/', views.bonus, name='bonus'),
 
     path('profil/', views.profil, name='profil'),
-    path('picto/', views.picto, name='picto'),
+    path('picto/<txt_alert>/', views.picto, name='picto'),
     path('nouveau_login/', views.nouveau_login, name='nouveau_login'),
     path('nouveau_mdp/', views.nouveau_mdp, name='nouveau_mdp'),
     path('creation_ligue/', views.creation_ligue, name='creation_ligue'),

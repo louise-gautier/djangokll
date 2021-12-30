@@ -35,7 +35,8 @@ from urllib.request import Request
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
-    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm
+    ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm, \
+    PictoForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
     Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
 from .token import account_activation_token
@@ -896,13 +897,14 @@ def profil(request):
         .filter(user_id=request.user.id).order_by('insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     candidats = Candidat.objects.all().order_by('id')
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     choix_user = Choix.objects\
         .filter(user_id=request.user.id).order_by('candidat_id')\
         .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
     return render(request=request,
                   template_name="dkllapp/profil.html",
                   context={'candidats': candidats, 'ligues': ligues,
-                           'choix_user': choix_user, 'before_creation': 'profil',
+                           'choix_user': choix_user, 'before_creation': 'profil', 'current_userprofile': current_userprofile,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -1080,11 +1082,36 @@ def nouveau_mdp(request):
 
 
 @login_required
-def picto(request):
-    picto = 'picto'
+def picto(request, txt_alert):
+    pictos = []
+    new_fields = {}
+    for i in range(1, 64):
+        picto = "dkllapp/img/kitchen/png/" + "{:02d}".format(i) + ".png"
+        pictos.append(picto)
+        new_fields['pict_' + str(i)] = forms.BooleanField(required=False)
+    DynamicPictoForm = type('DynamicPictoForm', (PictoForm,), new_fields)
+    if request.method == "POST":
+        form = DynamicPictoForm(request.POST)
+        if form.is_valid():
+            selected_picto = []
+            print(form.cleaned_data)
+            for field in form.cleaned_data:
+                if "pict_" in field and form.cleaned_data[field]:
+                    selected_picto.append(int(field[5:7]))
+            print(selected_picto, len(selected_picto))
+            if 0 < len(selected_picto) < 2:
+                current_user = UserProfile.objects.filter(user_id=request.user.id).first()
+                print('img_avant', current_user.img)
+                current_user.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
+                current_user.save()
+                return redirect('dkllapp:profil')
+            else:
+                txt_alert = "alert"
+                return redirect('dkllapp:picto', txt_alert)
+    form = DynamicPictoForm()
     return render(request=request,
-                  template_name="dkllapp/index.html",
-                  context={'picto': picto,
+                  template_name="dkllapp/picto.html",
+                  context={'pictos': pictos, 'form': form, 'txt_alert': txt_alert,
                            'isadmin': is_admin(request.user.id)})
 
 

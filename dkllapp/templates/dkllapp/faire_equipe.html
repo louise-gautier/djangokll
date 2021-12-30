@@ -29,9 +29,11 @@
                                                                 img.setAttribute("src", "{% static candidat.candidat__chemin_img %}");
                                                                 img.setAttribute("class", "candidat_profile");
                                                                 lbl.appendChild(img)
-                                                                p = document.createElement("p");
-                                                                p.innerText = "{{candidat.candidat__nom}}"
-                                                                lbl.appendChild(p)
+                                                                span = document.createElement("span");
+                                                                span.innerText = "{{candidat.candidat__nom}}"
+                                                                br = document.createElement("br");
+                                                                lbl.appendChild(br)
+                                                                lbl.appendChild(span)
 
                                                                 input_tag = document.getElementById("{{ field.name }}");
                                                                 input_tag.parentNode.insertBefore(lbl, input_tag.nextSibling.nextSibling.nextSibling);

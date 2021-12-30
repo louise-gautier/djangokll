@@ -577,6 +577,21 @@ pre {
     border-radius: 50%;
 }
 
+.div_picto{
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%
+}
+
+.img_div_picto{
+  position: relative;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+}
+
+
 .candidat_profile{
     width: 75px;
     height: 75px;
@@ -1729,8 +1744,7 @@ textarea.form-control {
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 115px;
-  height: 115px; }
+  margin-bottom: 5px; }
 
 .form-check-input {
   position: absolute;
@@ -1751,7 +1765,7 @@ textarea.form-control {
   padding-left: 5px; }
 
 .form-check-label_candidat {
-  margin: auto; }
+  margin: 10px; }
 
 .form-check-inline {
   display: -webkit-inline-box;
@@ -8579,6 +8593,11 @@ footer {
 .form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat .candidat_profile {
     outline: 5px solid #DA071F;
     }
+
+.form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat .div_picto {
+    outline: 5px solid #DA071F;
+    }
+
 .form-check_candidat .form-check-input_candidat[type=checkbox] ~ .form-check-label_candidat p {
     font-size: 14px;
     padding-top: 2px;
