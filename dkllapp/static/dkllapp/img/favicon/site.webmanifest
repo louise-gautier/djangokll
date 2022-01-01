@@ -1,6 +1,7 @@
 {
     "name": "Pili Pili",
     "short_name": "Pili Pili",
+    "description": "Mets du piment dans ta TV",
     "icons": [
         {
             "src": "{% static 'dkllapp/img/favicon/android-chrome-192x192.png' %}",
