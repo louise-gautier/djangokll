@@ -3,14 +3,15 @@ import random
 import requests
 import os
 
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db import IntegrityError
 from django.db.models import Sum, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
@@ -36,7 +37,7 @@ from urllib.request import Request
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
     ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm, \
-    PictoForm
+    PictoForm, ProfilMailForm, ChangerIdentifiantForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
     Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
 from .token import account_activation_token
@@ -163,7 +164,7 @@ def points_ligue_episode(ligue_id, un_episode):
 
 
 ##########################################REGISTRATION ET LOGIN################################
-def register_request(request):
+def register_request(request, message):
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():
@@ -186,10 +187,24 @@ def register_request(request):
             send_mail(subject, message, email_from, recipient_list)
             user.save()
             return redirect('dkllapp:account_activation_sent')
-
-        messages.error(request, "Echec de la création du compte. Réessaye en respectant les critères.")
+        else:
+            message = "Une erreur s'est produite, vérifie que tous les critères sont respectés."
+            if request.POST['password1'] != request.POST['password2']:
+                message = "Les champs ne sont pas identiques"
+            else:
+                if len(request.POST['password1']) > 8:
+                    try:
+                        test = int(form.cleaned_data.get('password1'))
+                        message = "Le mot de passe ne doit pas être entièrement numérique"
+                    except ValueError:
+                        pass
+                else:
+                    message = "Le mot de passe doit faire au moins 9 caractères"
+            messages.error(request, "Echec de la création du compte. Réessaye en respectant les critères.")
+            return redirect('dkllapp:register', message)
     form = NewUserForm()
-    return render(request=request, template_name="dkllapp/register.html", context={"register_form": form})
+    return render(request=request, template_name="dkllapp/register.html",
+                  context={"register_form": form, 'message': message})
 
 
 def account_activation_sent(request):
@@ -892,7 +907,7 @@ def bonus(request):
 
 ##########################################Profil################################
 @login_required
-def profil(request):
+def profil(request, message):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
@@ -900,11 +915,22 @@ def profil(request):
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     choix_user = Choix.objects\
         .filter(user_id=request.user.id).order_by('candidat_id')\
-        .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
+        .values('id', 'type', 'candidat_id', 'candidat__nom',
+                'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
+    message = message
+    if request.method == "POST":
+        form = ProfilMailForm(request.POST)
+        if form.is_valid():
+            current_userprofile.boolemail = form.cleaned_data.get('mail')
+            message = "Choix pris en compte"
+            current_userprofile.save()
+            return redirect('dkllapp:profil', message)
+    form = ProfilMailForm()
     return render(request=request,
                   template_name="dkllapp/profil.html",
                   context={'candidats': candidats, 'ligues': ligues,
-                           'choix_user': choix_user, 'before_creation': 'profil', 'current_userprofile': current_userprofile,
+                           'choix_user': choix_user, 'before_creation': 'profil',
+                           'current_userprofile': current_userprofile, 'message': message,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -931,7 +957,7 @@ def choix(request, type_choix, before, txt):
             if len(selected_candidat) == nbr_par_type(type_choix):
                 choix_pour_un_type(request.user, type_choix, selected_candidat)
                 if before == "profil":
-                    return redirect('dkllapp:profil')
+                    return redirect('dkllapp:profil', '1')
                 else:
                     return redirect('dkllapp:index')
             else:
@@ -1064,25 +1090,71 @@ def statistiques(request):
 
 
 @login_required
-def nouveau_login(request):
-    nouveau_login = 'nouveau_login'
+def changer_identifiant(request, message):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    current_user = User.objects.filter(id=request.user.id).first()
+    if request.method == "POST":
+        form = ChangerIdentifiantForm(request.POST)
+        if form.is_valid():
+            current_user.username = form.cleaned_data.get('new_username')
+            try:
+                current_user.save()
+            except IntegrityError:
+                message = "L'identifiant " + form.cleaned_data.get('new_username') + " est déjà utilisé"
+                return redirect('dkllapp:changer_identifiant', message)
+            message_profil = "L'identifiant a été mis à jour"
+            return redirect('dkllapp:profil', message_profil)
+    form = ChangerIdentifiantForm()
     return render(request=request,
-                  template_name="dkllapp/nouveau_login.html",
-                  context={'nouveau_login': nouveau_login,
+                  template_name="dkllapp/changer_identifiant.html",
+                  context={'ligues': ligues, 'form': form, 'current_user': current_user,
+                           'message': message,
                            'isadmin': is_admin(request.user.id)})
 
 
 @login_required
-def nouveau_mdp(request):
-    nouveau_mdp = 'nouveau_mdp'
+def changer_mdp(request, message):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    current_user = User.objects.filter(id=request.user.id).first()
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            message_profil = "Le mot de passe a été mis à jour"
+            return redirect('dkllapp:profil', message_profil)
+        else:
+            message = "Une erreur s'est produite, vérifie que tous les critères sont respectés."
+            if request.POST['new_password1'] != request.POST['new_password2']:
+                message = "Les champs ne sont pas identiques"
+            else:
+                if len(request.POST['new_password1']) > 8:
+                    try:
+                        test = int(form.cleaned_data.get('new_password1'))
+                        message = "Le mot de passe ne doit pas être entièrement numérique"
+                    except ValueError:
+                        pass
+                else:
+                    message = "Le mot de passe doit faire au moins 9 caractères"
+            return redirect('dkllapp:changer_mdp', message)
+    else:
+        form = PasswordChangeForm(request.user)
     return render(request=request,
-                  template_name="dkllapp/nouveau_mdp.html",
-                  context={'nouveau_mdp': nouveau_mdp,
+                  template_name="dkllapp/changer_mdp.html",
+                  context={'ligues': ligues, 'form': form, 'current_user': current_user,
+                           'message': message,
                            'isadmin': is_admin(request.user.id)})
 
 
 @login_required
 def picto(request, txt_alert):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
     pictos = []
     new_fields = {}
     for i in range(1, 64):
@@ -1104,7 +1176,8 @@ def picto(request, txt_alert):
                 print('img_avant', current_user.img)
                 current_user.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
                 current_user.save()
-                return redirect('dkllapp:profil')
+                message_profil = "Le picto a été mis à jour"
+                return redirect('dkllapp:profil', message_profil)
             else:
                 txt_alert = "alert"
                 return redirect('dkllapp:picto', txt_alert)

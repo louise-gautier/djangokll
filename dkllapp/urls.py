@@ -35,10 +35,10 @@ urlpatterns = [
     path('pronos_cgi/<question_id>/<proposition_id>', views.pronos_cgi, name='pronos_cgi'),
     path('bonus/', views.bonus, name='bonus'),
 
-    path('profil/', views.profil, name='profil'),
+    path('profil/<message>/', views.profil, name='profil'),
     path('picto/<txt_alert>/', views.picto, name='picto'),
-    path('nouveau_login/', views.nouveau_login, name='nouveau_login'),
-    path('nouveau_mdp/', views.nouveau_mdp, name='nouveau_mdp'),
+    path('changer_identifiant/<message>', views.changer_identifiant, name='changer_identifiant'),
+    path('changer_mdp/<message>', views.changer_mdp, name='changer_mdp'),
     path('creation_ligue/', views.creation_ligue, name='creation_ligue'),
     path('rejoindre_ligue/', views.rejoindre_ligue, name='rejoindre_ligue'),
 
@@ -49,7 +49,7 @@ urlpatterns = [
     path('classement_general/', views.classement_general, name='classement_general'),
     path('statistiques/', views.statistiques, name='statistiques'),
 
-    path("register/", views.register_request, name="register"),
+    path("register/<message>", views.register_request, name="register"),
     path("login/", views.login_request, name="login"),
     path("logout/", views.logout_request, name="logout"),
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <p class="titre_rouge"><b>Change ton identifiant</b></p>
+            <form method="POST">
+                {% csrf_token %}
+                <div id="div_id_nom" class="control-group">
+                    <label for="id_new_username" class="control-label requiredField">Nouvel identifiant<span class="asteriskField">*</span></label>
+                    <a style="color: white;" href="#" data-toggle="tooltip" data-placement="bottom"
+                   title="L'identifiant ne peut contenir que des chiffres, des lettres ou les caractères spéciaux @ . + - _"><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i></a>
+                    <div class="controls">
+                        <input type="text" name="new_username" value="{{current_user.username}}" autofocus="" autocapitalize="none" autocomplete="new_username"
+                               maxlength="150" class="textinput textInput" required="" id="id_new_username">
+                    </div>
+                </div>
+                <br>
+                {% if message == '1' %}
+                {% else %}
+                <div class="alert alert-danger" role="alert" style="width: 300px;">
+                    <i aria-hidden="true" class="mdi mdi-block-helper"></i>&nbsp;{{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i aria-hidden="true" class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                <br>
+                {% endif %}
+                <button class="btn btn-danger btn-sm" type="submit">Changer</button>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

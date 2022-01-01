@@ -20,23 +20,33 @@
                 <div style="display: flex;">
                     <form id="form" action="" method="POST">
                         <div class="form-check">
-                        {{ form.csrf_token }}
-                            {% if user.mail == True %}
+                            {% csrf_token %}
+                            {% if current_userprofile.boolemail == True %}
                                 <input class="form-check-input" type="checkbox" checked id='mail' name='mail' onchange="document.getElementById('form').submit()">
-                                <label class="form-check-label" for="mail">Je souhaite recevoir les mails de la Tribu</label>
+                                <label class="form-check-label" for="mail">Je souhaite recevoir les mails des pimenteurs</label>
                             {% else %}
                                 <input class="form-check-input" type="checkbox" id='mail' name='mail' onchange="document.getElementById('form').submit()">
-                                <label class="form-check-label" for="mail">Je souhaite recevoir les mails de la Tribu</label>
+                                <label class="form-check-label" for="mail">Je souhaite recevoir les mails des pimenteurs</label>
                             {% endif %}
                         </div>
                     </form>
                 </div>
                 <br>
+                {% if message == '1' %}
+                {% else %}
+                <div class="alert alert-danger" role="alert" style="width: 300px;">
+                    <i class="mdi mdi-check-bold"></i>&nbsp;{{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i aria-hidden="true" class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                {% endif %}
+                <br>
                 <div class="btn-profil-container">
-                        <a href="{% url 'dkllapp:nouveau_login' %}">
+                        <a href="{% url 'dkllapp:changer_identifiant' '1' %}">
                             <button type="button" class="btn btn-danger btn-sm" style="width: 100%;">Changer mon identifiant</button>
                         </a>
-                        <a href="{% url 'dkllapp:nouveau_mdp' %}">
+                        <a href="{% url 'dkllapp:changer_mdp' '1' %}">
                             <button type="button" class="btn btn-danger btn-sm" style="width: 100%;">Changer mon mot de passe</button>
                         </a>
                         <a href="{% url 'dkllapp:picto' '1' %}">
@@ -47,6 +57,7 @@
                         </a>
                 </div>
         </div>
+        <br>
         <button type="button" class="collapsible_block" id="ligues" style="margin-top: 10px;">
             <div style="width: 30px;">
                 <span style="font-size: 20px; left: 10px; ">👑</span>

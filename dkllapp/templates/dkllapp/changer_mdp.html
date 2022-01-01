@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div style="padding-left: 15px; padding-right: 15px;">
+            <p class="titre_rouge"><b>Change ton mot de passe</b></p>
+            <form method="post">
+                {% csrf_token %}
+                <label for="id_old_password">Mot de passe actuel</label>
+                <br><input type="password" name="old_password" autocomplete="" autofocus="" required="" id="id_old_password">
+                <br>
+                <br>
+                <label for="id_new_password1">Nouveau mot de passe&nbsp;</label>
+                <a href="#" data-toggle="tooltip" data-placement="bottom"
+                   title="Le mot de passe doit faire au moins 9 caractères.
+                          &#x0aIl ne doit être similaire aux autres champs (ex: identifiant).
+                          &#x0aIl ne peut pas être entièrement numérique."><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i></a>
+                <br><input type="password" name="new_password1" autocomplete="" required="" id="id_new_password1">
+                <br>
+                <label for="id_new_password2">Confirmation&nbsp;</label>
+                <a href="#" data-toggle="tooltip" data-placement="bottom"
+                   title="Ce champ doit être identique au précédent."><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i></a>
+                <br><input type="password" name="new_password2" autocomplete="" required="" id="id_new_password2">
+                <br>
+                <br>
+                {% if message == '1' %}
+                {% else %}
+                <div class="alert alert-danger" role="alert" style="width: 300px; overflow: scroll;">
+                    <i aria-hidden="true" class="mdi mdi-block-helper"></i>&nbsp;{{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i aria-hidden="true" class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                <br>
+                {% endif %}
+                <button class="btn btn-danger btn-sm" type="submit">Changer</button>
+            </form>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+
+</body>
+</html>

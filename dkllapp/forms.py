@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.forms import ChoiceField
+from django.forms import ChoiceField, PasswordInput
 
 from dkllapp.models import Candidat
 
@@ -116,6 +116,15 @@ class AjouterEvenementForm(forms.Form):
 class MessageMurForm(forms.Form):
     nouveau_parent = forms.CharField(label='corps', max_length=9999)
 
+
 class PictoForm(forms.Form):
     pass
+
+
+class ProfilMailForm(forms.Form):
+    mail = forms.BooleanField(required=False)
+
+
+class ChangerIdentifiantForm(forms.Form):
+    new_username = forms.CharField(label='nom', max_length=100)
 

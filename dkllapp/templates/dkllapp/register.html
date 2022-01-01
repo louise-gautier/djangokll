@@ -4,48 +4,61 @@
 <head>
     {% include 'dkllapp/head.html' %}
 </head>
-<body class="bg-gradient-black" style="background-color: #DA071F;>
+<body class="bg-gradient-black" style="background-color: #DA071F;">
     <div class="mainwrapper">
         {% load crispy_forms_tags %}
-        <!--Login-->
         <div class="container py-5" style="display: flex; flex-direction: column; justify-content: center; padding-top: 20px !important; padding-bottom: 0px !important;">
             <a class="navbar-brand" style="height: auto; margin: auto;" href="{% url 'dkllapp:index' %}">
                 <img style="height: 100px;" src="/static/dkllapp/img/pilixpili_login.png" alt="Pili Pili">
             </a>
             <br>
-            <form method="POST" style="width: 240px; margin: auto;">
+            <form method="POST" style="width: 100%; margin: 0 auto 0 auto;">
                 {% csrf_token %}
-                <div id="div_id_username" class="control-group">
-                    <label for="id_username" class="control-label requiredField" style="margin-bottom: 0px;">Identifiant<span class="asteriskField">*</span>&nbsp;<span id="hint_id_username" style="font-size: 10px">Alphanumérique et @ . + - _</span></label>
-                    <div class="controls">
-                        <input type="text" name="username" maxlength="150" autofocus="" class="textinput textInput" style="margin-bottom: 5px;" required="" id="id_username">
+                <div id="div_id_username" class="control-group" style="width: 100%; display: flex;">
+                    <div class="controls" style="width: 100%;">
+                        <input type="text" name="username" maxlength="150" autofocus="" placeholder="Identifiant*"
+                               class="textinput textInput btn btn-light btn-sm" style="margin-bottom: 5px; width: calc(100% - 25px);" required="" id="id_username">
+                        <a style="color: white;" href="#" data-toggle="tooltip" data-placement="bottom"
+                           title="L'identifiant ne peut contenir que des chiffres, des lettres ou les caractères spéciaux @ . + - _"><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i>
+                        </a>
                     </div>
                 </div>
-				<div id="div_id_email" class="control-group">
-					<label for="id_email" class="control-label requiredField" style="margin-bottom: 0px;">Email<span class="asteriskField">*</span> </label>
-					<div class="controls">
-						<input type="email" name="email" class="emailinput" style="margin-bottom: 5px;" required="" id="id_email">
+				<div id="div_id_email" class="control-group" style="width: 100%; display: flex;">
+					<div class="controls" style="width: 100%;">
+						<input type="email" name="email" class="emailinput btn btn-light btn-sm"
+                               style="margin-bottom: 5px; width: calc(100% - 25px);" required="" id="id_email" placeholder="Email*">
 					</div>
 				</div>
-				<div id="div_id_password1" class="control-group">
-					<label for="id_password1" class="control-label requiredField" style="margin-bottom: 0px;">Mot de Passe<span class="asteriskField">*</span>&nbsp;<span id="hint_id_password1" style="font-size: 10px">9 caractères min.</span></label>
-					<div class="controls">
-						<input type="password" name="password1" autocomplete="new-password" class="textinput textInput" style="margin-bottom: 5px;" required="" id="id_password1">
+				<div id="div_id_password1" class="control-group" style="width: 100%; display: flex;">
+					<div class="controls" style="width: 100%;">
+						<input type="password" name="password1" autocomplete="new-password" placeholder="Mot de passe*"
+                               class="textinput textInput btn btn-light btn-sm" style="margin-bottom: 5px; width: calc(100% - 25px);" required="" id="id_password1">
+					<a style="color: white;" href="#" data-toggle="tooltip" data-placement="bottom"
+                    title="Le mot de passe doit faire au moins 9 caractères.
+                          &#x0aIl ne doit être similaire aux autres champs (ex: identifiant).
+                          &#x0aIl ne peut pas être entièrement numérique."><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i>
+                    </a>
 					</div>
 				</div>
-				<div id="div_id_password2" class="control-group">
-					<label for="id_password2" class="control-label requiredField" style="margin-bottom: 0px;">Confirmation<span class="asteriskField">*</span>&nbsp;<span id="hint_id_password2" class="help-block" style="font-size: 10px">Identique au précedent.</span></label>
-					<div class="controls">
-                        <input type="password" name="password2" autocomplete="new-password" class="textinput textInput" style="margin-bottom: 10px;" required="" id="id_password2">
+				<div id="div_id_password2" class="control-group" style="width: 100%; display: flex;">
+					<div class="controls" style="width: 100%;">
+                        <input type="password" name="password2" autocomplete="new-password" placeholder="Confirmation*"
+                               class="textinput textInput btn btn-light btn-sm" style="margin-bottom: 10px; width: calc(100% - 25px);" required="" id="id_password2">
+                    <a style="color: white;" href="#" data-toggle="tooltip" data-placement="bottom"
+                    title="Ce champ doit être identique au précédent."><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i>
+                    </a>
 					</div>
 				</div>
-                {% if messages %}
+                {% if message == '1' %}
+                {% else %}
+                <div class="alert alert-danger" role="alert"
+                     style="width: 300px; background-color: white; color: #DA071F;">
+                    <i aria-hidden="true" class="mdi mdi-block-helper"></i>&nbsp;{{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: #DA071F;">
+                        <i aria-hidden="true" class="mdi mdi-close"></i>
+                    </button>
+                </div>
                 <br>
-                <ul class="messages">
-                {% for message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
-                </ul>
                 {% endif %}
                 <button class="btn btn-danger" style="border: white solid 1px;" type="submit">S'inscrire</button>
             </form>

@@ -18,8 +18,8 @@
                 {% csrf_token %}
                 <div id="div_id_username" class="control-group" style="padding-bottom: 5px;">
                     <div class="controls">
-                        <input type="text" class="btn btn-light btn-sm" name="username" autofocus="" autocapitalize="none" autocomplete="username"
-                               maxlength="150" class="textinput textInput" placeholder="Identifiant" required=""
+                        <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username"
+                               maxlength="150" class="textinput textInput btn btn-light btn-sm" placeholder="Identifiant" required=""
                                id="id_username" style="width: 100%;">
                     </div>
                 </div>
@@ -30,20 +30,12 @@
                                id="id_password" style="width: 100%;">
                     </div>
                 </div>
-                {% if messages %}
-                <br>
-                <ul class="messages">
-                {% for message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
-                </ul>
-                {% endif %}
                 <br>
                 <button class="btn btn-danger" style="border: white solid 1px;" type="submit">Login</button>
             </form>
             <br>
             <p class="text-center" style="font-size: 15px;">Pas encore inscrit ?
-                <br><a href="/register" style="color: white; text-decoration: underline;">Créer un compte</a>
+                <br><a href="{% url 'dkllapp:register' '1' %}" style="color: white; text-decoration: underline;">Créer un compte</a>
             </p>
         </div>
         <br>
