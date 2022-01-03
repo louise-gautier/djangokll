@@ -1068,7 +1068,7 @@ def faq(request):
 @login_required
 def classement_general(request):
     ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
         .values('id', 'ligue_id', 'ligue__nom')
     users = User.objects.all().order_by('id')
     users_a_classer = []
@@ -1134,17 +1134,20 @@ def classement_general(request):
 
 @login_required
 def statistiques(request):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
     statistiques = 'statistiques'
     return render(request=request,
                   template_name="dkllapp/statistiques.html",
-                  context={'statistiques': statistiques,
+                  context={'statistiques': statistiques, 'ligues': ligues,
                            'isadmin': is_admin(request.user.id)})
 
 
 @login_required
 def changer_identifiant(request, message):
     ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
         .values('id', 'ligue_id', 'ligue__nom')
     current_user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
@@ -1169,7 +1172,7 @@ def changer_identifiant(request, message):
 @login_required
 def changer_mdp(request, message):
     ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('insert_datetime') \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
         .values('id', 'ligue_id', 'ligue__nom')
     current_user = User.objects.filter(id=request.user.id).first()
     if request.method == 'POST':
