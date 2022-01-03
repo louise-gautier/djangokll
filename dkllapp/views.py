@@ -1,12 +1,7 @@
 import random
-
-import requests
-import os
-
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -14,26 +9,21 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import IntegrityError
 from django.db.models import Sum, Q
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
 from django.template import loader
 from django.template.loader import render_to_string
 
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
-from django.urls import reverse
 from django.utils.timezone import now
-from django.views import generic
 
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django import forms
 
 from webpush import send_user_notification
 import json
-from urllib.request import urlopen
-from urllib.request import Request
 import shortuuid
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \

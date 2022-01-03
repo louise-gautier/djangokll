@@ -1,8 +1,5 @@
 from django.conf.urls.static import static
 from django.urls import path, include
-
-# Centralisation des def de views avec attribution de l'url
-# C'est l'equivalent des décorateurs dans routes en Flask
 from django.views.generic import TemplateView
 
 from dkllapp import views
