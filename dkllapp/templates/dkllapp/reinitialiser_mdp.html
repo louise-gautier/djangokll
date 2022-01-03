@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black" style="background-color: #DA071F;">
+    <div class="mainwrapper">
+        {% load crispy_forms_tags %}
+        <div class="container py-5" style="display: flex; flex-direction: column; justify-content: center; padding-top: 20px !important; padding-bottom: 0px !important;">
+            <a class="navbar-brand" style="height: auto; margin: auto;" href="{% url 'dkllapp:index' %}">
+                <img style="height: 100px;" src="/static/dkllapp/img/pilixpili_login.png" alt="Pili Pili">
+            </a>
+            <br>
+            <form method="POST" style="width: 100%; margin: 0 auto 0 auto;">
+                {% csrf_token %}
+                <p>Renseigne ton adresse e-mail :</p>
+				<div id="div_id_email" class="control-group" style="width: 100%; display: flex;">
+					<div class="controls" style="width: 100%;">
+						<input type="email" name="email" class="emailinput btn btn-light btn-sm"
+                               style="margin-bottom: 5px; width: 100%;" required="" id="id_email" placeholder="Email*">
+					</div>
+				</div>
+                {% if message == '1' %}
+                {% else %}
+                <div class="alert alert-danger" role="alert"
+                     style="width: 300px; background-color: white; color: #DA071F;">
+                    <i aria-hidden="true" class="mdi mdi-account-alert"></i>&nbsp;{{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: #DA071F;">
+                        <i aria-hidden="true" class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                <br>
+                {% endif %}
+                <button class="btn btn-danger" style="border: white solid 1px;" type="submit"><V>Valider</V></button>
+            </form>
+            <br>
+            <p class="text-center" style="font-size: 15px;">Tu as déjà un compte ?
+                <br><a href="/login" style="color: white; text-decoration: underline;">Se connecter</a>
+            </p>
+        </div>
+    </div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

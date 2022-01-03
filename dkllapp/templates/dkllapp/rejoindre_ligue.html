@@ -8,9 +8,6 @@
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
         <br>
-        {% if isadmin == False %}
-            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
-        {% else %}
         <p class="titre_rouge"><b>Rejoins une ligue</b></p>
         <div style="padding-left: 15px; padding-right: 15px;">
             <form method="POST">
@@ -26,7 +23,6 @@
                 <button class="btn btn-danger btn-sm" type="submit">Rejoindre</button>
             </form>
         </div>
-        {% endif %}
     </div>
     {% include 'dkllapp/body_scripts.html' %}
 </body>

@@ -7,7 +7,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 
 from dkllapp import views
-from dkllapp.views import send_push, home_push, home_mail
+from dkllapp.views import send_push, home_push
 from mysite import settings
 
 app_name = 'dkllapp'
@@ -41,6 +41,7 @@ urlpatterns = [
     path('changer_mdp/<message>', views.changer_mdp, name='changer_mdp'),
     path('creation_ligue/', views.creation_ligue, name='creation_ligue'),
     path('rejoindre_ligue/', views.rejoindre_ligue, name='rejoindre_ligue'),
+    path('rejoindre_ligue_cgi/<ligue_id>', views.rejoindre_ligue_cgi, name='rejoindre_ligue_cgi'),
 
     path('generales/', views.generales, name='generales'),
     path('bareme/', views.bareme, name='bareme'),
@@ -50,6 +51,7 @@ urlpatterns = [
     path('statistiques/', views.statistiques, name='statistiques'),
 
     path("register/<message>", views.register_request, name="register"),
+    path("reinitialiser_mdp/<message>", views.reinitialiser_mdp, name="reinitialiser_mdp"),
     path("login/", views.login_request, name="login"),
     path("logout/", views.logout_request, name="logout"),
 
@@ -59,7 +61,6 @@ urlpatterns = [
     path('home_push/', home_push),
     path('send_push', send_push),
     path('webpush/', include('webpush.urls')),
-    path('home_mail/', home_mail),
     path('home_push/sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

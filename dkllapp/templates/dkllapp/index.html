@@ -6,7 +6,6 @@
 </head>
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
-
     <div class="mainwrapper" style="padding-left: 15px; padding-right: 15px;">
         <br>
         <p style="padding-left: 15px;"><b>Dernière notification</b></p>
@@ -40,35 +39,35 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                            <td class="td2" style="padding: 10px;">
-                                <div style="display: flex;">
-                                    <div style="display: flex; flex-flow: wrap; width: 90%;">
-                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
-                                            <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
-                                        </div>
-                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
-                                            <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">YY pts (3/8)</a>
-                                        </div>
-                                        <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
-                                            <a href="{% url 'dkllapp:equipe' ligue.ligue_id %}">
-                                                {% for ligne_equipe in lignes_equipes %}
-                                                {% if ligne_equipe.id == ligue.ligue_id %}
-                                                <img class="candidat_equipe_ligue" src="{% static ligne_equipe.ligne.candidat__chemin_img %}">
-                                                {% endif %}
-                                                {% endfor %}
-                                            </a>
-                                        </div>
+                        <td class="td2" style="padding: 10px;">
+                            <div style="display: flex;">
+                                <div style="display: flex; flex-flow: wrap; width: 90%;">
+                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                        <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
                                     </div>
-                                    <div style="display: flex; width: 10%; justify-content: space-around; align-items: center; text-align: center;">
-                                        <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:details' ligue.ligue_id 0 %}" aria-selected="true">
-                                                    <i class="mdi mdi-magnify-plus" style="margin: auto; padding: 2px;"></i></a>
-                                            </li>
-                                        </ul>
+                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                        <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">YY pts (3/8)</a>
+                                    </div>
+                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                        <a href="{% url 'dkllapp:equipe' ligue.ligue_id %}">
+                                            {% for ligne_equipe in lignes_equipes %}
+                                            {% if ligne_equipe.id == ligue.ligue_id %}
+                                            <img class="candidat_equipe_ligue" src="{% static ligne_equipe.ligne.candidat__chemin_img %}">
+                                            {% endif %}
+                                            {% endfor %}
+                                        </a>
                                     </div>
                                 </div>
-                            </td>
+                                <div style="display: flex; width: 10%; justify-content: space-around; align-items: center; text-align: center;">
+                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:details' ligue.ligue_id 0 %}" aria-selected="true">
+                                                <i class="mdi mdi-magnify-plus" style="margin: auto; padding: 2px;"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

@@ -10,6 +10,9 @@
         <br>
         <p class="titre_rouge"><b>Ajouter un évènement</b></p>
         <div style="padding-left: 15px; padding-right: 15px;">
+            {% if isadmin == False %}
+            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
+            {% else %}
             <form method="POST">
                 {% csrf_token %}
                 <div style="display: flex; flex-flow: row wrap;">
@@ -53,6 +56,7 @@
                 <br>
                 <br><button class="btn btn-danger btn-sm" type="submit">Ajouter</button>
             </form>
+            {% endif %}
         </div>
     </div>
     {% include 'dkllapp/body_scripts.html' %}

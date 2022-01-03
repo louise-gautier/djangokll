@@ -1,0 +1,8 @@
+{% autoescape off %}
+Bonjour {{ user.username }},
+
+Ton nouveau mot de passe est le suivant : {{ nouveau_mdp }}
+
+Nous te suggérons fortement de la changer immédiatement dans ton profil : http://{{ domain }}{% url 'dkllapp:profil' '1' %}
+
+{% endautoescape %}

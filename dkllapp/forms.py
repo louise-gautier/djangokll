@@ -128,3 +128,6 @@ class ProfilMailForm(forms.Form):
 class ChangerIdentifiantForm(forms.Form):
     new_username = forms.CharField(label='nom', max_length=100)
 
+
+class ReinitailiserMdpForm(forms.Form):
+    email = forms.CharField(label='email')

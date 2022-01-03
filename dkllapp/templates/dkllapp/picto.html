@@ -13,45 +13,56 @@
             <form id="form" action="" method="POST">
                 {% csrf_token %}
                 <div style="padding-left: 15px; padding-right: 15px;">
-                    <div style="display: flex; flex-flow: row wrap; justify-content: space-around;">
-                        {% for field in form %}
-                        <div class="form-check_candidat">
-                            <input class="form-check-input_candidat" type="checkbox" id={{field.name}} name={{field.name}}>
-                            {% for picto_chemin in pictos %}
-                            <script type="text/javascript">if (("0" + "{{field.name}}".substring(5,7)).slice(-2) == ("0" + "{{picto_chemin}}".substring(24,26)).slice(-2) ) {
-                                                                lbl = document.createElement("label");
-                                                                lbl.setAttribute("class","form-check-label_candidat")
-                                                                lbl.setAttribute("for","{{field.name}}")
+                    <div id="div_a_justify" style="display: flex; flex-flow: row wrap;">
+                        <script type="text/javascript">
+                            for (let i = 1, len = 65; i < len; i++) {
+                                div_form_check_candidat = document.createElement("div");
+                                div_form_check_candidat.setAttribute("class", "form-check_candidat");
 
-                                                                div_img = document.createElement("div");
-                                                                div_img.setAttribute("class", "div_picto");
-                                                                img = document.createElement("img");
-                                                                img.setAttribute("src", "{% static picto_chemin %}");
-                                                                img.setAttribute("class", "img_div_picto");
-                                                                div_img.appendChild(img)
-                                                                lbl.appendChild(div_img)
+                                input_pict = document.createElement("input");
+                                input_pict.setAttribute("class", "form-check-input_candidat");
+                                input_pict.setAttribute("type", "checkbox");
+                                input_pict.setAttribute("id", "pict_" + i.toString());
+                                input_pict.setAttribute("name", "pict_" + i.toString());
 
-                                                                input_tag = document.getElementById("{{ field.name }}");
-                                                                input_tag.parentNode.insertBefore(lbl, input_tag.nextSibling.nextSibling.nextSibling);
-                                                            } else {};
-                            </script>
-                            {% endfor %}
-                        </div>
-                        <br>
-                        {% endfor %}
-                        {% if "alert" in txt_alert %}
-                        <p style="padding-left: 8px; padding-top: 8px; color: #f12459; font-size: 12px;">Attention, tu n'as pas sélectionné un et un seul picto.</p>
-                        {% endif %}
-                        <br>
-                        <button class="btn btn-danger btn-sm" type="submit">Valider</button>
+                                lbl = document.createElement("label");
+                                lbl.setAttribute("class","form-check-label_candidat");
+                                lbl.setAttribute("for","pict_" + i.toString());
 
+                                div_img = document.createElement("div");
+                                div_img.setAttribute("class", "div_picto");
+                                img = document.createElement("img");
+                                var chemin = "/static/dkllapp/img/kitchen/png/" + ("0" + i.toString()).slice(-2) + ".png"
+                                console.log(chemin)
+                                img.setAttribute("src", chemin);
+                                img.setAttribute("class", "img_div_picto");
+                                div_img.appendChild(img);
+                                lbl.appendChild(div_img);
+
+                                div_form_check_candidat.appendChild(input_pict);
+                                div_form_check_candidat.appendChild(lbl);
+                                div_justif = document.getElementById("div_a_justify");
+                                div_justif.appendChild(div_form_check_candidat);
+                            }
+                        </script>
                     </div>
                     <br>
+                    {% if "alert" in txt_alert %}
+                    <p style="padding-left: 8px; padding-top: 8px; color: #f12459; font-size: 12px;">Attention, tu n'as pas sélectionné un et un seul picto.</p>
+                    {% endif %}
                     <br>
+                    <button class="btn btn-danger btn-sm" type="submit">Valider</button>
                 </div>
+                <br>
+                <br>
             </form>
         </div>
     </div>
+    <script>
+    div_justif = document.getElementById("div_a_justify");
+    console.log(div_justif)
+    div_justif.setAttribute("style", "display: flex; flex-flow: row wrap; justify-content: space-around;");
+    </script>
     {% include 'dkllapp/body_scripts.html' %}
 </body>
 </html>

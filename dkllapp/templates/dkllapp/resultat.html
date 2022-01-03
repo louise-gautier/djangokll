@@ -6,13 +6,9 @@
 </head>
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
-<div class="mainwrapper">
+    <div class="mainwrapper">
         <br>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
-            {% if ligue == 'vide' %}
-            {% include 'ligue_vide.html' %}
-            <br>
-            {% else %}
             <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
             <table width="100%" cellspacing="0" style="border-radius: 10px;">
                 <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
@@ -39,7 +35,7 @@
                             </div>
                         </td>
                         <td style="font-size: 15px; text-align: center;">{{ membre.points_candidats }}</td>
-                        <td style="font-size: 15px; text-align: center;">{{ membre.sum_bonus }}</td>
+                        <td style="font-size: 15px; text-align: center;">{{ membre.points_feu }}</td>
                         <td style="font-size: 15px; text-align: center;"><b>{{ membre.total }}</b></td>
                     </tr>
                     {% endfor %}
@@ -52,7 +48,6 @@
                 <span style="padding-left: 8px; font-size:12px;">🔥 &nbsp; : Bonus marqués grâce aux Pronos</span><br>
                 <span style="padding-left: 8px; font-size:12px;">⭐ &nbsp; : Total des pilis</span>
             </p>
-            {% endif %}
             <br>
             <br>
         </div>

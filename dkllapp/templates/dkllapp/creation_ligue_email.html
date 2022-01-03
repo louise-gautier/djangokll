@@ -1,0 +1,11 @@
+<html>
+Bonjour {{ user.username }},
+<br>
+<br>Ta ligue Pili Pili a été créée avec succès, tu peux envoyer ce code à tes amis :
+<br>
+<br>Code : {{ ligue_id }}
+<br>
+<br>Lien pour rejoindre la ligue : http://{{ domain }}{% url 'dkllapp:rejoindre_ligue_cgi' ligue_id=ligue_id %}
+<br>
+<br>Lien de la ligue : http://{{ domain }}{% url 'dkllapp:mur' ligue_id=ligue_id %}
+</html>

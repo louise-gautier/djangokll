@@ -10,3 +10,4 @@ django-utils-six
 django-webpush
 six
 requests
+shortuuid

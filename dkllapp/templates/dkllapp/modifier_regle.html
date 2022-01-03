@@ -9,6 +9,9 @@
     <div class="mainwrapper">
         <br>
         <p class="titre_rouge"><b>Créer ou modifier une règle</b></p>
+        {% if isadmin == False %}
+            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
+        {% else %}
         <div style="padding-left: 15px; padding-right: 15px;">
             <form method="POST">
             {% csrf_token %}
@@ -21,6 +24,7 @@
                 <br><button class="btn btn-danger btn-sm" type="submit">Valider</button>
             </form>
         </div>
+        {% endif %}
     </div>
     {% include 'dkllapp/body_scripts.html' %}
 </body>

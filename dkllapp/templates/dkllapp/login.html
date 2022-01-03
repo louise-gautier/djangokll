@@ -31,7 +31,10 @@
                     </div>
                 </div>
                 <br>
-                <button class="btn btn-danger" style="border: white solid 1px;" type="submit">Login</button>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <button class="btn btn-danger" style="border: white solid 1px;" type="submit">Login</button>
+                    <a href="{% url 'dkllapp:reinitialiser_mdp' '1' %}" style="color: white; text-decoration: underline; font-size: 12px; padding: 2px; text-align: right;">Mot de passe oublié ?</a>
+                </div>
             </form>
             <br>
             <p class="text-center" style="font-size: 15px;">Pas encore inscrit ?

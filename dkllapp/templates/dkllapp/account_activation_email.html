@@ -1,7 +1,7 @@
 {% autoescape off %}
-Hi {{ user.username }},
+Bonjour {{ user.username }},
 
-Please click on the link below to confirm your registration:
+Ton compte Pili Pili a été créé avec succès, merci de confirmer ton adresse mail avec le lien suivant :
 
 http://{{ domain }}{% url 'dkllapp:activate' uidb64=uidb64 token=token %}
 {% endautoescape %}

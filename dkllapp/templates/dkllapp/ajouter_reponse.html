@@ -10,6 +10,9 @@
         <br>
         <p class="titre_rouge"><b>Ajouter une réponse</b></p>
         <div style="padding-left: 15px; padding-right: 15px;">
+            {% if isadmin == False %}
+            <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
+            {% else %}
             <form method="POST">
                 {% csrf_token %}
                 {% for proposition in propositions %}
@@ -20,6 +23,7 @@
                 {% endif %}
                 {% endfor %}
             </form>
+            {% endif %}
         </div>
     </div>
     {% include 'dkllapp/body_scripts.html' %}

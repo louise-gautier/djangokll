@@ -14,7 +14,7 @@
                 {% for question_plus in questions_plus %}
                 <p>
                     {{ question_plus.question.enonce }}<br>
-                    <div style="display: flex;">
+                    <div style="display: flex; flex-flow: row wrap;">
                     {% for proposition in question_plus.propositions %}
                         {% if question_plus.guess.proposition_id == proposition.id %}
                             <form class="prono_form" id="{{ proposition.id }}" action="{% url 'dkllapp:pronos_cgi' question_plus.question.id proposition.id %}" method="get">

@@ -10,11 +10,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import IntegrityError
 from django.db.models import Sum, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
+from django.template import loader
 from django.template.loader import render_to_string
 
 from django.utils.encoding import force_bytes, force_text
@@ -33,11 +34,12 @@ from webpush import send_user_notification
 import json
 from urllib.request import urlopen
 from urllib.request import Request
+import shortuuid
 
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
     ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm, \
-    PictoForm, ProfilMailForm, ChangerIdentifiantForm
+    PictoForm, ProfilMailForm, ChangerIdentifiantForm, ReinitailiserMdpForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
     Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
 from .token import account_activation_token
@@ -97,19 +99,17 @@ def nbr_par_type(type_choix):
 
 def admin_activation_choix(type_activation, type_choix):
     all_ac = ActivationChoix.objects.all()
-    print('0', all_ac)
     etat_a_changer = ActivationChoix.objects.filter(nom=type_choix).first()
-    print('1', etat_a_changer)
     if type_activation == 'activate':
         etat_a_changer.etat = 1
     else:
         etat_a_changer.etat = 0
-    print('2', etat_a_changer.nom, etat_a_changer.etat)
     etat_a_changer.save()
 
 
 def points_ligue_episode(ligue_id, un_episode):
     membres = Membre.objects.filter(ligue_id=ligue_id).values('ligue_id', 'user_id', 'user__user__username', 'user__img')
+    points_feu = PointsFeu.objects.values('user_id', 'feu').all()
     if int(un_episode) == 0:
         points = Points.objects.filter(ligue_id=ligue_id)\
             .values('ligue_id', 'user_id')\
@@ -126,36 +126,42 @@ def points_ligue_episode(ligue_id, un_episode):
             .annotate(Sum('somme_points_selon_types'))
     membres_unsorted = []
     for membre in membres:
+        membre_avec_points = {'id': membre['user_id'], 'username': membre['user__user__username'], 'img': membre['user__img']}
         marqueur = 'lost'
+        marqueur_feu = 'lost'
+        for membre_points_feu in points_feu:
+            if membre_points_feu['user_id'] == membre['user_id']:
+                membre_avec_points['points_feu'] = membre_points_feu['feu']
+                marqueur_feu = 'found'
         for membre_points in points:
             if membre_points['user_id'] == membre['user_id']:
-                membre_avec_points = {
-                    'id': membre['user_id'],
-                    'username': membre['user__user__username'],
-                    'img': membre['user__img'],
-                    'points_poulains': membre_points['somme_points_poulains__sum'],
-                    'points_podium': membre_points['somme_points_podium__sum'],
-                    'points_gagnant': membre_points['somme_points_gagnant__sum'],
-                    'points_candidats': membre_points['somme_points_selon_types__sum']
-                }
-                membres_unsorted.append(membre_avec_points)
+                membre_avec_points['points_poulains'] = membre_points['somme_points_poulains__sum']
+                membre_avec_points['points_podium'] = membre_points['somme_points_podium__sum']
+                membre_avec_points['points_gagnant'] = membre_points['somme_points_gagnant__sum']
+                membre_avec_points['points_candidats'] = membre_points['somme_points_selon_types__sum']
                 marqueur = 'found'
             else:
                 pass
-        if marqueur == 'found':
-            pass
+        if marqueur == 'lost' and marqueur_feu == 'lost':
+            membre_avec_points['points_poulains'] = 0
+            membre_avec_points['points_podium'] = 0
+            membre_avec_points['points_gagnant'] = 0
+            membre_avec_points['points_candidats'] = 0
+            membre_avec_points['points_feu'] = 0
+            membre_avec_points['total'] = 0
+        elif marqueur == 'lost':
+            membre_avec_points['points_poulains'] = 0
+            membre_avec_points['points_podium'] = 0
+            membre_avec_points['points_gagnant'] = 0
+            membre_avec_points['points_candidats'] = 0
+            membre_avec_points['total'] = membre_avec_points['points_feu']
+        elif marqueur_feu == 'lost':
+            membre_avec_points['points_feu'] = 0
+            membre_avec_points['total'] = membre_avec_points['points_candidats']
         else:
-            membre_avec_points = {
-                'id': membre['user_id'],
-                'username': membre['user__user__username'],
-                'img': membre['user__img'],
-                'points_poulains': 0,
-                'points_podium': 0,
-                'points_gagnant': 0,
-                'points_candidats': 0
-            }
-            membres_unsorted.append(membre_avec_points)
-    membres_sorted = sorted(membres_unsorted, key=lambda i: i['points_candidats'], reverse=True)
+            membre_avec_points['total'] = membre_avec_points['points_feu'] + membre_avec_points['points_candidats']
+        membres_unsorted.append(membre_avec_points)
+    membres_sorted = sorted(membres_unsorted, key=lambda i: i['total'], reverse=True)
     rang = 1
     for joueur in membres_sorted:
         joueur['rang'] = rang
@@ -163,12 +169,41 @@ def points_ligue_episode(ligue_id, un_episode):
     return membres_sorted
 
 
+def equipe_pour_une_ligue(user, ligue_id, episode, selected_candidat):
+    lignes_equipe = Equipe.objects \
+        .filter(user_id=user.id) \
+        .filter(ligue_id=ligue_id) \
+        .filter(episode=episode) \
+        .filter(type=1) \
+        .delete()
+    for candidat_id in selected_candidat:
+        nouvelle_ligne_equipe = Equipe()
+        nouvelle_ligne_equipe.user_id = user.id
+        nouvelle_ligne_equipe.ligue_id = ligue_id
+        nouvelle_ligne_equipe.episode = episode
+        nouvelle_ligne_equipe.candidat_id = candidat_id
+        nouvelle_ligne_equipe.type = 1
+        nouvelle_ligne_equipe.save()
+
+
+def choix_pour_un_type(user, type_candidat, selected_candidat):
+    lignes_equipe = Choix.objects \
+        .filter(user_id=user.id) \
+        .filter(type=type_candidat) \
+        .delete()
+    for candidat_id in selected_candidat:
+        nouvelle_ligne_choix = Choix()
+        nouvelle_ligne_choix.user_id = user.id
+        nouvelle_ligne_choix.candidat_id = candidat_id
+        nouvelle_ligne_choix.type = type_candidat
+        nouvelle_ligne_choix.save()
+
+
 ##########################################REGISTRATION ET LOGIN################################
 def register_request(request, message):
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():
-            print('form.is_valid()')
             user = form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
             user.userprofile.img = 'dkllapp/img/kitchen/default.png'
@@ -180,7 +215,7 @@ def register_request(request, message):
                 'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user), }
             #mail
-            subject = "Activation de ton compte Pili Pili"
+            subject = "🐣 Activation de ton compte Pili Pili"
             message = render_to_string('dkllapp/account_activation_email.html', context)
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user.email]
@@ -189,21 +224,63 @@ def register_request(request, message):
             return redirect('dkllapp:account_activation_sent')
         else:
             message = "Une erreur s'est produite, vérifie que tous les critères sont respectés."
-            if request.POST['password1'] != request.POST['password2']:
-                message = "Les champs ne sont pas identiques"
+            test_mail = User.objects.filter(email=form.cleaned_data.get('email'))
+            test_username = User.objects.filter(username=form.data.get('username'))
+            print(form.data)
+            print(form.cleaned_data.get('email'), form.data.get('username'))
+            print(test_mail, test_username)
+            if test_mail:
+                message = "L'email est déjà utilisé"
+            elif test_username:
+                message = "L'identifiant est déjà utilisé"
             else:
-                if len(request.POST['password1']) > 8:
-                    try:
-                        test = int(form.cleaned_data.get('password1'))
-                        message = "Le mot de passe ne doit pas être entièrement numérique"
-                    except ValueError:
-                        pass
+                if request.POST['password1'] != request.POST['password2']:
+                    message = "Les champs ne sont pas identiques"
                 else:
-                    message = "Le mot de passe doit faire au moins 9 caractères"
-            messages.error(request, "Echec de la création du compte. Réessaye en respectant les critères.")
+                    if len(request.POST['password1']) > 8:
+                        try:
+                            test = int(form.cleaned_data.get('password1'))
+                            message = "Le mot de passe ne doit pas être entièrement numérique"
+                        except ValueError:
+                            pass
+                    else:
+                        message = "Le mot de passe doit faire au moins 9 caractères"
             return redirect('dkllapp:register', message)
     form = NewUserForm()
     return render(request=request, template_name="dkllapp/register.html",
+                  context={"register_form": form, 'message': message})
+
+
+def reinitialiser_mdp(request, message):
+    if request.method == "POST":
+        form = ReinitailiserMdpForm(request.POST)
+        if form.is_valid():
+            current_user = User.objects.filter(email=form.cleaned_data.get('email')).first()
+            if current_user:
+                nouveau_mdp = 'PxP_' + shortuuid.uuid()
+                current_user.set_password(nouveau_mdp)
+                current_user.save()
+                current_site = get_current_site(request)
+                context = {
+                    'user': current_user,
+                    'domain': current_site.domain,
+                    'nouveau_mdp': nouveau_mdp}
+                #mail
+                subject = "🔐 Réinitilisation de ton mot de passe Pili Pili"
+                txt = render_to_string('dkllapp/reinitialiser_mdp_email.html', context)
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [current_user.email]
+                send_mail(subject, txt, email_from, recipient_list)
+                current_user.save()
+                return redirect('dkllapp:profil', '1')
+            else:
+                message = "Adresse e-mail introuvable"
+                return redirect('dkllapp:reinitialiser_mdp', message)
+        else:
+            message = "Une erreur s'est produite."
+            return redirect('dkllapp:reinitialiser_mdp', message)
+    form = ReinitailiserMdpForm()
+    return render(request=request, template_name="dkllapp/reinitialiser_mdp.html",
                   context={"register_form": form, 'message': message})
 
 
@@ -255,36 +332,6 @@ def logout_request(request):
     return redirect("dkllapp:index")
 
 
-def equipe_pour_une_ligue(user, ligue_id, episode, selected_candidat):
-    lignes_equipe = Equipe.objects \
-        .filter(user_id=user.id) \
-        .filter(ligue_id=ligue_id) \
-        .filter(episode=episode) \
-        .filter(type=1) \
-        .delete()
-    for candidat_id in selected_candidat:
-        nouvelle_ligne_equipe = Equipe()
-        nouvelle_ligne_equipe.user_id = user.id
-        nouvelle_ligne_equipe.ligue_id = ligue_id
-        nouvelle_ligne_equipe.episode = episode
-        nouvelle_ligne_equipe.candidat_id = candidat_id
-        nouvelle_ligne_equipe.type = 1
-        nouvelle_ligne_equipe.save()
-
-
-def choix_pour_un_type(user, type, selected_candidat):
-    lignes_equipe = Choix.objects \
-        .filter(user_id=user.id) \
-        .filter(type=type) \
-        .delete()
-    for candidat_id in selected_candidat:
-        nouvelle_ligne_choix = Choix()
-        nouvelle_ligne_choix.user_id = user.id
-        nouvelle_ligne_choix.candidat_id = candidat_id
-        nouvelle_ligne_choix.type = type
-        nouvelle_ligne_choix.save()
-
-
 ##########################################FIN REGISTRATION ET LOGIN################################
 ######################################HOME - INDEX################################
 @login_required
@@ -293,7 +340,7 @@ def index(request):
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     notif = Notif.objects.latest('insert_datetime')
@@ -326,10 +373,12 @@ def index(request):
 @login_required
 def admin(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
+    # Tableau règles
     regles = Regle.objects.all().order_by('insert_datetime')
+    # Tableau questions
     questions = Question.objects.all().order_by('episode').order_by('-insert_datetime')
     questions_plus = []
     for question in questions:
@@ -339,19 +388,23 @@ def admin(request):
             if proposition.pertinence:
                 repondu = True
         questions_plus.append({'question': question, 'propositions': propositions, 'repondu': repondu})
-    evenements = Evenement.objects.all().order_by('-insert_datetime').values('id', 'user__user__username', 'regle__contenu', 'candidat__nom',
-                                                                             'candidat__chemin_img', 'episode', 'typage', 'insert_datetime')
+    # Tableau evenement
+    evenements = Evenement.objects.all().order_by('-insert_datetime')\
+        .values('id', 'user__user__username', 'regle__contenu', 'candidat__nom',
+                'candidat__chemin_img', 'episode', 'typage', 'insert_datetime')
+    # envoi de forms
     if request.method == 'POST':
         type_choix = 'activate' if '_activate_' in list(request.POST)[1] \
             else 'deactivate' if '_deactivate_' in list(request.POST)[1] else ''
         type_activation = 'poulains' if 'poulains' in list(request.POST)[1] \
             else 'podium' if 'podium' in list(request.POST)[1] \
             else 'gagnant' if 'gagnant' in list(request.POST)[1] else ''
+        # si pas de form activation candidats
         if (type_choix, type_activation) == ('', ''):
             form_mail = MailAdminForm(request.POST)
             form_notif = NotifAdminForm(request.POST)
             form_regle = ModifierRegleForm(request.POST)
-            form_pronos = PronoAdminForm(request.POST)
+            # form questions
             if 'ajouter_question' in request.POST:
                 return redirect('dkllapp:ajouter_question', 0)
             if 'modifier_question' in request.POST:
@@ -364,6 +417,7 @@ def admin(request):
                     return redirect('dkllapp:ajouter_reponse', request.POST['prono_choisi'])
                 else:
                     return redirect('dkllapp:admin')
+            # form mail
             if form_mail.is_valid():
                 subject = form_mail.cleaned_data.get("sujet")
                 message = form_mail.cleaned_data.get("corps")
@@ -377,18 +431,21 @@ def admin(request):
                 else:
                     return redirect('dkllapp:admin')
                 send_mail(subject, message, email_from, recipient_list)
+            # form notifications
             if form_notif.is_valid():
                 nouvelle_notif = Notif()
                 nouvelle_notif.message = form_notif.cleaned_data.get('message')
                 nouvelle_notif.save()
                 return redirect('dkllapp:admin')
+            # form regles
             if form_regle.is_valid():
-                nouvelle_notif = Regle.objects.filter(id=form_regle.cleaned_data.get('regle_a_modifier')).first()
-                if nouvelle_notif:
-                    return redirect('dkllapp:modifier_regle', nouvelle_notif.id)
+                nouvelle_regle = Regle.objects.filter(id=form_regle.cleaned_data.get('regle_a_modifier')).first()
+                if nouvelle_regle:
+                    return redirect('dkllapp:modifier_regle', nouvelle_regle.id)
                 else:
                     return redirect('dkllapp:admin')
         else:
+            # si form activation candidats
             admin_activation_choix(type_choix, type_activation)
     form_mail = MailAdminForm()
     form_notif = NotifAdminForm()
@@ -404,7 +461,7 @@ def admin(request):
 @login_required
 def changer_episode(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     if request.method == "POST":
         form = EpisodeChangeForm(request.POST)
@@ -412,22 +469,22 @@ def changer_episode(request):
             episode_a_changer = Episode.objects.filter(nom='episode').first()
             episode_a_changer.valeur = form.cleaned_data.get('new_episode')
             episode_a_changer.save()
+            nouvelle_notif = Notif()
+            nouvelle_notif.message = "🎲 Les jeux sont faits pour l'épisode " + str(episode_a_changer.valeur - 1) + " !"
+            nouvelle_notif.save()
 
             membres = Membre.objects.all().order_by('id')
             for membre in membres:
                 poulains = Choix.objects.filter(user_id=membre.user_id).filter(type=1).order_by('id')
-                print('poulains', poulains)
                 if len(poulains) == 6:
                     equipe_poulains = Equipe.objects.filter(user_id=membre.user_id).filter(ligue_id=membre.ligue_id)\
                         .filter(type=1).filter(episode=episode_en_cours()).order_by('id')
-                    print('equipe_poulains', equipe_poulains)
                     if len(equipe_poulains) >= 1:
                         pass
                     else:
                         poulains_id = []
                         for candidat in poulains:
                             poulains_id.append(candidat.candidat_id)
-                        print('poulains_id', poulains_id)
                         nouvelle_ligne_equipe = Equipe()
                         nouvelle_ligne_equipe.user_id = request.user.id
                         nouvelle_ligne_equipe.ligue_id = membre.ligue_id
@@ -478,7 +535,7 @@ def changer_episode(request):
 @login_required
 def changer_equipe_tv(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
@@ -503,8 +560,6 @@ def changer_equipe_tv(request):
             else:
                 return redirect('dkllapp:changer_equipe_tv')
     form = DynamicChangerEquipeTVForm()
-    print('form', form)
-    print('candidats', candidats)
     return render(request=request,
                   template_name="dkllapp/changer_equipe_tv.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
@@ -515,7 +570,7 @@ def changer_equipe_tv(request):
 @login_required
 def changer_statut(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
@@ -547,8 +602,6 @@ def changer_statut(request):
             else:
                 return redirect('dkllapp:changer_statut')
     form = DynamicChangerStatutForm()
-    print('form', form)
-    print('candidats', candidats)
     return render(request=request,
                   template_name="dkllapp/changer_statut.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
@@ -574,6 +627,7 @@ def ajouter_question(request, question_id):
             question.bonus = form.cleaned_data.get('bonus')
             question.malus = form.cleaned_data.get('malus')
             question.save()
+
             propositions_avant = form.cleaned_data.get('propositions')
             propositions_decoupees = []
             current_proposition = ""
@@ -594,6 +648,10 @@ def ajouter_question(request, question_id):
                     nouvelle_proposition.question_id = question.id
                     nouvelle_proposition.texte = proposition_decoupee
                     nouvelle_proposition.save()
+            if question_id == '0':
+                nouvelle_notif = Notif()
+                nouvelle_notif.message = "🔥 De nouveaux pronos sont disponibles !"
+                nouvelle_notif.save()
             return redirect('dkllapp:admin')
     form = AjouterQuestionForm()
     return render(request=request,
@@ -629,7 +687,7 @@ def ajouter_reponse(request, question_id):
 @login_required
 def modifier_regle(request, regle_id):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     regle_a_modifier = Regle.objects.filter(id=regle_id).first()
@@ -663,19 +721,17 @@ def modifier_regle(request, regle_id):
 @login_required
 def ajouter_evenement(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
         .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
     regles = Regle.objects.all().order_by('insert_datetime').values('id', 'contenu')
     choices = [(regle['id'], regle['contenu']) for regle in regles]
-    print('regles', choices)
     new_fields = {}
     for candidat in candidats:
         new_fields[candidat['form_id']] = forms.BooleanField(required=False)
     new_fields['regle'] = forms.ChoiceField(choices=choices, required=True, widget=forms.Select(attrs={'class': "form_select"}))
-    print("new_fields['regle']", new_fields['regle'])
     DynamicAjouterEvenementForm = type('DynamicAjouterEvenementForm', (AjouterEvenementForm,), new_fields)
     if request.method == "POST":
         form = DynamicAjouterEvenementForm(request.POST)
@@ -706,7 +762,7 @@ def ajouter_evenement(request):
 @login_required
 def mur(request, ligue_id):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     current_user = UserProfile.objects.filter(id=request.user.id).values('user__username', 'img')[0]
@@ -725,22 +781,17 @@ def mur(request, ligue_id):
     DynamicMessageMurForm = type('DynamicMessageMurForm', (MessageMurForm,), new_fields)
     if request.method == "POST":
         form = DynamicMessageMurForm(request.POST)
-        print(request.POST)
         for field in request.POST:
-            print(field, request.POST[field])
             if field == 'csrfmiddlewaretoken':
                 pass
             elif request.POST[field]:
                 if field == 'nouveau_parent':
-                    print('field nouveau parent')
                     nouveau_message = Mur()
                     nouveau_message.user_id = request.user.id
                     nouveau_message.ligue_id = ligue_id
                     nouveau_message.message = request.POST[field]
-                    print('nouveau_message', nouveau_message)
                     nouveau_message.save()
                 elif 'area' in field:
-                    print('field[4:]', field[4:])
                     nouveau_message = Mur()
                     nouveau_message.user_id = request.user.id
                     nouveau_message.ligue_id = ligue_id
@@ -763,7 +814,7 @@ def mur(request, ligue_id):
 @login_required
 def equipe(request, ligue_id):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
@@ -787,7 +838,7 @@ def equipe(request, ligue_id):
 @login_required
 def resultat(request, ligue_id):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     membres = points_ligue_episode(ligue_id, 0)
@@ -801,7 +852,7 @@ def resultat(request, ligue_id):
 @login_required
 def details(request, ligue_id, selected_episode):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
@@ -822,15 +873,23 @@ def details(request, ligue_id, selected_episode):
 @login_required
 def changer_nom_ligue(request, ligue_id):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
+    current_user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
         form = LigueCreationForm(request.POST)
         if form.is_valid():
             current_ligue = Ligue.objects.filter(id=ligue_id).first()
+            old_name = current_ligue.nom
             current_ligue.nom = form.cleaned_data.get('nom')
             current_ligue.save()
-            return redirect('dkllapp:details', current_ligue.id)
+            nouvelle_ligne_mur = Mur()
+            nouvelle_ligne_mur.message = "✏️" + str(current_user.username) \
+                                         + " a changé le nom de la ligue " + old_name + " en " + current_ligue.nom
+            nouvelle_ligne_mur.user_id = 2
+            nouvelle_ligne_mur.ligue_id = ligue_id
+            nouvelle_ligne_mur.save()
+            return redirect('dkllapp:details', current_ligue.id, '0')
     form = LigueCreationForm()
     return render(request=request,
                   template_name="dkllapp/changer_nom_ligue.html",
@@ -842,7 +901,7 @@ def changer_nom_ligue(request, ligue_id):
 @login_required
 def pronos(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     questions = Question.objects.filter(episode=episode_en_cours_).order_by('-insert_datetime')
@@ -882,7 +941,7 @@ def pronos_cgi(request, question_id, proposition_id):
 @login_required
 def bonus(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     questions = Question.objects.order_by('-episode').order_by('-insert_datetime')
     questions_plus = []
@@ -897,7 +956,6 @@ def bonus(request):
         questions_plus.append({'question': question, 'guess': guess,
                                'propositions': propositions, 'repondu': repondu})
     points_feu = PointsFeu.objects.filter(user_id=request.user.id).values('user_id', 'feu').order_by('user_id').first()
-    print(points_feu)
     return render(request=request,
                   template_name="dkllapp/bonus.html",
                   context={'ligues': ligues, 'page': 'bonus',
@@ -909,7 +967,7 @@ def bonus(request):
 @login_required
 def profil(request, message):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     candidats = Candidat.objects.all().order_by('id')
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
@@ -937,7 +995,7 @@ def profil(request, message):
 @login_required
 def choix(request, type_choix, before, txt):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     txt_alert = txt
@@ -974,7 +1032,7 @@ def choix(request, type_choix, before, txt):
 @login_required
 def generales(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/generales.html",
@@ -985,7 +1043,7 @@ def generales(request):
 @login_required
 def bareme(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     regles = Regle.objects.all().order_by('id')
     return render(request=request,
@@ -997,7 +1055,7 @@ def bareme(request):
 @login_required
 def candidats(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     candidats = Candidat.objects.all().order_by('id')
     return render(request=request,
@@ -1009,7 +1067,7 @@ def candidats(request):
 @login_required
 def faq(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/faq.html",
@@ -1029,7 +1087,6 @@ def classement_general(request):
         ligue_max_points_user = ""
         ligues_user = Membre.objects.filter(user_id=user.id)\
             .values('ligue_id')
-        print('user.id', user.id, 'ligues_user', ligues_user)
         if ligues_user:
             for ligue in ligues_user:
                 points = Points.objects.filter(user_id=user.id).filter(ligue_id=ligue['ligue_id']) \
@@ -1047,8 +1104,8 @@ def classement_general(request):
                 users_a_classer.append([user.id, ligue_max_points_user, max_points_user])
         else:
             pass
-    print(users_a_classer)
     membres_unsorted = []
+
     for user_membre in users_a_classer:
         membre_points = Points.objects.filter(user_id=user_membre[0]).filter(ligue_id=user_membre[1]) \
             .values('ligue_id', 'user_id') \
@@ -1056,17 +1113,22 @@ def classement_general(request):
             .annotate(Sum('somme_points_podium')) \
             .annotate(Sum('somme_points_gagnant')) \
             .annotate(Sum('somme_points_selon_types'))
-
         membre_avec_points = {
             'id': user_membre[0],
-            'ligue' : Ligue.objects.filter(id=user_membre[1]).values('nom')[0]['nom'],
+            'ligue': Ligue.objects.filter(id=user_membre[1]).values('nom')[0]['nom'],
             'username': User.objects.filter(id=user_membre[0]).values('username')[0]['username'],
             'img': UserProfile.objects.filter(id=user_membre[0]).values('img')[0]['img'],
             'points_poulains': membre_points[0]['somme_points_poulains__sum'],
             'points_podium': membre_points[0]['somme_points_podium__sum'],
             'points_gagnant': membre_points[0]['somme_points_gagnant__sum'],
-            'points_candidats': membre_points[0]['somme_points_selon_types__sum']
-        }
+            'points_candidats': membre_points[0]['somme_points_selon_types__sum']}
+        points_feu_user = PointsFeu.objects.values('user_id', 'feu').filter(user_id=user_membre[0]).order_by('user_id').first()
+        if points_feu_user:
+            membre_avec_points['points_feu'] = points_feu_user['feu']
+            membre_avec_points['total'] = membre_avec_points['points_feu'] + membre_avec_points['points_candidats']
+        else:
+            membre_avec_points['points_feu'] = 0
+            membre_avec_points['total'] = membre_avec_points['points_candidats']
         membres_unsorted.append(membre_avec_points)
 
     membres_sorted = sorted(membres_unsorted, key=lambda i: i['points_candidats'], reverse=True)
@@ -1153,11 +1215,11 @@ def changer_mdp(request, message):
 @login_required
 def picto(request, txt_alert):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     pictos = []
     new_fields = {}
-    for i in range(1, 64):
+    for i in range(1, 65):
         picto = "dkllapp/img/kitchen/png/" + "{:02d}".format(i) + ".png"
         pictos.append(picto)
         new_fields['pict_' + str(i)] = forms.BooleanField(required=False)
@@ -1166,14 +1228,11 @@ def picto(request, txt_alert):
         form = DynamicPictoForm(request.POST)
         if form.is_valid():
             selected_picto = []
-            print(form.cleaned_data)
             for field in form.cleaned_data:
                 if "pict_" in field and form.cleaned_data[field]:
                     selected_picto.append(int(field[5:7]))
-            print(selected_picto, len(selected_picto))
             if 0 < len(selected_picto) < 2:
                 current_user = UserProfile.objects.filter(user_id=request.user.id).first()
-                print('img_avant', current_user.img)
                 current_user.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
                 current_user.save()
                 message_profil = "Le picto a été mis à jour"
@@ -1184,15 +1243,16 @@ def picto(request, txt_alert):
     form = DynamicPictoForm()
     return render(request=request,
                   template_name="dkllapp/picto.html",
-                  context={'pictos': pictos, 'form': form, 'txt_alert': txt_alert,
+                  context={'pictos': pictos, 'form': form, 'txt_alert': txt_alert, 'range64': list(range(1,65)),
                            'isadmin': is_admin(request.user.id)})
 
 
 @login_required
 def creation_ligue(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
+    user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
         form = LigueCreationForm(request.POST)
         if form.is_valid():
@@ -1203,7 +1263,25 @@ def creation_ligue(request):
             nouveau_membre.user_id = request.user.id
             nouveau_membre.ligue_id = nouvelle_ligue.id
             nouveau_membre.save()
-            #mail ou web push à prévoir
+            #mail
+            current_site = get_current_site(request)
+            html_message = loader.render_to_string(
+                'dkllapp/creation_ligue_email.html',
+                {
+                    'user': user,
+                    'message': 'Un mail',
+                    'domain': current_site.domain,
+                    'from_email': settings.EMAIL_HOST_USER,
+                    'ligue_id': nouvelle_ligue.id,
+                }
+            )
+            email_subject = "🌶️ Création de ta ligue Pili Pili"
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+            mail = EmailMultiAlternatives(
+                email_subject, 'This is message', email_from, recipient_list)
+            mail.attach_alternative(html_message, "text/html")
+            mail.send()
             return redirect('dkllapp:mur', nouvelle_ligue.id)
     form = LigueCreationForm()
     return render(request=request,
@@ -1215,18 +1293,17 @@ def creation_ligue(request):
 @login_required
 def rejoindre_ligue(request):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
+    print(request.user)
     if request.method == "POST":
         form = LigueJoinForm(request.POST)
         if form.is_valid():
-            print('début if')
             ligue_a_rejoindre = Ligue.objects.filter(id=form.cleaned_data.get('ligue_id')).first()
-            print('ligue_a_rejoindre', ligue_a_rejoindre)
             if ligue_a_rejoindre:
                 deja_membre = Membre.objects \
                     .filter(user_id=request.user.id) \
-                    .filter(id=ligue_a_rejoindre.id)
+                    .filter(ligue_id=ligue_a_rejoindre.id)
                 if deja_membre:
                     pass
                 else:
@@ -1234,9 +1311,6 @@ def rejoindre_ligue(request):
                     nouveau_membre.user_id = request.user.id
                     nouveau_membre.ligue_id = ligue_a_rejoindre.id
                     nouveau_membre.save()
-                    print('nouveau_membre', nouveau_membre)
-                    #mail ou web push à prévoir
-                    print('avant redirect')
                     return redirect('dkllapp:mur', ligue_a_rejoindre.id)
     form = LigueJoinForm()
     return render(request=request,
@@ -1246,9 +1320,23 @@ def rejoindre_ligue(request):
 
 
 @login_required
+def rejoindre_ligue_cgi(request, ligue_id):
+    ligue_a_rejoindre = Ligue.objects.filter(id=ligue_id).first()
+    deja_membre = Membre.objects.filter(user_id=request.user.id).filter(ligue_id=ligue_a_rejoindre.id).first()
+    if deja_membre:
+        return redirect('dkllapp:mur', ligue_a_rejoindre.id)
+    else:
+        nouveau_membre = Membre()
+        nouveau_membre.user_id = request.user.id
+        nouveau_membre.ligue_id = ligue_a_rejoindre.id
+        nouveau_membre.save()
+        return redirect('dkllapp:mur', ligue_a_rejoindre.id)
+
+
+@login_required
 def faire_equipe(request, ligue_id, before, txt):
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('insert_datetime')\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
@@ -1272,7 +1360,6 @@ def faire_equipe(request, ligue_id, before, txt):
                     equipe_pour_une_ligue(request.user, ligue_id, episode_en_cours_, selected_candidat)
                 else:
                     for ligue in ligues:
-                        print('ligue', ligue)
                         equipe_pour_une_ligue(request.user, ligue['ligue_id'], episode_en_cours_, selected_candidat)
                 if before == "equipe":
                     return redirect('dkllapp:equipe', current_ligue['id'])
@@ -1280,7 +1367,6 @@ def faire_equipe(request, ligue_id, before, txt):
                     return redirect('dkllapp:index')
             else:
                 txt_alert = "alert"
-                print('else', current_ligue['id'], before, txt_alert)
                 return redirect('dkllapp:faire_equipe', current_ligue['id'], before, txt_alert)
 
     form = DynamicEquipeCreationForm()
@@ -1292,37 +1378,6 @@ def faire_equipe(request, ligue_id, before, txt):
 
 ######################################TESTS#################################################
 ############################################################################################
-############################################################################################
-def home_mail(request):
-    user = request.user
-
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = MailForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            current_site = get_current_site(request)
-            context = {
-                'user': user,
-                'domain': 'domain',
-                'uidb64': 'uidb64',
-                'token': 'token',
-                'message': form.cleaned_data['corps']}
-            subject = form.cleaned_data['sujet']
-            message = render_to_string('dkllapp/account_activation_email.html', context)
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = ['louise2004gautier@gmail.com']
-            print("email_from", email_from, "recipient_list", recipient_list)
-            send_mail(subject, message, email_from, recipient_list)
-            return HttpResponseRedirect('/home_push/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = MailForm()
-
-    return render(request, 'dkllapp/home_mail.html', {user: user})
-
 
 #######Test web push notifications #####
 
@@ -1348,7 +1403,6 @@ def send_push(request):
         payload = {'head': data['head'], 'body': data['body']}
         users = User.objects.all()
         for user_dkllapp in users:
-            print("user_dkllapp.id", user_dkllapp.id)
             user_push = get_object_or_404(User, pk=user_dkllapp.id)
             send_user_notification(user=user_push, payload=payload, ttl=1000)
 
