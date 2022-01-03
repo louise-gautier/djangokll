@@ -56,7 +56,7 @@ urlpatterns = [
 
     path('home_push/', home_push),
     path('send_push', send_push),
-    path('webpush/', include('webpush.urls')),
+    #path('webpush/', include('webpush.urls')),
     path('home_push/sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
