@@ -1,40 +1,9 @@
-import json
-
-PW_AUTH = os.environ['PUSHWOOSH_API_TOKEN']
-PW_APPLICATION_CODE = 'APPLICATION CODE'
-
-try:
-    # For Python 3.0 and later
-    from urllib.request import urlopen
-    from urllib.request import Request
-except ImportError:
-    # Fall back to Python 2's urllib2
-    from urllib2 import urlopen
-    from urllib2 import Request
-
-def pw_call(method, data):
-    url = 'https://cp.pushwoosh.com/json/1.3/' + method
-    data = json.dumps({'request': data})
-    req = Request(url, data.encode('UTF-8'), {'Content-Type': 'application/json'})
-    try:
-        f = urlopen(req)
-        response = f.read()
-        f.close()
-        print('Pushwoosh response: ' + str(response))
-    except Exception as e:
-        print ('Request error: ' + str(e))
-
-if __name__ == '__main__':
-    pw_call('createMessage', {
-        'auth': PW_AUTH,
-        'application': PW_APPLICATION_CODE,
-        'notifications': [
-            {
-                'send_date': 'now',
-                'content': 'test',
-                'data': {"custom": "json data"},
-                'link': 'http://pushwoosh.com'
-            }
-        ]
-    }
-    )
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/iphone6_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" href="/static/dkllapp/img/favicon/splashscreens/iphoneplus_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/static/dkllapp/img/favicon/splashscreens/iphonex_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/iphonexr_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/static/dkllapp/img/favicon/splashscreens/iphonexsmax_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/ipad_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/ipadpro1_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/ipadpro3_splash.png"/>
+<link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" href="/static/dkllapp/img/favicon/splashscreens/ipadpro2_splash.png"/>
