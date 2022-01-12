@@ -5,7 +5,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Pili Pili">
+<meta name="apple-mobile-web-app-title" content="Pili Pili : Mets du piment dans TV">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'dkllapp/img/favicon/apple-touch-icon.png' %}">
@@ -21,4 +21,9 @@
 <!-- Base css with customised bootstrap included -->
 <link rel="stylesheet" href="{% static 'dkllapp/miri-ui/src/css/miri-ui-kit-free.css' %}">
 
-<link rel="apple-touch-startup-image" sizes="640x1136" href="/static/dkllapp/img/favicon/splashscreens/iphone5_splash.png"/>
+<!-- Actuellement en prod
+<link rel="apple-touch-startup-image" sizes="640x1136" href="/static/dkllapp/img/favicon/splashscreens/iphone5_splash.png"/> -->
+<!-- A tester ensuite -->
+<link rel="apple-touch-startup-image"
+      media="screen and (device-width: 640px) and (device-height: 1136px) and (-webkit-device-pixel-ratio: 2)"
+      href="/static/dkllapp/img/favicon/splashscreens/iphone5_splash.png"/>
