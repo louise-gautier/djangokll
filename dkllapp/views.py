@@ -351,6 +351,14 @@ def index(request):
         for ligne in bloc_equipe:
             ligne_equipe = {'id': ligue['ligue_id'], 'ligne': ligne}
             lignes_equipes.append(ligne_equipe)
+
+        scores = points_ligue_episode(ligue['ligue_id'], 0)
+        ligue['taille'] = len(scores)
+        for score in scores:
+            if score['id'] == request.user.id:
+                ligue['classement_user'] = score['rang']
+                ligue['score_user'] = score['total']
+
     return render(request=request,
                   template_name="dkllapp/index.html",
                   context={'ligues': ligues, 'notif': notif, 'choix_user': choix_user, 'lignes_equipes': lignes_equipes,
@@ -768,6 +776,11 @@ def mur(request, ligue_id):
             field_name = 'area' + str(message['id'])
             field_label = 'label' + str(message['id'])
             new_fields[field_name] = forms.CharField(label=field_label, max_length=999, required=False)
+    mur_inverse = mur.reverse()
+    print('mur[0]', mur[0])
+    print('type mur', type(mur))
+    print('mur_inverse[0]', mur_inverse[0])
+    print('type mur_inverse', type(mur_inverse))
     DynamicMessageMurForm = type('DynamicMessageMurForm', (MessageMurForm,), new_fields)
     if request.method == "POST":
         form = DynamicMessageMurForm(request.POST)
@@ -796,7 +809,9 @@ def mur(request, ligue_id):
     notif = Notif.objects.latest('insert_datetime')
     return render(request=request,
                   template_name="dkllapp/mur.html",
-                  context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue, 'mur': mur, 'notif': notif,
+                  context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue,
+                           'mur': mur, 'mur_inverse': mur_inverse,
+                           'notif': notif,
                            'current_user': current_user, 'form': form,
                            'isadmin': is_admin(request.user.id)})
 

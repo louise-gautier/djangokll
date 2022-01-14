@@ -10,11 +10,18 @@
         <br>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
             <p class="titre_rouge"><b>Candidats de la Saison 13</b></p>
+            {% if isadmin == True %}
+            <div class="btn-profil-container">
+                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des tribus</a>
+                <a href="{% url 'dkllapp:changer_statut' %}" class="btn btn-danger btn-sm">Changer des statuts</a>
+            </div>
+            {% endif %}
+            <br>
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">🔵</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: blue;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -28,6 +35,9 @@
                             {% endfor %}
                             </div>
                         </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: blue;">
+                            <span style="font-size: 35px;"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -35,8 +45,8 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">🔴</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: red;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -50,6 +60,9 @@
                             {% endfor %}
                             </div>
                         </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: red;">
+                            <span style="font-size: 35px;"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -57,8 +70,8 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">🟣</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: purple;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -72,6 +85,9 @@
                             {% endfor %}
                             </div>
                         </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: purple;">
+                            <span style="font-size: 35px;"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -79,8 +95,8 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">🟡</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: yellow;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -94,6 +110,9 @@
                             {% endfor %}
                             </div>
                         </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: yellow;">
+                            <span style="font-size: 35px;"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -101,8 +120,8 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">⚪</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: white;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -116,6 +135,9 @@
                             {% endfor %}
                             </div>
                         </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: white;">
+                            <span style="font-size: 35px;"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -123,8 +145,8 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=15% style="padding: 10px; text-align: center;">
-                            <span style="font-size: 35px;">⚫</span>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: black;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
@@ -137,6 +159,9 @@
                             {% endif %}
                             {% endfor %}
                             </div>
+                        </td>
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: black;">
+                            <span style="font-size: 35px;"></span>
                         </td>
                     </tr>
                 </tbody>

@@ -14,22 +14,28 @@
                 <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr height="50px">
                         <th style="text-align: center;">Règle</th>
-                        <th width="8%" style="text-align: center;">🦄️</th>
-                        <th width="8%" style="text-align: center;">🏅</th>
-                        <th width="8%" style="text-align: center;">🏆</th>
+                        <th width="18%" style="text-align: center;">🦄️</th>
+                        <th width="18%" style="text-align: center;">🏅</th>
+                        <th width="18%" style="text-align: center;">🏆</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for regle in regles %}
                     <tr>
                         <td style="padding: 10px; text-align: left;">{{ regle.contenu }} </td>
-                        <td style="padding: 10px; text-align: center;">{{ regle.points_1 }} </td>
-                        <td style="padding: 10px; text-align: center;">{{ regle.points_2 }} </td>
-                        <td style="padding: 10px; text-align: center;">{{ regle.points_3 }} </td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_1 }} <span style="font-size: 12px;">🌶</span></td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_2 }} <span style="font-size: 12px;">🌶</span></td>
+                        <td style="padding: 10px; text-align: center;">{{ regle.points_3 }} <span style="font-size: 12px;">🌶</span></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <br>
+            <p>
+                <span style="padding-left: 8px; font-size:12px;">🦄️️ &nbsp; : 🌶 Pilis marqués grâce aux Poulais choisis dans votre équipe de la semaine</span><br>
+                <span style="padding-left: 8px; font-size:12px;">🏅 &nbsp; : 🌶 Pilis marqués grâce aux candidats dans votre Podium</span><br>
+                <span style="padding-left: 8px; font-size:12px;">🏆 &nbsp; : 🌶 Pilis marqués grâce à votre choix de Gagnant</span>
+            </p>
         </div>
     </div>
     <br>

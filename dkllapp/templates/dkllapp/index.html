@@ -46,7 +46,10 @@
                                         <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
                                     </div>
                                     <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
-                                        <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">YY pts (3/8)</a>
+                                        <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">
+                                            <b>{{ ligue.score_user }} 🌶️️</b> &nbsp; <span style="color: #DA071F;"><i class="mdi mdi-podium"></i></span>
+                                            {{ ligue.classement_user }}/{{ ligue.taille }}
+                                        </a>
                                     </div>
                                     <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
                                         <a href="{% url 'dkllapp:equipe' ligue.ligue_id %}">

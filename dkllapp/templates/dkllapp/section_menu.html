@@ -17,25 +17,33 @@
                     <a class="nav-link" href="{% url 'dkllapp:profil' '1' %}">{{ user.username }}</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Ligues</a>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu dropdown-menu-right">
                         {% for lig in ligues %}
-                        <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item">{{ lig.ligue__nom }}</a>
+                        <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: end;">{{ lig.ligue__nom }}</span>
+                        </a>
                         {% endfor %}
                     </div>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dkllapp:pronos' %}">Pronos</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Pilisme</a>
-                    <div class="dropdown-menu">
-                        <a href="{% url 'dkllapp:generales' %}" class="dropdown-item">Règles</a>
-                        <a href="{% url 'dkllapp:classement_general' %}" class="dropdown-item">Classement Général</a>
-                        <a href="{% url 'dkllapp:statistiques' %}" class="dropdown-item">Statistiques</a>
-                    </div>
-                </li>
                 {% if isadmin == True %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dkllapp:admin' %}">Admin</a></li>
                 {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Pilisme</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{% url 'dkllapp:generales' %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: end;">Règles</span>
+                        </a>
+                        <a href="{% url 'dkllapp:classement_general' %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: end;">Classement Général</span>
+                        </a>
+                        <a href="{% url 'dkllapp:statistiques' %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: end;">Statistiques</span>
+                        </a>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
