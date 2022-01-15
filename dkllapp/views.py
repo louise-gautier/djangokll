@@ -974,12 +974,7 @@ def profil(request, message):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
-    candidats = Candidat.objects.all().order_by('id')
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
-    choix_user = Choix.objects\
-        .filter(user_id=request.user.id).order_by('candidat_id')\
-        .values('id', 'type', 'candidat_id', 'candidat__nom',
-                'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
     message = message
     if request.method == "POST":
         form = ProfilMailForm(request.POST)
@@ -991,10 +986,44 @@ def profil(request, message):
     form = ProfilMailForm()
     return render(request=request,
                   template_name="dkllapp/profil.html",
-                  context={'candidats': candidats, 'ligues': ligues,
-                           'choix_user': choix_user, 'before_creation': 'profil',
+                  context={'candidats': candidats, 'ligues': ligues, 'page': 'profil',
+                           'before_creation': 'profil',
                            'current_userprofile': current_userprofile, 'message': message,
                            'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def ligues_user(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    return render(request=request,
+                  template_name="dkllapp/ligues_user.html",
+                  context={'candidats': candidats, 'ligues': ligues, 'page': 'ligues_user',
+                           'current_userprofile': current_userprofile,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def candidats_user(request):
+    ligues = Membre.objects\
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
+    poulains_ouvert = is_poulains()
+    podium_ouvert = is_podium()
+    gagnant_ouvert = is_gagnant()
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    choix_user = Choix.objects\
+        .filter(user_id=request.user.id).order_by('candidat_id')\
+        .values('id', 'type', 'candidat_id', 'candidat__nom',
+                'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
+    return render(request=request,
+                  template_name="dkllapp/candidats_user.html",
+                  context={'ligues': ligues, 'page': 'candidats_user', 'choix_user': choix_user,
+                           'current_userprofile': current_userprofile,
+                           'poulains_ouvert': poulains_ouvert, 'podium_ouvert': podium_ouvert,
+                           'gagnant_ouvert': gagnant_ouvert, 'isadmin': is_admin(request.user.id)})
 
 
 @login_required

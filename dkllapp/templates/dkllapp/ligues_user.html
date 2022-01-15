@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <br>
+        <div style="padding-left: 30px;">
+            <div style="display: flex; align-items: center;">
+                <a href="{% url 'dkllapp:picto' '1' %}">
+                    <img style="width: 50px; height: 50px;" src="{% static current_userprofile.img %}">
+                </a>
+                <b style="padding-left: 15px;">{{ user.username }}</b>
+            </div>
+        </div>
+        <br>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <div style="padding-left: 15px; padding-right: 15px; display: flex; justify-content: space-evenly;">
+                <a type href="{% url 'dkllapp:creation_ligue' %}">
+                    <button type="button" class="btn btn-danger btn-sm">Créer une ligue</button></a>
+                &nbsp &nbsp
+                <a href="{% url 'dkllapp:rejoindre_ligue' %}">
+                    <button type="button" class="btn btn-danger btn-sm">Rejoindre une ligue</button></a>
+            </div>
+            <br>
+            {% for ligue in ligues %}
+            <div style="padding-left: 15px; padding-right: 15px;">
+                <table class="table2" cellspacing="0" >
+                    <tbody>
+                        <tr class="tr2">
+                            <td class="td2" style="padding: 10px;">
+                                <div style="display: flex; justify-content: center;">
+                                    <div style="padding-left: 15px; width: 40%;">
+                                        <b>{{ ligue.ligue__nom }}</b>
+                                    </div>
+                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
+                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            {% endfor %}
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/profil_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>

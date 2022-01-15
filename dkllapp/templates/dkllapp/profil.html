@@ -58,119 +58,12 @@
             </div>
         </div>
         <br>
-        <button type="button" class="collapsible_block" id="ligues" style="margin-top: 10px;">
-            <div style="width: 30px;">
-                <span style="font-size: 20px; left: 10px; ">👑</span>
-            </div>
-            Mes Ligues
-            <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;">
-        </button>
-        <div class="content">
-            <br>
-            <div style="padding-left: 15px; padding-right: 15px; display: flex; justify-content: space-evenly;">
-                <a type href="{% url 'dkllapp:creation_ligue' %}">
-                    <button type="button" class="btn btn-danger btn-sm">Créer une ligue</button></a>
-                &nbsp &nbsp
-                <a href="{% url 'dkllapp:rejoindre_ligue' %}">
-                    <button type="button" class="btn btn-danger btn-sm">Rejoindre une ligue</button></a>
-            </div>
-            <br>
-            {% for ligue in ligues %}
-            <div style="padding-left: 15px; padding-right: 15px;">
-                <table class="table2" cellspacing="0" >
-                    <tbody>
-                        <tr class="tr2">
-                            <td class="td2" style="padding: 10px;">
-                                <div style="display: flex; justify-content: center;">
-                                    <div style="padding-left: 15px; width: 40%;">
-                                        <b>{{ ligue.ligue__nom }}</b>
-                                    </div>
-                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
-                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <br>
-            {% endfor %}
-        </div>
-        <button type="button" class="collapsible_block" id="candidats" style="margin-top: 10px;">
-            <div style="width: 30px;">
-                <span style="font-size: 20px; left: 10px; ">🦄</span>
-            </div>
-            Mes Candidats
-            <img src="{% static 'dkllapp/img/draw.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;">
-        </button>
-        <div class="content">
-            <br>
-            <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🦄</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 1 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_poulains %}
-            <p><a href="{% url 'dkllapp:choix' 1 False profil %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis tes Poulains</a></p>
-            {% endif %}
-            <br>
-            <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🏅</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 2 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_podium %}
-            <p><a href="{% url 'dkllapp:choix' 2 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Podium</a></p>
-            {% endif %}
-            <br>
-            <table class="table2" cellspacing="0" >
-                <tbody>
-                    <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
-                            <span style="font-size: 35px;">🏆</span>
-                        </td>
-                        <td class="td2" style="padding: 10px;">
-                            {% for candidat in choix_user %}
-                            {% if candidat.type == 3 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
-                            {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if is_gagnant %}
-            <p><a href="{% url 'dkllapp:choix' 3 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Gagnant</a></p>
-            {% endif %}
-            <br>
-        </div>
         <br>
-        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:taupechefligue@gmail.com" style="min-width: 240px; color: white; text-decoration: underline;">taupechefligue@gmail.com</a>.</p>
+        <p style="padding-left: 20px;">Une question ? Contacte-nous à l'adresse <a href="mailto:admin@pilixpili.fr" style="min-width: 240px; color: white; text-decoration: underline;">admin@pilixpili.fr</a>.</p>
         <br>
         <br>
     </div>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/profil_menu.html' %}</div>
     {% include 'dkllapp/body_scripts.html' %}
 </body>
 </html>

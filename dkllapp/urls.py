@@ -32,6 +32,8 @@ urlpatterns = [
     path('bonus/', views.bonus, name='bonus'),
 
     path('profil/<message>/', views.profil, name='profil'),
+    path('ligues_user/', views.ligues_user, name='ligues_user'),
+    path('candidats_user/', views.candidats_user, name='candidats_user'),
     path('picto/<txt_alert>/', views.picto, name='picto'),
     path('changer_identifiant/<message>', views.changer_identifiant, name='changer_identifiant'),
     path('changer_mdp/<message>', views.changer_mdp, name='changer_mdp'),
