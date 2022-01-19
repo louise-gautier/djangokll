@@ -49,7 +49,7 @@
                         </tr>
                         <tr class="tr2">
                             <td class="td2" style="text-align:center;">
-                                <a onclick="navigator.clipboard.writeText('{{ ligue.ligue_id }}'); window.clipboardData.setData('Text', '{{ ligue.ligue_id }}');" style="text-align:center;"
+                                <a onclick="navigator.clipboard.writeText('{{ ligue.ligue_id }}'); this.clipboardManager.setPrimaryClip('{{ ligue.ligue_id }}');" style="text-align:center;"
                                    data-toggle="tooltip" data-placement="bottom" title="Copier">
                                     <span style="font-size: 10px;">{{ ligue.ligue_id }}</span>
                                 </a>
