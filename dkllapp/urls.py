@@ -27,8 +27,7 @@ urlpatterns = [
     path('details/<ligue_id>/<selected_episode>/', views.details, name='details'),
     path('changer_nom_ligue/<ligue_id>', views.changer_nom_ligue, name='changer_nom_ligue'),
 
-    path('pronos/', views.pronos, name='pronos'),
-    path('pronos_cgi/<question_id>/<proposition_id>', views.pronos_cgi, name='pronos_cgi'),
+    path('pronos/<message>', views.pronos, name='pronos'),
     path('bonus/', views.bonus, name='bonus'),
 
     path('profil/<message>/', views.profil, name='profil'),

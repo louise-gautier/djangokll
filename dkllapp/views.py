@@ -29,7 +29,7 @@ import shortuuid
 from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm, LigueJoinForm, ChoixCreationForm, \
     EpisodeChangeForm, ActivateChoiceForm, ChangerEquipeTVForm, ChangerStatutForm, MailAdminForm, NotifAdminForm, \
     ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm, \
-    PictoForm, ProfilMailForm, ChangerIdentifiantForm, ReinitailiserMdpForm
+    PictoForm, ProfilMailForm, ChangerIdentifiantForm, ReinitailiserMdpForm, PronosGuessForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
     Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
 from .token import account_activation_token
@@ -904,43 +904,66 @@ def changer_nom_ligue(request, ligue_id):
 
 ##########################################Pronos################################
 @login_required
-def pronos(request):
+def pronos(request, message):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     questions = Question.objects.filter(episode=episode_en_cours_).order_by('-insert_datetime')
     questions_plus = []
+    message = message
+    print("00", message)
+    new_fields = {}
     for question in questions:
         propositions = Proposition.objects.filter(question_id=question.id)
         guess = Guess.objects.filter(question_id=question.id).filter(user_id=request.user.id).first()
         questions_plus.append({'question': question, 'guess': guess, 'propositions': propositions})
+        radio_propositions = []
+        for proposition in propositions:
+            form_id = '{0:03d}'.format(question.id) + "_" + '{0:03d}'.format(proposition.id)
+            radio_propositions.append((form_id, proposition.texte))
+            new_fields['{0:03d}'.format(question.id)] = forms.ChoiceField(choices=radio_propositions, widget=forms.RadioSelect, required=False)
+    DynamicPronosGuessForm = type('DynamicPronosGuessForm', (PronosGuessForm,), new_fields)
+    if request.method == "POST":
+        print("request.POST", request.POST)
+        form = DynamicPronosGuessForm(request.POST)
+        if "btn_effacer" in request.POST:
+            Guess.objects.filter(question__episode=episode_en_cours()).filter(user_id=request.user.id).delete()
+            message = "Réponses effacées"
+            return redirect('dkllapp:pronos', message)
+        else:
+            if form.is_valid():
+                if message == "":
+                    pass
+                for long_question_id in form.cleaned_data:
+                    if form.cleaned_data[long_question_id]:
+                        current_user_guess = Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=request.user.id).first()
+                        guess_proposition_id = int(form.cleaned_data[long_question_id][4:7])
+                        if current_user_guess:
+                            Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=request.user.id).delete()
+                            nouveau_guess = Guess()
+                            nouveau_guess.user_id = request.user.id
+                            nouveau_guess.question_id = int(long_question_id)
+                            nouveau_guess.proposition_id = guess_proposition_id
+                            nouveau_guess.save()
+                            message = "Réponses validées"
+                        else:
+                            nouveau_guess = Guess()
+                            nouveau_guess.user_id = request.user.id
+                            nouveau_guess.question_id = int(long_question_id)
+                            nouveau_guess.proposition_id = guess_proposition_id
+                            nouveau_guess.save()
+                            message = "Réponses validées"
+                    else:
+                        pass
+                print("rep val")
+                return redirect('dkllapp:pronos', message)
+    form = DynamicPronosGuessForm()
     return render(request=request,
                   template_name="dkllapp/pronos.html",
                   context={'ligues': ligues, 'page': 'pronos', 'questions_plus': questions_plus,
+                           'form': form,  'message': message,
                            'isadmin': is_admin(request.user.id)})
-
-
-@login_required
-def pronos_cgi(request, question_id, proposition_id):
-    current_user_guess = Guess.objects.filter(question_id=question_id).filter(user_id=request.user.id).first()
-    if current_user_guess:
-        Guess.objects.filter(question_id=question_id).filter(user_id=request.user.id).delete()
-        if proposition_id == str(current_user_guess.proposition_id):
-            pass
-        else:
-            nouveau_guess = Guess()
-            nouveau_guess.user_id = request.user.id
-            nouveau_guess.question_id = question_id
-            nouveau_guess.proposition_id = proposition_id
-            nouveau_guess.save()
-    else:
-        nouveau_guess = Guess()
-        nouveau_guess.user_id = request.user.id
-        nouveau_guess.question_id = question_id
-        nouveau_guess.proposition_id = proposition_id
-        nouveau_guess.save()
-    return redirect('dkllapp:pronos')
 
 
 @login_required

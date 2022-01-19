@@ -131,3 +131,7 @@ class ChangerIdentifiantForm(forms.Form):
 
 class ReinitailiserMdpForm(forms.Form):
     email = forms.CharField(label='email')
+
+
+class PronosGuessForm(forms.Form):
+    pass

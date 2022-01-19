@@ -10,26 +10,88 @@
         <br>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
             <p class="titre_rouge"><b>Pronos en cours</b></p>
-            <div style="padding-left: 15px; padding-right: 15px;">
-                {% for question_plus in questions_plus %}
-                <p>
-                    {{ question_plus.question.enonce }}<br>
-                    <div style="display: flex; flex-flow: row wrap;">
-                    {% for proposition in question_plus.propositions %}
-                        {% if question_plus.guess.proposition_id == proposition.id %}
-                            <form class="prono_form" id="{{ proposition.id }}" action="{% url 'dkllapp:pronos_cgi' question_plus.question.id proposition.id %}" method="get">
-                                <button type="submit" class="btn btn-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
-                            </form>
-                        {% else %}
-                            <form class="prono_form" id="{{ proposition.id }}" action="{% url 'dkllapp:pronos_cgi' question_plus.question.id proposition.id %}" method="get">
-                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin: 5px;">{{ proposition.texte }}</button>
-                            </form>
-                        {% endif %}
-                    {% endfor %}
+            <form id="form" action="" method="POST">
+            {% csrf_token %}
+                <div id="form_div" style="padding-left: 15px; padding-right: 15px;">
+                    {% for question_plus in questions_plus %}
+                        <p>{{ question_plus.question.enonce }}</p>
+                            <script>
+                                div_question = document.createElement("div");
+                                div_question.setAttribute("id","id_" + ("00" + {{question_plus.question.id}}).slice(-3));
+                                div_form = document.getElementById("form_div");
+                                console.log(div_form);
+                                div_form.appendChild(div_question);
+                            </script>
+                            {% for super_field in form %}
+                                {% for value, text in super_field.field.choices %}
+                                {% for proposition in question_plus.propositions %}
+                                <script type="text/javascript">
+                                    if ("{{value}}" == ("00" + {{question_plus.question.id}}).slice(-3) + "_" + ("00" + {{proposition.id}}).slice(-3)) {
+                                        console.log("ok", "{{value}}", {{question_plus.question.id}}, {{proposition.id}});
+
+                                        div_proposition = document.createElement("div");
+                                        div_proposition.setAttribute("class","form-check");
+
+                                        entree = document.createElement("input");
+                                        entree.setAttribute("class","form-check-input");
+                                        entree.setAttribute("type","radio");
+                                        entree.setAttribute("value","{{value}}");
+                                        entree.setAttribute("id","id_" + "{{value}}");
+                                        entree.setAttribute("name",("00" + {{question_plus.question.id}}).slice(-3));
+                                        if ("{{question_plus.guess.proposition_id}}" == "{{proposition.id}}") {
+                                            console.log("checked", "{{question_plus.guess.proposition_id}}", "{{proposition.id}}")
+                                            entree.setAttribute("checked","");
+                                            } else {};
+                                        txt_lbl = document.createElement("span");
+                                        txt_lbl.innerHTML = "{{proposition.texte}}";
+                                        lbl = document.createElement("label");
+                                        lbl.setAttribute("class","form-check-label");
+                                        lbl.setAttribute("for","id_" + "{{value}}");
+
+                                        lbl.appendChild(txt_lbl);
+
+                                        div_proposition.appendChild(entree);
+                                        div_proposition.append(lbl);
+                                        div_question = document.getElementById("id_" + ("00" + {{question_plus.question.id}}).slice(-3));
+                                        div_question.appendChild(div_proposition);
+                                    } else {};
+                                </script>
+                                {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                            <br>
+
+                    {% endfor%}
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                    <button class="btn btn-danger btn-sm" type="submit" style="width: 112px;">Valider</button>
+                    {% if message == '1' %}
+                    {% elif 'valid' in message %}
+                    <div class="alert alert-danger" role="alert" style="width: 200px; margin-bottom: 0px;  margin-left: 15px;">
+                        <i class="mdi mdi-check-bold"></i>&nbsp;{{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <i aria-hidden="true" class="mdi mdi-close"></i>
+                        </button>
                     </div>
-                </p>
-                {% endfor %}
-            </div>
+                    {% endif %}
+                </div>
+            </form>
+            <form class="effacer_prono_form" id="effacer_prono_form" method="post">
+                {% csrf_token %}
+                <div style="display: flex; align-items: center;">
+                    <button id="btn_effacer" name="btn_effacer" type="submit" class="btn btn-danger btn-sm" style="width: 112px; margin-bottom: 0px;">Tout effacer</button>
+                    {% if message == '1' %}
+                    {% elif 'effac' in message %}
+                    <div class="alert alert-danger" role="alert" style="width: 200px; margin-bottom: 0px; margin-left: 15px;">
+                        <i class="mdi mdi-check-bold"></i>&nbsp;{{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <i aria-hidden="true" class="mdi mdi-close"></i>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </form>
+            <br>
         </div>
     </div>
     <br>

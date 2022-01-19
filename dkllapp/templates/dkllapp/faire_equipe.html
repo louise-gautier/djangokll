@@ -12,7 +12,7 @@
             <form id="form" action="" method="POST">
                 {% csrf_token %}
                 <div style="padding-left: 15px; padding-right: 15px;">
-                    <p style="padding-left: 8px; padding-top: 8px;">Choisis ta tribu de 3 poulains :</p>
+                    <p style="padding-left: 8px; padding-top: 8px;">Choisis ton équipe de 3 poulains :</p>
                     <div style="display: flex; flex-flow: row wrap;">
                         {% for field in form %}
                         {% if field.name == 'propagation' %}
