@@ -1021,6 +1021,13 @@ def ligues_user(request):
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    for ligue in ligues:
+        scores = points_ligue_episode(ligue['ligue_id'], 0)
+        ligue['taille'] = len(scores)
+        for score in scores:
+            if score['id'] == request.user.id:
+                ligue['classement_user'] = score['rang']
+                ligue['score_user'] = score['total']
     return render(request=request,
                   template_name="dkllapp/ligues_user.html",
                   context={'candidats': candidats, 'ligues': ligues, 'page': 'ligues_user',

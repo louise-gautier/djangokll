@@ -26,26 +26,39 @@
                     <button type="button" class="btn btn-danger btn-sm">Rejoindre une ligue</button></a>
             </div>
             <br>
+            <div style="padding-left: 15px; padding-right: 15px; display: flex; flex-flow: row wrap; justify-content: center;">
             {% for ligue in ligues %}
-            <div style="padding-left: 15px; padding-right: 15px;">
-                <table class="table2" cellspacing="0" >
+                <table class="table2" cellspacing="0" style="width: 250px; margin: 10px;">
                     <tbody>
+                        <tr class="tr2" style="background-color: #DA071F;">
+                            <td class="td2" style="padding: 10px;">
+                                <div style="display: flex; align-items: center; justify-content: center; text-align: center; padding-left: 15px;">
+                                    <a href="{% url 'dkllapp:mur' ligue.ligue_id %}" style="color: white;"><b>{{ ligue.ligue__nom }}</b></a>
+                                </div>
+                            </td>
+                        </tr>
                         <tr class="tr2">
                             <td class="td2" style="padding: 10px;">
-                                <div style="display: flex; justify-content: center;">
-                                    <div style="padding-left: 15px; width: 40%;">
-                                        <b>{{ ligue.ligue__nom }}</b>
-                                    </div>
-                                    <div style="padding-left: 15px; width: 30%;">YY pts (3/8)</div>
-                                    <div style="padding-left: 15px; width: 30%;"><span style="font-size: 12px;">{{ ligue.ligue_id }}</span></div>
+                                <div style="display: flex; align-items: center; justify-content: center; text-align: center; padding-left: 15px;">
+                                    <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">
+                                        <b>{{ ligue.score_user }} 🌶️️</b> &nbsp; <span style="color: #DA071F;"><i class="mdi mdi-podium"></i></span>
+                                        {{ ligue.classement_user }}/{{ ligue.taille }}
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="tr2">
+                            <td class="td2" style="">
+                                <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
+                                    <span style="font-size: 10px;">{{ ligue.ligue_id }}</span>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            {% endfor %}
             </div>
             <br>
-            {% endfor %}
             <br>
             <br>
             <br>
