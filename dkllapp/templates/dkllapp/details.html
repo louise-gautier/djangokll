@@ -9,7 +9,12 @@
     <div class="mainwrapper">
         <br>
             <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
-            <p style="padding-left: 30px;">Code de la ligue : <b>{{ current_ligue.id }}</b></p>
+            <p style="padding-left: 30px;">Code de la ligue :
+                <a onclick="navigator.clipboard.writeText('{{ current_ligue.id }}');" style="text-align:center;"
+                   data-toggle="tooltip" data-placement="bottom" title="Copier">
+                    <b>{{ current_ligue.id }}</b>
+                </a>
+            </p>
             <a style="padding-left: 30px;" href="{% url 'dkllapp:changer_nom_ligue' ligue_id %}">
                 <button type="button" class="btn btn-danger btn-sm">Changer le nom de la Ligue</button></a>
             <br>
@@ -125,7 +130,7 @@
                                 <div style="display: flex; align-items: center;">
                                     <img class="picto_index" src="{% static membre.img %}">
                                     <p style="margin: 0 0 0 10px;">{{ membre.username }}</p>
-                                </div
+                                </div>
                             </td>
                             <td style="text-align: center;" >{{ membre.points_poulains }}</td>
                             <td style="text-align: center;" >{{ membre.points_podium }}</td>
