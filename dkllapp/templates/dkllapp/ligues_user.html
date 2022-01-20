@@ -48,11 +48,11 @@
                             </td>
                         </tr>
                         <tr class="tr2">
-                            <td class="td2" style="text-align:center;">
-                                <a onclick="navigator.clipboard.writeText('{{ ligue.ligue_id }}'); this.clipboardManager.setPrimaryClip('{{ ligue.ligue_id }}');" style="text-align:center;"
-                                   data-toggle="tooltip" data-placement="bottom" title="Copier">
-                                    <span style="font-size: 10px;">{{ ligue.ligue_id }}</span>
-                                </a>
+                            <td class="td2" style="width: 100%; display: flex; align-items: center; justify-content: center; text-align:center;">
+                                <a class="copy_id_link" name="{{ ligue.ligue_id }}" style="text-align:center;"
+                                   data-toggle="tooltip" data-placement="bottom" title="Copier"><i aria-hidden="true" class="mdi mdi-content-copy"></i></a>
+                                <input id="{{ ligue.ligue_id }}" value="{{ ligue.ligue_id }}" type="text"
+                                   style="width: 202px; padding: 0px; border: none; background-color: #272B2C; color: white; font-size: 9px; text-align: center;">
                             </td>
                         </tr>
                     </tbody>

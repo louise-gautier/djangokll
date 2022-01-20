@@ -10,10 +10,10 @@
         <br>
             <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
             <p style="padding-left: 30px;">Code de la ligue :
-                <a onclick="navigator.clipboard.writeText('{{ current_ligue.id }}');" style="text-align:center;"
-                   data-toggle="tooltip" data-placement="bottom" title="Copier">
-                    <b>{{ current_ligue.id }}</b>
-                </a>
+                <input id="{{ current_ligue.id }}" value="{{ current_ligue.id }}" type="text"
+                   style="width: 202px; padding: 0px; border: none; background-color: #1D2020; color: white; font-size: 9px; text-align: center;">
+                <a class="copy_id_link" name="{{ current_ligue.id }}" style="text-align:center;"
+                                   data-toggle="tooltip" data-placement="bottom" title="Copier"><i aria-hidden="true" class="mdi mdi-content-copy"></i></a>
             </p>
             <a style="padding-left: 30px;" href="{% url 'dkllapp:changer_nom_ligue' ligue_id %}">
                 <button type="button" class="btn btn-danger btn-sm">Changer le nom de la Ligue</button></a>
