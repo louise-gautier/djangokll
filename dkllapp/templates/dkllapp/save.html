@@ -1,11 +1,3 @@
-var elem = document.getElementsByClassName("copy_id_link");
-for (var i = 0; i < elem.length; i += 1) {
-    (function () {
-        id_to_copy = elem[i].firstChild.innerHTML;
-        console.log('id_to_copy', id_to_copy)
-        elem[i].addEventListener("click", function() {
-            this.clipboardManager.setPrimaryClip(id_to_copy);
-            navigator.clipboard.writeText(id_to_copy);
-        }, false);
-    }());
-}
+<iframe style="border: 0; overflow: hidden;" frameBorder="0" height="100%" width="100%"
+    src="https://embed.toucantoco.guru/embed.html?id=7ff9133d-de9e-4503-98f5-0676b2e004d7&stage=staging">
+</iframe>
