@@ -777,10 +777,7 @@ def mur(request, ligue_id):
             field_label = 'label' + str(message['id'])
             new_fields[field_name] = forms.CharField(label=field_label, max_length=999, required=False)
     mur_inverse = mur.reverse()
-    print('mur[0]', mur[0])
-    print('type mur', type(mur))
-    print('mur_inverse[0]', mur_inverse[0])
-    print('type mur_inverse', type(mur_inverse))
+
     DynamicMessageMurForm = type('DynamicMessageMurForm', (MessageMurForm,), new_fields)
     if request.method == "POST":
         form = DynamicMessageMurForm(request.POST)

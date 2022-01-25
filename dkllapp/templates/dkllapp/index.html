@@ -41,17 +41,17 @@
                     <tr class="tr2">
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex;">
-                                <div style="display: flex; flex-flow: wrap; width: 90%;">
-                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                <div style="display: flex; flex-flow: wrap; width: 75%;">
+                                    <div style="display: flex; flex-flow: wrap; min-width: 200px; justify-content: space-around; align-items: center; text-align: center;">
                                         <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
                                     </div>
-                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                    <div style="display: flex; flex-flow: wrap; min-width: 200px; justify-content: space-around; align-items: center; text-align: center;">
                                         <a href="{% url 'dkllapp:resultat' ligue.ligue_id %}" style="color: white;">
                                             <b>{{ ligue.score_user }} 🌶️️</b> &nbsp; <span style="color: #DA071F;"><i class="mdi mdi-podium"></i></span>
                                             {{ ligue.classement_user }}/{{ ligue.taille }}
                                         </a>
                                     </div>
-                                    <div style="display: flex; flex-flow: wrap; min-width: 250px; justify-content: space-around; align-items: center; text-align: center;">
+                                    <div style="display: flex; flex-flow: wrap; min-width: 200px; justify-content: space-around; align-items: center; text-align: center;">
                                         <a href="{% url 'dkllapp:equipe' ligue.ligue_id %}">
                                             {% for ligne_equipe in lignes_equipes %}
                                             {% if ligne_equipe.id == ligue.ligue_id %}
@@ -61,11 +61,17 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div style="display: flex; width: 10%; justify-content: space-around; align-items: center; text-align: center;">
+                                <div style="display: flex; width: 25%; justify-content: space-around; align-items: center; text-align: center;">
                                     <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:details' ligue.ligue_id 0 %}" aria-selected="true">
-                                                <i class="mdi mdi-magnify-plus" style="margin: auto; padding: 2px;"></i></a>
+                                            <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:mur' ligue.ligue_id %}" aria-selected="true">
+                                                <i class="mdi mdi-comment-text-multiple" style="margin: auto; padding: 2px;"></i></a>
+                                        </li>
+                                    </ul>
+                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab3" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:resultat' ligue.ligue_id %}" aria-selected="true">
+                                                <i class="mdi mdi-podium" style="margin: auto; padding: 2px;"></i></a>
                                         </li>
                                     </ul>
                                 </div>
