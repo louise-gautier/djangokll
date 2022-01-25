@@ -32,9 +32,10 @@
                     <tbody>
                         <tr class="tr2" style="background-color: #DA071F;">
                             <td class="td2" style="padding: 10px;">
+                                <a href="{% url 'dkllapp:mur' ligue.ligue_id %}" style="color: white;">
                                 <div style="display: flex; align-items: center; justify-content: center; text-align: center; padding-left: 15px;">
-                                    <a href="{% url 'dkllapp:mur' ligue.ligue_id %}" style="color: white;"><b>{{ ligue.ligue__nom }}</b></a>
-                                </div>
+                                    <b>{{ ligue.ligue__nom }}</b>
+                                </div></a>
                             </td>
                         </tr>
                         <tr class="tr2">
