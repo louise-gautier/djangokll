@@ -7,9 +7,8 @@
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
 <div class="mainwrapper">
-        <br>
+        <p class="titre_rouge"><b>Classement Général</b></p>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
-            <p class="titre_rouge"><b>Classement Général</b></p>
             <table width="100%" cellspacing="0" style="border-radius: 10px;">
                 <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr height="50px">
@@ -31,9 +30,14 @@
                         <td style="font-size: 15px; word-wrap: break-word;">
                             <div style="display: flex; align-items: center;">
                                 <img class="picto_index" style="border-radius: 0px;" src="{% static membre.img %}">
-                                <div style="margin: 5px 0 0 10px; padding: 0px;">
-                                    {{ membre.username }}
-                                    <span style="font-size: 12px; color: #DA071F;padding: 0px; margin: 0px;">{{ membre.ligue }}</span>
+                                <div style="display: flex; flex-direction: column;
+                                align-items: flex-start; justify-content: center; padding-left: 10px;">
+                                    <div style="margin: 0px; padding: 0px;">
+                                        <span>{{ membre.username }}</span>
+                                    </div>
+                                    <div style="margin: 0px; padding: 0px;">
+                                        <span style="font-size: 12px; color: #DA071F;padding: 0px; margin: 0px;">{{ membre.ligue }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -44,7 +48,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <br>
             <br>
             <p>
                 <span style="padding-left: 8px; font-size:12px;">🌶️️ &nbsp; : Pilis marqués grâce aux Candidats</span><br>

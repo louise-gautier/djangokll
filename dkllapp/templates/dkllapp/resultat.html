@@ -7,9 +7,8 @@
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
-        <br>
+        <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
-            <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
             <table width="100%" cellspacing="0" style="border-radius: 10px;">
                 <thead style="box-shadow: rgb(151 164 175 / 40%) 0px 10px 10px -10px;">
                     <tr height="50px">
@@ -41,7 +40,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <br>
             <br>
             <p>
                 <span style="padding-left: 8px; font-size:12px;">🌶️️ &nbsp; : Pilis marqués grâce aux Candidats</span><br>

@@ -216,9 +216,6 @@ def register_request(request, message):
             message = "Une erreur s'est produite, vérifie que tous les critères sont respectés."
             test_mail = User.objects.filter(email=form.cleaned_data.get('email'))
             test_username = User.objects.filter(username=form.data.get('username'))
-            print(form.data)
-            print(form.cleaned_data.get('email'), form.data.get('username'))
-            print(test_mail, test_username)
             if test_mail:
                 message = "L'email est déjà utilisé"
             elif test_username:
@@ -334,6 +331,7 @@ def index(request):
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     notif = Notif.objects.latest('insert_datetime')
+    admin_user = UserProfile.objects.values('id', 'img', 'user__username').filter(id=2).first()
     choix_user = Choix.objects \
         .filter(user_id=request.user.id).order_by('candidat_id') \
         .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
@@ -361,7 +359,8 @@ def index(request):
 
     return render(request=request,
                   template_name="dkllapp/index.html",
-                  context={'ligues': ligues, 'notif': notif, 'choix_user': choix_user, 'lignes_equipes': lignes_equipes,
+                  context={'ligues': ligues, 'notif': notif, 'admin_user': admin_user,
+                           'choix_user': choix_user, 'lignes_equipes': lignes_equipes,
                            'before_creation': 'index',
                            'poulains_ouvert': poulains_ouvert, 'podium_ouvert': podium_ouvert, 'gagnant_ouvert': gagnant_ouvert,
                            'isadmin': is_admin(request.user.id)})
@@ -804,11 +803,12 @@ def mur(request, ligue_id):
         return redirect('dkllapp:mur', ligue_id)
     form = DynamicMessageMurForm()
     notif = Notif.objects.latest('insert_datetime')
+    admin_user = UserProfile.objects.values('id', 'img', 'user__username').filter(id=2).first()
     return render(request=request,
                   template_name="dkllapp/mur.html",
                   context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue,
                            'mur': mur, 'mur_inverse': mur_inverse,
-                           'notif': notif,
+                           'notif': notif, 'admin_user': admin_user,
                            'current_user': current_user, 'form': form,
                            'isadmin': is_admin(request.user.id)})
 
@@ -820,6 +820,13 @@ def equipe(request, ligue_id):
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
+    poulains_ouvert = is_poulains()
+    podium_ouvert = is_podium()
+    gagnant_ouvert = is_gagnant()
+    choix_user = Choix.objects \
+        .filter(user_id=request.user.id).order_by('candidat_id') \
+        .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                'candidat__statut', 'candidat__statut_bool')
     equipe = Equipe.objects \
         .filter(user_id=request.user.id) \
         .filter(ligue_id=current_ligue['id']) \
@@ -831,10 +838,11 @@ def equipe(request, ligue_id):
     return render(request=request,
                   template_name="dkllapp/equipe.html",
                   context={'ligues': ligues, 'page': 'equipe',
-                           'equipe': equipe,
+                           'equipe': equipe, 'choix_user': choix_user,
                            'ligue_id': ligue_id, 'before_creation': 'equipe',
                            'episode_en_cours_': episode_en_cours_, 'current_ligue': current_ligue,
-                           'isadmin': is_admin(request.user.id)})
+                           'poulains_ouvert': poulains_ouvert, 'podium_ouvert': podium_ouvert,
+                           'gagnant_ouvert': gagnant_ouvert, 'isadmin': is_admin(request.user.id)})
 
 
 @login_required
@@ -909,7 +917,6 @@ def pronos(request, message):
     questions = Question.objects.filter(episode=episode_en_cours_).order_by('-insert_datetime')
     questions_plus = []
     message = message
-    print("00", message)
     new_fields = {}
     for question in questions:
         propositions = Proposition.objects.filter(question_id=question.id)
@@ -922,7 +929,6 @@ def pronos(request, message):
             new_fields['{0:03d}'.format(question.id)] = forms.ChoiceField(choices=radio_propositions, widget=forms.RadioSelect, required=False)
     DynamicPronosGuessForm = type('DynamicPronosGuessForm', (PronosGuessForm,), new_fields)
     if request.method == "POST":
-        print("request.POST", request.POST)
         form = DynamicPronosGuessForm(request.POST)
         if "btn_effacer" in request.POST:
             Guess.objects.filter(question__episode=episode_en_cours()).filter(user_id=request.user.id).delete()
@@ -953,7 +959,6 @@ def pronos(request, message):
                             message = "Réponses validées"
                     else:
                         pass
-                print("rep val")
                 return redirect('dkllapp:pronos', message)
     form = DynamicPronosGuessForm()
     return render(request=request,
@@ -1204,14 +1209,38 @@ def classement_general(request):
 
 
 @login_required
-def statistiques(request):
+def stat_1(request):
     ligues = Membre.objects \
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
         .values('id', 'ligue_id', 'ligue__nom')
     statistiques = 'statistiques'
     return render(request=request,
-                  template_name="dkllapp/statistiques.html",
-                  context={'statistiques': statistiques, 'ligues': ligues,
+                  template_name="dkllapp/stat_1.html",
+                  context={'page': "stat_1", 'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def stat_2(request):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    statistiques = 'statistiques'
+    return render(request=request,
+                  template_name="dkllapp/stat_2.html",
+                  context={'page': "stat_2", 'ligues': ligues,
+                           'isadmin': is_admin(request.user.id)})
+
+
+@login_required
+def stat_3(request):
+    ligues = Membre.objects \
+        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+        .values('id', 'ligue_id', 'ligue__nom')
+    statistiques = 'statistiques'
+    return render(request=request,
+                  template_name="dkllapp/stat_3.html",
+                  context={'page': "stat_3", 'ligues': ligues,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -1359,7 +1388,6 @@ def rejoindre_ligue(request):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
-    print(request.user)
     if request.method == "POST":
         form = LigueJoinForm(request.POST)
         if form.is_valid():

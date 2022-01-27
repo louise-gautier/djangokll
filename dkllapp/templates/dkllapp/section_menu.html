@@ -1,12 +1,12 @@
 {% load static %}
 <header class="miri-ui-kit-header">
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-on-scroll">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-on-scroll" style="padding-top: 0px; padding-bottom: 0px;">
         <div style = "width: 150px; height: auto;">
             <a class="navbar-brand" style="height: auto;" href="{% url 'dkllapp:index' %}">
-                <img style="height: 45px;" src="/static/dkllapp/img/icon-long.png" alt="Pili Pili">
+                <img style="height: 40px; padding-left: 6px;" src="/static/dkllapp/img/icon-long.png" alt="Pili Pili">
             </a>
         </div>
-        <button class="navbar-toggler" type="button"
+        <button class="navbar-toggler" type="button" style="margin: 0px; padding-top: 10px; padding-bottom: 10px;"
                 data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -36,7 +36,7 @@
                         <a href="{% url 'dkllapp:classement_general' %}" class="dropdown-item">
                             <span style="width: 100%; text-align: center;">Classement Général</span>
                         </a>
-                        <a href="{% url 'dkllapp:statistiques' %}" class="dropdown-item">
+                        <a href="{% url 'dkllapp:stat_3' %}" class="dropdown-item">
                             <span style="width: 100%; text-align: center;">Statistiques</span>
                         </a>
                     </div>

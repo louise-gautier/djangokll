@@ -45,7 +45,9 @@ urlpatterns = [
     path('candidats/', views.candidats, name='candidats'),
     path('faq/', views.faq, name='faq'),
     path('classement_general/', views.classement_general, name='classement_general'),
-    path('statistiques/', views.statistiques, name='statistiques'),
+    path('stat_1/', views.stat_1, name='stat_1'),
+    path('stat_2/', views.stat_2, name='stat_2'),
+    path('stat_3/', views.stat_3, name='stat_3'),
 
     path("register/<message>", views.register_request, name="register"),
     path("reinitialiser_mdp/<message>", views.reinitialiser_mdp, name="reinitialiser_mdp"),

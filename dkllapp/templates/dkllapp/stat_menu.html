@@ -1,0 +1,30 @@
+{% load static %}
+<ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist" style="width: 90%;">
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
+    {% if page == 'stat_3' %}
+    <a class="nav-link active" href="{% url 'dkllapp:stat_3' %}" aria-selected="true">
+        <i class="mdi mdi-thumbs-up-down"></i>Top/Flop</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'dkllapp:stat_3' %}" aria-selected="true">
+        <i class="mdi mdi-thumbs-up-down"></i>Top/Flop</a>
+    {% endif %}
+  </li>
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
+    {% if page == 'stat_1' %}
+    <a class="nav-link active" href="{% url 'dkllapp:stat_1' %}" aria-selected="true">
+        <i class="mdi mdi-chart-bell-curve-cumulative"></i>Evolution</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'dkllapp:stat_1' %}" aria-selected="true">
+        <i class="mdi mdi-chart-bell-curve-cumulative"></i>Evolution</a>
+    {% endif %}
+  </li>
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
+    {% if page == 'stat_2' %}
+    <a class="nav-link active" href="{% url 'dkllapp:stat_2' %}" aria-selected="true">
+        <i class="mdi mdi-chart-gantt"></i>Candidats</a>
+    {% else %}
+    <a class="nav-link" href="{% url 'dkllapp:stat_2' %}" aria-selected="true">
+        <i class="mdi mdi-chart-gantt"></i>Candidats</a>
+    {% endif %}
+  </li>
+</ul>

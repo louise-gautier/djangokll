@@ -7,7 +7,6 @@
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
-        <br>
         <p class="titre_rouge"><b>Page d'administration</b></p>
         {% if isadmin == False %}
             <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
@@ -37,7 +36,7 @@
         <div class="content">
             <br>
             <div class="btn-profil-container">
-                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des tribus</a>
+                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des équipes TV</a>
                 <a href="{% url 'dkllapp:changer_statut' %}" class="btn btn-danger btn-sm">Changer des statuts</a>
             </div>
             <br>

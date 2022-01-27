@@ -10,15 +10,21 @@
         <br>
         <p style="padding-left: 15px;"><b>Dernière notification</b></p>
         <div style="padding-left: 15px; padding-right: 15px;">
-            <table class="table2" cellspacing="0" >
+            <table class="table2" cellspacing="0">
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width="60%" style="padding: 10px;">
-                            <div style="display: flex; align-items: center;">
-                                <img class="picto_index" src="{% static 'dkllapp/img/kitchen/admin.png' %}">
-                                <div style="padding-left: 15px;"><b>Brigade TCL</b></div>
+                        <td class="td2" width="100%" style="padding: 0px;">
+                            <div style="display: flex; align-items: center;
+                            justify-content: space-between; padding: 10px;">
+                                <div style="display: flex; align-items: center; vertical-align: middle;">
+                                    <img class="picto_mur" src="{% static admin_user.img %}">
+                                    <b style="padding-left: 15px; font-size: 13px;">
+                                        {{ admin_user.user__username }}&nbsp;&nbsp;
+                                    </b>
+                                </div>
                             </div>
-                            <div style="text-align: left; padding-left: 15px; padding-top: 5px;">{{ notif.message }}</div>
+                            <div style="text-align: left; background-color: #3A4040; border-radius: 5px;
+                            padding: 10px 0px 10px 10px; ">{{ notif.message }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -41,7 +47,7 @@
                     <tr class="tr2">
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex;">
-                                <div style="display: flex; flex-flow: wrap; width: 75%;">
+                                <div style="display: flex; flex-flow: wrap;">
                                     <div style="display: flex; flex-flow: wrap; min-width: 200px; justify-content: space-around; align-items: center; text-align: center;">
                                         <a href="{% url 'dkllapp:mur' ligue.ligue_id %}"><b>{{ ligue.ligue__nom }}</b></a>
                                     </div>
@@ -61,14 +67,14 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div style="display: flex; width: 25%; justify-content: space-around; align-items: center; text-align: center;">
-                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist">
+                                <div style="display: flex; justify-content: space-around; align-items: center; text-align: center;">
+                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" style="margin-bottom: 0px !important;" id="myTab2" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:mur' ligue.ligue_id %}" aria-selected="true">
                                                 <i class="mdi mdi-comment-text-multiple" style="margin: auto; padding: 2px;"></i></a>
                                         </li>
                                     </ul>
-                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab3" role="tablist">
+                                    <ul class="nav nav-pills nav-pills-icon-text mb-2" style="margin-bottom: 0px !important;" id="myTab3" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" style="min-height: 38px;" href="{% url 'dkllapp:resultat' ligue.ligue_id %}" aria-selected="true">
                                                 <i class="mdi mdi-podium" style="margin: auto; padding: 2px;"></i></a>
@@ -100,10 +106,10 @@
                         {% endfor %}
                     </td>
                     <td class="td2" width=15% style="padding: 10px;">
-                    {% if poulains_ouvert %}
-                    <a type href="{% url 'dkllapp:choix' 1 before_creation '1' %}">
+                        {% if poulains_ouvert %}
+                        <a type href="{% url 'dkllapp:choix' 1 before_creation '1' %}">
                         <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
-                    {% endif %}
+                        {% endif %}
                     </td>
                 </tr>
             </tbody>
@@ -123,8 +129,8 @@
                         {% endfor %}
                     </td>
                     <td class="td2" width=15% style="padding: 10px;">
-                    {% if podium_ouvert %}
-                    <a type href="{% url 'dkllapp:choix' 2 before_creation '1' %}">
+                        {% if podium_ouvert %}
+                        <a type href="{% url 'dkllapp:choix' 2 before_creation '1' %}">
                         <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
                     {% endif %}
                     </td>
@@ -146,10 +152,11 @@
                         {% endfor %}
                     </td>
                     <td class="td2" width=15% style="padding: 10px;">
-                    {% if gagnant_ouvert %}
-                    <a type href="{% url 'dkllapp:choix' 3 before_creation '1' %}">
+                        {% if gagnant_ouvert %}
+                        <a type href="{% url 'dkllapp:choix' 3 before_creation '1' %}">
                         <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
-                    {% endif %}
+                        {% endif %}
+                    </td>
                 </tr>
             </tbody>
         </table>

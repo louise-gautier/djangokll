@@ -7,9 +7,8 @@
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
-        <br>
         <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
-        <p style="padding-left: 16px; margin: 0px;"><b>Ma tribu de la semaine - Episode {{ episode_en_cours_ }}</b></p>
+        <p style="padding-left: 20px; margin: 0px;"><b>Mon équipe de la semaine - Episode {{ episode_en_cours_ }}</b></p>
         {% if equipe_non_faite == True %}
         <p style="padding-left: 16px; margin: 0px;">⏳ Tu n'as pas encore fait ton equipe cette semaine.</p>
         {% endif %}
@@ -37,7 +36,7 @@
         <br>
         <div style="padding-left: 15px; padding-right: 15px;">
             <a type href="{% url 'dkllapp:faire_equipe' current_ligue.id before_creation '1' %}">
-                <button type="button" class="btn btn-danger btn-sm">Changer ma Tribu de la semaine</button></a>
+                <button type="button" class="btn btn-danger btn-sm">Changer mon équipe de la semaine</button></a>
         </div>
         <br>
         <button type="button" class="collapsible_block" id="candidats" style="margin-top: 10px;">
@@ -52,7 +51,7 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
+                        <td class="td2" width=15% style="padding: 10px;">
                             <span style="font-size: 35px;">🦄</span>
                         </td>
                         <td class="td2" style="padding: 10px;">
@@ -62,18 +61,20 @@
                             {% endif %}
                             {% endfor %}
                         </td>
+                        <td class="td2" width=15% style="padding: 10px;">
+                            {% if poulains_ouvert %}
+                            <a type href="{% url 'dkllapp:choix' 1 before_creation '1' %}">
+                            <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                            {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            {% if is_poulains %}
-
-            <p><a href="{% url 'dkllapp:choix' 1 False profil %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis tes Poulains</a></p>
-            {% endif %}
             <br>
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
+                        <td class="td2" width=15% style="padding: 10px;">
                             <span style="font-size: 35px;">🏅</span>
                         </td>
                         <td class="td2" style="padding: 10px;">
@@ -83,17 +84,20 @@
                             {% endif %}
                             {% endfor %}
                         </td>
+                        <td class="td2" width=15% style="padding: 10px;">
+                            {% if podium_ouvert %}
+                            <a type href="{% url 'dkllapp:choix' 2 before_creation '1' %}">
+                            <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                            {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            {% if is_podium %}
-            <p><a href="{% url 'dkllapp:choix' 2 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Podium</a></p>
-            {% endif %}
             <br>
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=20% style="padding: 10px;">
+                        <td class="td2" width=15% style="padding: 10px;">
                             <span style="font-size: 35px;">🏆</span>
                         </td>
                         <td class="td2" style="padding: 10px;">
@@ -103,12 +107,15 @@
                             {% endif %}
                             {% endfor %}
                         </td>
+                        <td class="td2" width=15% style="padding: 10px;">
+                            {% if gagnant_ouvert %}
+                            <a type href="{% url 'dkllapp:choix' 3 before_creation '1' %}">
+                            <button type="button" class="btn btn-danger btn-sm" style="padding: 0px;"><i class="mdi mdi-account-edit" style="font-size: 30px;"></i></button></a>
+                            {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            {% if is_gagnant %}
-            <p><a href="{% url 'dkllapp:choix' 3 %}" class="btn btn-warning display-4" style="min-width: 240px;">Choisis ton Gagnant</a></p>
-            {% endif %}
             <br>
         </div>
         <br>
@@ -116,7 +123,7 @@
             <div style="width: 30px;">
                 <span style="font-size: 20px; left: 10px; ">⌛</span>
             </div>
-            Mes tribus des semaines passées
+            Mes équipes des semaines passées
             <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 15px; height: 15px; margin-left: auto; margin-right: 5px;">
         </button>
         <div class="content">

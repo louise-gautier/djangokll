@@ -7,30 +7,35 @@
 <body class="bg-gradient-black">
     {% include 'dkllapp/section_menu.html' %}
     <div class="mainwrapper">
+        <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
         <div class="title" style="margin-left: 20px; margin-right: 20px; max-width: 800px; margin-left: auto; margin-right: auto;">
-            <br>
-            <p class="titre_rouge"><b>{{ current_ligue.nom }}</b></p>
-            <p style="padding-left: 15px;"><b>Dernière notification</b></p>
-            <div style="padding-left: 15px; padding-right: 15px;">
-                <table class="table2" cellspacing="0" >
+            <p style="padding-left: 20px;"><b>Dernière notification</b></p>
+            <div style="padding-left: 20px; padding-right: 20px;">
+                <table class="table2" cellspacing="0">
                     <tbody>
                         <tr class="tr2">
-                            <td class="td2" width="60%" style="padding: 10px;">
-                                <div style="display: flex; align-items: center;">
-                                    <img class="picto_mur" src="{% static 'dkllapp/img/kitchen/admin.png' %}">
-                                    <div style="padding-left: 15px;"><b>Brigade Pili²</b></div>
+                            <td class="td2" width="100%" style="padding: 0px;">
+                                <div style="display: flex; align-items: center;
+                                justify-content: space-between; padding: 10px;">
+                                    <div style="display: flex; align-items: center; vertical-align: middle;">
+                                        <img class="picto_mur" src="{% static admin_user.img %}">
+                                        <b style="padding-left: 15px; font-size: 13px;">
+                                            {{ admin_user.user__username }}&nbsp;&nbsp;
+                                        </b>
+                                    </div>
                                 </div>
-                                <div style="text-align: left; padding-left: 15px; padding-top: 5px;">{{ notif.message }}</div>
+                                <div style="text-align: left; background-color: #3A4040; border-radius: 5px;
+                                padding: 10px 0px 10px 10px; ">{{ notif.message }}</div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <br>
-            <p style="padding-left: 15px;"><b>Mur</b></p>
+            <p style="padding-left: 20px;"><b>Mur</b></p>
             <form id="form" action="" method="POST">
                 {% csrf_token %}
-                <div style="padding-left: 15px; padding-right: 15px;">
+                <div style="padding-left: 20px; padding-right: 20px;">
                     <table class="table2" cellspacing="0" >
                         <tbody>
                             <tr class="tr2">

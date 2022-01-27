@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <div style="margin: 20px auto 10px auto; width: 320px;">
+                <script async src="https://embed.toucantoco.guru/scripts/embedLauncher.js?id=a3a49663-c2f4-4797-9607-9e6db0024caa&height=190px&width=320px" type="text/javascript"></script>
+        </div>
+        <div style="margin: 10px auto 10px auto; width: 320px;">
+            <script async src="https://embed.toucantoco.guru/scripts/embedLauncher.js?id=b04597ec-e8d9-4442-af3f-3b3ee0cf5f8d&height=190px&width=320px&compact=true" type="text/javascript"></script>
+        </div>
+    </div>
+    <div class=" bottom_menu fixed-bottom">{% include 'dkllapp/stat_menu.html' %}</div>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>
