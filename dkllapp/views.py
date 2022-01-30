@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.conf import settings
 from django.utils.timezone import now
 
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django import forms
@@ -1473,6 +1473,10 @@ def faire_equipe(request, ligue_id, before, txt):
                   template_name="dkllapp/faire_equipe.html",
                   context={'form': form, 'ligues': ligues, 'poulains': poulains, 'txt_alert': txt_alert,
                            'isadmin': is_admin(request.user.id)})
+
+
+def acme_challenge(request):
+    return HttpResponse(settings.ACME_CHALLENGE_CONTENT)
 
 
 ######################################TESTS#################################################

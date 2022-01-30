@@ -57,6 +57,8 @@ urlpatterns = [
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
+    path('/.well-known/acme-challenge/', views.acme_challenge, name='acme-challenge'),
+
     path('home_push/', home_push),
     path('send_push', send_push),
     #path('webpush/', include('webpush.urls')),
