@@ -373,6 +373,9 @@ def admin(request):
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
+    poulains_ouvert = is_poulains()
+    podium_ouvert = is_podium()
+    gagnant_ouvert = is_gagnant()
     # Tableau règles
     regles = Regle.objects.all().order_by('insert_datetime')
     # Tableau questions
@@ -444,6 +447,7 @@ def admin(request):
         else:
             # si form activation candidats
             admin_activation_choix(type_choix, type_activation)
+            return redirect('dkllapp:admin')
     form_mail = MailAdminForm()
     form_notif = NotifAdminForm()
     form_regle = ModifierRegleForm()
@@ -452,7 +456,8 @@ def admin(request):
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
                            'form_mail': form_mail, 'form_notif': form_notif, 'form_regle': form_regle,
                            'regles': regles, 'evenements': evenements, 'questions_plus': questions_plus,
-                           'isadmin': is_admin(request.user.id)})
+                           'isadmin': is_admin(request.user.id), 'poulains_ouvert': poulains_ouvert,
+                           'podium_ouvert': podium_ouvert, 'gagnant_ouvert': gagnant_ouvert})
 
 
 @login_required
@@ -974,6 +979,8 @@ def bonus(request):
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     questions = Question.objects.order_by('-episode').order_by('-insert_datetime')
+    liste_episode = list(range(1, episode_en_cours() + 1))
+    liste_episode.reverse()
     questions_plus = []
     for question in questions:
         propositions = Proposition.objects.filter(question_id=question.id)
@@ -988,7 +995,7 @@ def bonus(request):
     points_feu = PointsFeu.objects.filter(user_id=request.user.id).values('user_id', 'feu').order_by('user_id').first()
     return render(request=request,
                   template_name="dkllapp/bonus.html",
-                  context={'ligues': ligues, 'page': 'bonus',
+                  context={'ligues': ligues, 'page': 'bonus', 'liste_episode': liste_episode,
                            'questions_plus': questions_plus, 'points_feu': points_feu,
                            'isadmin': is_admin(request.user.id)})
 

@@ -108,9 +108,20 @@ class CreerRegleForm(forms.Form):
     points_3 = forms.IntegerField(required=True)
 
 
+liste_typage = (
+    ('1', "Poulain seul"),
+    ('2', "Podium seul"),
+    ('3', "Gagnant"),
+    ('12', "Poulain et Podium"),
+    ('13', "Poulain et Gagnant"),
+    ('23', "Podium et Gagnant"),
+    ('123', "Poulain, Podium et Gagnant")
+)
+
+
 class AjouterEvenementForm(forms.Form):
     episode = forms.IntegerField(required=True)
-    typage = forms.IntegerField(required=True)
+    typage = ChoiceField(choices=liste_typage, required=True)
 
 
 class MessageMurForm(forms.Form):

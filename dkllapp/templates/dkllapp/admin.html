@@ -19,15 +19,36 @@
             <br>
             <br>
             <p>Accès aux choix de candidats :</p>
-            <form id="form_activations" method="post" style="display: inline-block;">
+            <form id="form_activations" method="post" style="display: inline-block; width: 100%;">
                 {% csrf_token %}
-                <div class="btn-profil-container">
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_activate_poulains">Réactiver Choix Poulains</button>
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_poulains">Désactiver Choix Poulains</button>
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_activate_podium">Réactiver Choix Podiums</button>
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_podium">Désactiver Choix Podiums</button>
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_activate_gagnat">Réactiver Choix Gagnant</button>
-                    <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_gagnat">Désactiver Choix Gagnant</button>
+                <div style="display: flex; flex-direction: column; width: 100%;">
+                    <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between; margin-bottom: 4px;">
+                        {% if poulains_ouvert %}
+                        <p>Les Poulains sont ouverts</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_poulains">Désactiver 🦄️</button>
+                        {% else %}
+                        <p>Les Poulains sont fermés</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_poulains">&nbsp;Réactiver 🦄️&nbsp;</button>
+                        {% endif %}
+                    </div>
+                    <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between; margin-bottom: 4px;">
+                        {% if podium_ouvert %}
+                        <p>Le Podium est ouvert</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_podium">Désactiver 🏅</button>
+                        {% else %}
+                        <p>Le Podium est fermé</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_podium">&nbsp;Réactiver 🏅&nbsp;</button>
+                        {% endif %}
+                    </div>
+                    <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between; margin-bottom: 4px;">
+                        {% if gagnant_ouvert%}
+                        <p>Le Gagnant est ouvert</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_deactivate_gagnat">Désactiver 🏆</button>
+                        {% else %}
+                        <p>Le Gagnant est fermé</p>
+                        <button type="submit" class="btn btn-danger btn-sm" name="run_activate_gagnat">&nbsp;Réactiver 🏆&nbsp;</button>
+                        {% endif %}
+                    </div>
                 </div>
                 <br>
             </form>
