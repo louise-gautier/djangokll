@@ -58,7 +58,7 @@ urlpatterns = [
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
-    url(r'^.well-known/acme-challenge/.*$', views.acme_challenge, name='acme-challenge'),
+    url(r'^.well-known/acme-challenge/.*$', views.acme_challenge),
 
     path('home_push/', home_push),
     path('send_push', send_push),
