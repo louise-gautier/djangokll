@@ -479,8 +479,10 @@ def changer_episode(request):
             for membre in membres:
                 poulains = Choix.objects.filter(user_id=membre.user_id).filter(type=1).order_by('id')
                 if len(poulains) == 6:
+                    print('1', membre)
                     equipe_poulains = Equipe.objects.filter(user_id=membre.user_id).filter(ligue_id=membre.ligue_id)\
                         .filter(type=1).filter(episode=episode_en_cours()).order_by('id')
+                    print('2', equipe_poulains)
                     if len(equipe_poulains) >= 1:
                         pass
                     else:
@@ -488,9 +490,10 @@ def changer_episode(request):
                         for candidat in poulains:
                             poulains_id.append(candidat.candidat_id)
                         nouvelle_ligne_equipe = Equipe()
-                        nouvelle_ligne_equipe.user_id = request.user.id
+                        nouvelle_ligne_equipe.user_id = membre.user_id
                         nouvelle_ligne_equipe.ligue_id = membre.ligue_id
                         nouvelle_ligne_equipe.candidat_id = random.choice(poulains_id)
+                        print('3', nouvelle_ligne_equipe.user_id, nouvelle_ligne_equipe.ligue_id, nouvelle_ligne_equipe.candidat_id)
                         nouvelle_ligne_equipe.episode = episode_en_cours()
                         nouvelle_ligne_equipe.type = 1
                         nouvelle_ligne_equipe.save()
@@ -825,6 +828,8 @@ def equipe(request, ligue_id):
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
+    liste_episode = list(range(1, episode_en_cours_ + 1))
+    liste_episode.reverse()
     poulains_ouvert = is_poulains()
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
@@ -840,11 +845,22 @@ def equipe(request, ligue_id):
         .order_by('candidat_id') \
         .values('id', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool', 'type')
+    print(equipe)
+
+    equipes = Equipe.objects \
+        .filter(user_id=request.user.id) \
+        .filter(ligue_id=current_ligue['id']) \
+        .filter(type=1) \
+        .order_by('-episode') \
+        .order_by('candidat_id') \
+        .values('id', 'episode', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
+                'candidat__statut', 'candidat__statut_bool', 'type')
+    print(equipes)
     return render(request=request,
                   template_name="dkllapp/equipe.html",
                   context={'ligues': ligues, 'page': 'equipe',
-                           'equipe': equipe, 'choix_user': choix_user,
-                           'ligue_id': ligue_id, 'before_creation': 'equipe',
+                           'equipe': equipe, 'choix_user': choix_user, 'equipes': equipes,
+                           'ligue_id': ligue_id, 'before_creation': 'equipe', 'liste_episode': liste_episode,
                            'episode_en_cours_': episode_en_cours_, 'current_ligue': current_ligue,
                            'poulains_ouvert': poulains_ouvert, 'podium_ouvert': podium_ouvert,
                            'gagnant_ouvert': gagnant_ouvert, 'isadmin': is_admin(request.user.id)})

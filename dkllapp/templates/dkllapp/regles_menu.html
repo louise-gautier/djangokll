@@ -1,6 +1,6 @@
 {% load static %}
 <ul class="nav nav-pills nav-pills-icon-text mb-2" id="myTab2" role="tablist" style="width: 90%;">
-  <li class="nav-item" style="padding-top: 5px; width: 25%;">
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
     {% if page == 'generales' %}
     <a class="nav-link active" href="{% url 'dkllapp:generales'%}" aria-selected="true">
         <i class="mdi mdi-gavel"></i>Résumé</a>
@@ -9,7 +9,7 @@
         <i class="mdi mdi-gavel"></i>Résumé</a>
     {% endif %}
   </li>
-  <li class="nav-item" style="padding-top: 5px; width: 25%;">
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
     {% if page == 'bareme' %}
     <a class="nav-link active" href="{% url 'dkllapp:bareme' %}" aria-selected="true">
         <i class="mdi mdi-format-list-checks"></i>Barème</a>
@@ -18,22 +18,13 @@
         <i class="mdi mdi-format-list-checks"></i>Barème</a>
     {% endif %}
   </li>
-  <li class="nav-item" style="padding-top: 5px; width: 25%;">
+  <li class="nav-item" style="padding-top: 5px; width: 33%;">
     {% if page == 'candidats' %}
     <a class="nav-link active" href="{% url 'dkllapp:candidats' %}" aria-selected="true" style="font-size: 12px;">
         <i class="mdi mdi-account-group"></i>Candidats</a>
     {% else %}
     <a class="nav-link" href="{% url 'dkllapp:candidats' %}" aria-selected="true" style="font-size: 12px;">
         <i class="mdi mdi-account-group"></i>Candidats</a>
-    {% endif %}
-  </li>
-  <li class="nav-item" style="padding-top: 5px; width: 25%;">
-    {% if page == 'faq' %}
-    <a class="nav-link active" href="{% url 'dkllapp:faq' %}" aria-selected="true">
-        <i class="mdi mdi-help-circle-outline"></i>FAQ</a>
-    {% else %}
-    <a class="nav-link" href="{% url 'dkllapp:faq' %}" aria-selected="true">
-        <i class="mdi mdi-help-circle-outline"></i>FAQ</a>
     {% endif %}
   </li>
 </ul>

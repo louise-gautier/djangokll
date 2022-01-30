@@ -10,63 +10,57 @@
         <br>
             <p class="titre_rouge"><b>En bref</b></p>
             <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
-                Normalement si tu es ici, tu sais déjà que Top Chef est une émission de télévision française de téléréalité culinaire, diffusée sur M6, et que Jean-Phil aurait dû être le grand gagnant de la saison 2020 (dite de l’audace).</p>
+                Normalement si tu es ici, tu sais déjà que Top Chef est une émission de télévision française de téléréalité culinaire, diffusée sur M6, et que SARAH aurait dû être la grande gagnante de la saison 2021 (dite de lacréativitésanslimites).</p>
             <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
-                Ce qu'on te propose à TCL c'est de mettre un peu de piment lors des visionnages et de défier tes amis !</p>
+                Ce qu'on te propose avec Pili Pili, c'est de mettre un peu de piment lors des visionnages et de défier tes amis !</p>
             <p style="padding-left: 20px; padding-right: 20px; line-height: 22px; text-align: justify;">
-                Chaque semaine, l’émission est passée au chinois par la Brigade TCL, et les résultats de tes ligues dépendent des vrais résultats des candidats au cours des émissions.</p>
+                Chaque semaine, l’émission est passée au chinois par la Brigade Pili², et les résultats de tes ligues dépendent des vrais résultats des candidats au cours des émissions.</p>
             <p class="titre_rouge"><b>En étapes</b></p>
             <button type="button" class="collapsible_block" id="ligues">Les ligues 👑 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
                 <br>
-                <p style="line-height: 22px; text-align: justify;">La première étape consiste à créer ta ligue. Pour cela rien de plus simple, tu peux te rendre sur ton profil et cliquer sur le lien "Créer une ligue" ou le faire directement <a href="{% url 'dkllapp:creation_ligue' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
-                <p style="line-height: 22px; text-align: justify;">Une fois la ligue créée, invite tes amis en leur donnant le code de la ligue. Tu peux le trouver dans ton profil à  "Mes ligues" ou dans l'onglet "⚙️ Détails" de la ligue en question.</p>
+                <p style="line-height: 22px; text-align: justify;">La première étape consiste à créer ta ligue. Pour cela rien de plus simple, tu peux te rendre sur ton profil et cliquer sur le lien "Créer ma ligue" ou le faire directement <a href="{% url 'dkllapp:creation_ligue' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+                <p style="line-height: 22px; text-align: justify;">Une fois la ligue créée, invite tes amis en leur donnant le code de la ligue. Tu peux le trouver dans ton profil sur l’onglet  "Ligues" ou dans l'onglet "Détails" de la ligue en question.</p>
                 <p style="line-height: 22px; text-align: justify;">Pour rejoindre une ligue avec un code, tu peux aller dans ton profil et cliquer sur "Rejoindre une ligue" ou le faire directement <a href="{% url 'dkllapp:rejoindre_ligue' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+                <p>Il n’y a pas de limite de joueurs par ligue, plus on est de fous plus on rit.</p>
             </div>
             <button type="button" class="collapsible_block" id="poulains" style="margin-top: 10px;">Les Poulains 🦄 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
                 <br>
-                <p style="line-height: 22px; text-align: justify;">Une fois tous tes amis réunis dans une ligue, vous allez pouvoir choisir vos Poulains 🦄 : un poulain est un ptit gars qui paye pas de mine mais sur qui tu mets une piécette car tu sens qu’il peut aller loin (comme la petite Alexandra dont la cote devait être à 2000 en début de saison).</p>
-                <p style="line-height: 22px; text-align: justify;">A l'issue du premier épisode, tu devras donc choisir 5 candidats, qui te permettront d’accumuler des points tout au long de la saison.</p>
+                <p style="line-height: 22px; text-align: justify;">Une fois tous tes amis réunis dans une ligue, vous allez pouvoir choisir vos Poulains 🦄 : un poulain est un ptit gars qui paye pas de mine mais sur qui tu mets une piécette car tu sens qu’il peut aller loin (comme Momo dont la cote devait être à 2000 en début de saison).</p>
+                <p style="line-height: 22px; text-align: justify;">A l'issue du premier épisode, tu devras donc choisir 6 candidats, qui te permettront d’accumuler des pilis (des points) tout au long de la saison.</p>
+            </div>
+            <button type="button" class="collapsible_block" id="equipesemaine" style="margin-top: 10px;">NOUVEAU : La brigade de la semaine 👨‍🍳👩‍🍳 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
+            <div class="content">
+                <br>
+                <p style="line-height: 22px; text-align: justify;">Chaque semaine, tu devras composer ta brigade de 3 parmi tes 6 poulains, c’est à dire choisir les 3 candidats que tu souhaites « utiliser » pour l’épisode. Seuls les 3 candidats de la brigade de la semaine te rapporteront des pilis durant l’épisode.</p>
+                <p style="line-height: 22px; text-align: justify;">Exemple : tu as A,B,C,D,E,F en poulains. Tu as choisi A,B,C dans ta brigade de la semaine pour l’épisode 2. E est coup de coeur sur une épreuve, mais tu ne l’as pas choisi dans ta brigade, il ne te rapportera donc pas de pilis pour cet épisode. En revanche, si B gagne une épreuve, il te rapportera des pilis. Tu pourras changer ta brigade chaque semaine.</p>
+                <p style="line-height: 22px; text-align: justify;">Attention, si tu oublies de composer ta brigade pour un épisode, elle sera constituée par défaut de seulement 1 candidat choisi au hasard parmi tes 6 poulains. Nous te conseillons de te mettre un petit rappel chaque mercredi ;) </p>
             </div>
             <button type="button" class="collapsible_block" id="podiumgagnant" style="margin-top: 10px;">Le Podium 🏅 et le Gagnant 🏆 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
                 <br>
-                <p style="line-height: 22px; text-align: justify;">En plus de tes Poulains, tu pourras également désigner à partir de la réunification les candidats qui seront selon toi sur le podium, et qui seront intégrés au décompte des points à partir de cet épisode.</p>
-                <p style="line-height: 22px; text-align: justify;">Tu pourras enfin choisir à partir de l’épisode 9 le candidat qui sera selon toi le grand gagnant de cette saison, et qui te rapportera un bonus de points lors de la finale.</p>
+                <p style="line-height: 22px; text-align: justify;">En plus de tes Poulains, tu pourras également désigner à partir de la réunification les candidats qui seront selon toi sur le podium, et qui seront intégrés au décompte des points à partir de cet épisode <b>(qu’ils fassent ou non partie de ta brigade de la semaine)</b>.</p>
+                <p style="line-height: 22px; text-align: justify;">Tu pourras enfin choisir plus tard dans le jeu le candidat qui sera selon toi le grand gagnant de cette saison, et qui te rapportera un bonus de pilis lors de la finale.</p>
+                <p style="line-height: 22px; text-align: justify;">Le choix de ton podium et de ton gagnant est indépendant du choix de tes poulains.</p>
             </div>
             <button type="button" class="collapsible_block" id="reglesevenements" style="margin-top: 10px;">Les règles et évènements 📋 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
                 <br>
-                <p style="line-height: 22px; text-align: justify;">Chaque événement qui se passe dans l’émission est enregistré sur la base de règles prédéfinies, que tu peux consulter dans l'onglet “Règles du jeu > Barème" ou directement <a href="{% url 'dkllapp:bareme' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
-                <p style="line-height: 22px; text-align: justify;">Par exemple, une règle stipule qu'un candidat qui se blesse lors d’une épreuve perd 1 point. A chaque fois qu'un candidat se blessera, chaque joueur qui a choisi ce candidat comme Poulain 🦄 perdra 1 point.</p>
-            </div>
-            <button type="button" class="collapsible_block" id="reglesvotes" style="margin-top: 10px;">Nouvelles règles et votes 📃 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
-            <div class="content">
-                <br>
-                <p style="line-height: 22px; text-align: justify;">Au fil des épisodes, des nouvelles règles seront ajoutées aux existantes. Et parce que KLL ne serait rien sans sa commu, ce sont les joueurs qui choisiront cette règle.</p>
-                <p style="line-height: 22px; text-align: justify;">Mieux encore, ce sont les joueurs qui l’écriront. Tu peux suggérer une règle à tout moment dans le menu “La Commu > Suggestions” ou directement <b style="color: #E0E2E2;">ici</b>. Toutes les règles suggérées seront modérées par la Tribu KLL, puis soumises à un vote. Celles récoltant le plus de voix seront ajoutées pour le reste de la saison.</p>
-                <p style="line-height: 22px; text-align: justify;">Le vote se fait par likes, dans l'onglet "Suggestions”. Tu as le droit à autant de votes que tu le souhaites.</p>
-                <p style="line-height: 22px; text-align: justify;">Il y aura donc des nouvelles règles choisies par tous les joueurs et qui s'appliqueront à toutes les ligues du jeu*.</p>
-                <p style="line-height: 22px; font-size: 12px; text-align: justify;"><i>*Le barème de chaque règle pourra être adapté par la tribu avant publication.</i></p>
+                <p style="line-height: 22px; text-align: justify;">Chaque événement qui se passe dans l’émission est enregistré sur la base de règles prédéfinies, que tu peux consulter dans l'onglet “Général > Règles > Barème" ou directement <a href="{% url 'dkllapp:bareme' %}"><b style="color: #E0E2E2;">ici</b></a>.</p>
+                <p style="line-height: 22px; text-align: justify;">Par exemple, une règle stipule qu'un candidat qui se blesse lors d’une épreuve perd 1 point. A chaque fois qu'un candidat se blessera, chaque joueur qui a choisi ce candidat dans sa brigade de la semaine perdra 1 point.</p>
             </div>
             <button type="button" class="collapsible_block" id="pronos" style="margin-top: 10px;">Pronos Pimiento 🔥 &nbsp; <img src="{% static 'dkllapp/img/triarrowdown.png' %}" alt="↓" style="width: 10px; height: 10px; margin-left: auto; margin-right: 5px;"></button>
             <div class="content">
                 <br>
                 <p style="line-height: 22px; text-align: justify;">Chaque semaine tu as le choix de rendre ton émission encore plus intense grâce aux pronos !</p>
-                <p style="line-height: 22px; text-align: justify;">Dans la page « <a href="{% url 'dkllapp:pronos' '1' %}"><b style="color: #E0E2E2;">Mes Pronos</b></a> », tu peux répondre à la question de la semaine, et tenter de gagner des points bonus.</p>
-                <p style="line-height: 22px; text-align: justify;">La question concerne un seul épisode, et tu as jusqu’au vendredi 21h pour y répondre.</p>
-                <p style="line-height: 22px; text-align: justify;">Les flashback ne sont pas comptabilisés.</p>
-                <p style="line-height: 22px; text-align: justify;">Attention, si tu as faux à certains pronos, ils pourront te faire perdre des points ! Tu pourras consulter le détail du barème avant de te jeter à l’eau.</p>
+                <p style="line-height: 22px; text-align: justify;">Dans la page « <a href="{% url 'dkllapp:pronos' '1' %}"><b style="color: #E0E2E2;">Pronos</b></a> », tu peux répondre à la question de la semaine, et tenter de gagner des pilis bonus.</p>
+                <p style="line-height: 22px; text-align: justify;">La question concerne un seul épisode, et tu as jusqu’au mercredi 21h pour y répondre. Les flashback ne sont pas comptabilisés dans les évenements.</p>
+                <p style="line-height: 22px; text-align: justify;">Attention, si tu as faux à certains pronos, ils pourront te faire perdre des points ! Tu pourras consulter le détail du barème avant de te jeter à l’eau. Ne pas répondre à un prono ne fait ni gagner, ni perdre de point.</p>
                 <p style="line-height: 22px; text-align: justify;">Famille, vie sociale, santé financière. Etes-vous prêt à tout miser ? Pour être aidé, appelez le 09-74-75-13-13 (appel non surtaxé).</p>
             </div>
         <br>
         <p style="padding-left: 20px; font-size: 10px;">Une question ? Contacte-nous à l'adresse <a href="mailto:admin@pilixpili.com" style="min-width: 240px; color: #E0E2E2; text-decoration: underline;">admin@pilixpili.com</a></p>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
         <br>
         <br>
         <br>
