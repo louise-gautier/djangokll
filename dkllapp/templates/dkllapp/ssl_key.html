@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    {% include 'dkllapp/head.html' %}
+</head>
+<body class="bg-gradient-black">
+    {% include 'dkllapp/section_menu.html' %}
+    <div class="mainwrapper">
+        <p class="titre_rouge"><b>SSL</b></p>
+        <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <p>Ici, le chemin certif ssl</p>
+            <script src="{% static 'dkllapp/ssl_letsencrypt_key.txt' %}"></script>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    {% include 'dkllapp/body_scripts.html' %}
+</body>
+</html>
