@@ -1,4 +1,5 @@
 from django.conf.urls.static import static
+from django.template.defaulttags import url
 from django.urls import path, include
 from django.views.generic import TemplateView
 
@@ -57,7 +58,7 @@ urlpatterns = [
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 
-    path('/.well-known/acme-challenge/', views.acme_challenge, name='acme-challenge'),
+    url(r'^.well-known/acme-challenge/.*$', views.acme_challenge, name='acme-challenge'),
 
     path('home_push/', home_push),
     path('send_push', send_push),
