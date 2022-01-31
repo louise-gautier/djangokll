@@ -57,13 +57,12 @@ urlpatterns = [
 
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-
     path('.well-known/acme-challenge/y1mkQf2WFkXe22Tndhv5ymkn3IqL_te9DN49KPKKGPU/', views.acme_challenge, name='acme-challenge'),
 
     #path('test_mail', views.test_mail, name='test_mail'),
-    path('home_push/', home_push),
-    path('send_push', send_push),
+    #path('home_push/', home_push),
+    #path('send_push', send_push),
     #path('webpush/', include('webpush.urls')),
-    path('home_push/sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
+    #path('home_push/sw.js', TemplateView.as_view(template_name='dkllapp/sw.js', content_type='application/x-javascript'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
