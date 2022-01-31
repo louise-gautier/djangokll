@@ -60,6 +60,7 @@ urlpatterns = [
 
     path('.well-known/acme-challenge/y1mkQf2WFkXe22Tndhv5ymkn3IqL_te9DN49KPKKGPU/', views.acme_challenge, name='acme-challenge'),
 
+    #path('test_mail', views.test_mail, name='test_mail'),
     path('home_push/', home_push),
     path('send_push', send_push),
     #path('webpush/', include('webpush.urls')),

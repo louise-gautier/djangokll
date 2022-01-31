@@ -247,17 +247,25 @@ def reinitialiser_mdp(request, message):
                 nouveau_mdp = 'PxP_' + shortuuid.uuid()
                 current_user.set_password(nouveau_mdp)
                 current_user.save()
+                # mail
                 current_site = get_current_site(request)
-                context = {
-                    'user': current_user,
-                    'domain': current_site.domain,
-                    'nouveau_mdp': nouveau_mdp}
-                #mail
-                subject = "🔐 Réinitilisation de ton mot de passe Pili Pili"
-                txt = render_to_string('dkllapp/reinitialiser_mdp_email.html', context)
+                html_message = loader.render_to_string(
+                    'dkllapp/mails/topch_mdp.html',
+                    {
+                        'user': current_user,
+                        'domain': current_site.domain,
+                        'from_email': settings.EMAIL_HOST_USER,
+                        'nouveau_mdp': nouveau_mdp,
+                    }
+                )
+                email_subject = "🔐 Réinitilisation de ton mot de passe Pili Pili"
                 email_from = settings.EMAIL_HOST_USER
                 recipient_list = [current_user.email]
-                send_mail(subject, txt, email_from, recipient_list)
+                mail = EmailMultiAlternatives(
+                    email_subject, 'This is message', email_from, recipient_list)
+                mail.attach_alternative(html_message, "text/html")
+                mail.send()
+
                 current_user.save()
                 return redirect('dkllapp:profil', '1')
             else:
@@ -287,6 +295,24 @@ def activate(request, uidb64, token):
         user.userprofile.email_confirmed = True
         user.save()
         login(request, user)
+        #mail
+        current_user = user
+        current_site = get_current_site(request)
+        html_message = loader.render_to_string(
+            'dkllapp/mails/topch_welcome.html',
+            {
+                'user': current_user,
+                'domain': current_site.domain,
+                'from_email': settings.EMAIL_HOST_USER,
+            }
+        )
+        email_subject = "🌶️🌶️ Bienvenue sur Pili Pili"
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [current_user.email]
+        mail = EmailMultiAlternatives(
+            email_subject, 'This is message', email_from, recipient_list)
+        mail.attach_alternative(html_message, "text/html")
+        mail.send()
         return redirect('dkllapp:index')
     else:
         return render(request, 'account_activation_invalid.html')
@@ -657,6 +683,32 @@ def ajouter_question(request, question_id):
                 nouvelle_notif = Notif()
                 nouvelle_notif.message = "🔥 De nouveaux pronos sont disponibles !"
                 nouvelle_notif.save()
+            if form.cleaned_data.get('is_mail'):
+                #mail
+                current_user = request.user
+                current_site = get_current_site(request)
+                html_message = loader.render_to_string(
+                    'dkllapp/mails/topch_prono.html',
+                    {
+                        'user': current_user,
+                        'domain': current_site.domain,
+                        'from_email': settings.EMAIL_HOST_USER,
+                        'enonce': question.enonce,
+                        'bonus': question.bonus,
+                        'malus': question.malus,
+                    }
+                )
+                email_subject = "🔥 Un nouveau prono est disponible !"
+                email_from = settings.EMAIL_HOST_USER
+                all_users = UserProfile.objects.values('user__email').filter(boolemail=True).all()
+                recipient_list = []
+                for un_user in all_users:
+                    recipient_list.append(un_user['user__email'])
+                mail = EmailMultiAlternatives(
+                    email_subject, 'This is message', email_from, recipient_list)
+                mail.attach_alternative(html_message, "text/html")
+                mail.send()
+
             return redirect('dkllapp:admin')
     form = AjouterQuestionForm()
     return render(request=request,
@@ -1382,7 +1434,7 @@ def creation_ligue(request):
             #mail
             current_site = get_current_site(request)
             html_message = loader.render_to_string(
-                'dkllapp/creation_ligue_email.html',
+                'dkllapp/mails/topch_ligue.html',
                 {
                     'user': user,
                     'message': 'Un mail',
@@ -1528,3 +1580,35 @@ def send_push(request):
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
+
+
+@login_required
+def test_mail(request):
+    current_user = request.user
+    current_site = get_current_site(request)
+    enonce = "Telle est la question ?"
+    bonus = 4
+    malus = -2
+    html_message = loader.render_to_string(
+        'dkllapp/mails/topch_prono.html',
+        {
+            'user': current_user,
+            'domain': current_site.domain,
+            'from_email': settings.EMAIL_HOST_USER,
+            'enonce': enonce,
+            'bonus': bonus,
+            'malus': malus,
+        }
+    )
+    email_subject = "🔥 Un nouveau prono est disponible !"
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['louise_gautier@orange.fr']
+    mail = EmailMultiAlternatives(
+        email_subject, 'This is message', email_from, recipient_list)
+    mail.attach_alternative(html_message, "text/html")
+    mail.send()
+    return render(request=request,
+                  template_name="dkllapp/test_mail.html",
+                  context={'isadmin': is_admin(request.user.id)})
+
+

@@ -29,6 +29,9 @@
                     <label for="id_malus">Malus : </label>
                     <input style="width: 100px; margin-bottom: 10px;" type="number" name="malus" value={{question.malus}} required="" id="id_malus">
                 </div>
+                <div style="display: flex; align-items: center; margin-top: 5px;">
+                    {{ form.is_mail }}<span style="padding-left: 5px;">Envoyer un mail</span>
+                </div>
                 <br><button class="btn btn-danger btn-sm" type="submit">Valider</button>
             </form>
             {% endif %}

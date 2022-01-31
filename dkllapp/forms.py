@@ -99,6 +99,7 @@ class AjouterQuestionForm(forms.Form):
     episode = forms.IntegerField(label='episode')
     bonus = forms.IntegerField(label='bonus')
     malus = forms.IntegerField(label='malus')
+    is_mail = forms.BooleanField(required=False)
 
 
 class CreerRegleForm(forms.Form):
