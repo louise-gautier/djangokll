@@ -54,7 +54,7 @@
                 <br>
                 <br>{{ form.regle.label }}: {{ form.regle }}
                 <br>
-                <br><button class="btn btn-danger btn-sm" type="submit">Ajouter</button>
+                <br><button class="btn btn-danger btn-sm" type="submit" onclick="this.disabled=true,this.form.submit();">Ajouter</button>
             </form>
             {% endif %}
         </div>
