@@ -499,6 +499,7 @@ def changer_episode(request):
             episode_a_changer.save()
             nouvelle_notif = Notif()
             nouvelle_notif.message = "🎲 Les jeux sont faits pour l'épisode " + str(episode_a_changer.valeur - 1) + " !"
+            nouvelle_notif.lien = "/"
             nouvelle_notif.save()
 
             membres = Membre.objects.all().order_by('id')
@@ -682,6 +683,7 @@ def ajouter_question(request, question_id):
             if question_id == '0':
                 nouvelle_notif = Notif()
                 nouvelle_notif.message = "🔥 De nouveaux pronos sont disponibles !"
+                nouvelle_notif.lien = "/pronos/1"
                 nouvelle_notif.save()
             if form.cleaned_data.get('is_mail'):
                 #mail
@@ -863,6 +865,7 @@ def mur(request, ligue_id):
         return redirect('dkllapp:mur', ligue_id)
     form = DynamicMessageMurForm()
     notif = Notif.objects.latest('insert_datetime')
+    print(notif)
     admin_user = UserProfile.objects.values('id', 'img', 'user__username').filter(id=2).first()
     return render(request=request,
                   template_name="dkllapp/mur.html",
@@ -1140,12 +1143,24 @@ def choix(request, type_choix, before, txt):
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     txt_alert = txt
+    choix_user = Choix.objects.values("candidat_id").filter(type=type_choix).filter(user_id=request.user.id).all()
+    print("0", choix_user)
+    ids_choix = []
+    for un_choix in choix_user:
+        ids_choix.append(un_choix['candidat_id'])
+    print('1', ids_choix)
     candidats = Candidat.objects.all().order_by('id')\
         .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
     new_fields = {}
     for candidat in candidats:
-        new_fields[candidat['form_id']] = forms.BooleanField(required=False)
+        if candidat['id'] in ids_choix:
+            print('2', 'if true')
+            new_fields[candidat['form_id']] = forms.BooleanField(initial=True, required=False)
+        else:
+            new_fields[candidat['form_id']] = forms.BooleanField(initial=False, required=False)
     DynamicChoixCreationForm = type('DynamicChoixCreationForm', (ChoixCreationForm,), new_fields)
+    for key in new_fields['declared_fields']:
+        print(new_fields['declared_fields'][key].__dict__)
     if request.method == "POST":
         form = DynamicChoixCreationForm(request.POST)
         if form.is_valid():
@@ -1165,7 +1180,8 @@ def choix(request, type_choix, before, txt):
     form = DynamicChoixCreationForm()
     return render(request=request,
                   template_name="dkllapp/choix.html",
-                  context={'form': form, 'ligues': ligues, 'candidats': candidats, 'txt_alert': txt, 'type_choix': type_choix,
+                  context={'form': form, 'ligues': ligues, 'candidats': candidats, 'txt_alert': txt,
+                           'type_choix': type_choix, 'ids_choix': ids_choix,
                            'isadmin': is_admin(request.user.id)})
 
 

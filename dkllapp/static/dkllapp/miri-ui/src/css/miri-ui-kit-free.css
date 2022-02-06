@@ -8409,7 +8409,7 @@ blockquote, .blockquote {
 
 .dropdown-menu {
   border-radius: 4px;
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.125);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
   padding-bottom: 0; }
   .dropdown-menu .dropdown-item {
     padding: 8px 24px;

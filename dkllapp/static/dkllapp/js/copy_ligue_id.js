@@ -1,4 +1,3 @@
-
 var elem = document.getElementsByClassName("copy_id_link");
 for (var i = 0; i < elem.length; i += 1) {
     (function () {

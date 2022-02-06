@@ -19,10 +19,18 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Ligues</a>
                     <div class="dropdown-menu dropdown-menu-right">
                         {% for lig in ligues %}
-                        <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item">
+                        <a href="{% url 'dkllapp:mur' lig.ligue_id %}" class="dropdown-item" style="font-weight: bolder;">
                             <span style="width: 100%; text-align: center;">{{ lig.ligue__nom }}</span>
                         </a>
                         {% endfor %}
+                        {% if not ligues %}
+                        <a href="{% url 'dkllapp:creation_ligue' %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: center;">Créer</span>
+                        </a>
+                        <a href="{% url 'dkllapp:rejoindre_ligue' %}" class="dropdown-item">
+                            <span style="width: 100%; text-align: center;">Rejoindre</span>
+                        </a>
+                        {% endif%}
                     </div>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dkllapp:pronos' '1' %}">Pronos</a>

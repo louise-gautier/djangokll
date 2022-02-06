@@ -92,6 +92,7 @@ class Mur(models.Model):
 
 class Notif(models.Model):
     message = models.CharField(max_length=999)
+    lien = models.CharField(max_length=999, default="")
     insert_datetime = models.DateTimeField(default=now, blank=True)
 
 

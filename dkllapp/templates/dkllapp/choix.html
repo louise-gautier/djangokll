@@ -12,6 +12,7 @@
             <form id="form" action="" method="POST">
                 {% csrf_token %}
                 <div style="padding-left: 15px; padding-right: 15px;">
+                    <script>var type_choix = {{type_choix}}; console.log("scr", type_choix)</script>
                     {% if type_choix == '1' %}
                     <p>Choisis tes 6 poulains :</p>
                     {% elif type_choix == '2' %}
@@ -23,7 +24,11 @@
                     <div style="display: flex; flex-flow: row wrap;">
                         {% for field in form %}
                         <div class="form-check_candidat">
+                            {% if field.initial %}
+                            <input class="form-check-input_candidat" type="checkbox" id={{field.name}} name={{field.name}} checked>
+                            {% else %}
                             <input class="form-check-input_candidat" type="checkbox" id={{field.name}} name={{field.name}}>
+                            {% endif %}
                             {% for candidat in candidats %}
                             <script type="text/javascript">if ("{{field.name}}".substring(4,6) == ("0" + {{candidat.id}}).slice(-2)) {
                                                                 lbl = document.createElement("label");

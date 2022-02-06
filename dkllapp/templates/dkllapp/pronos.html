@@ -9,6 +9,9 @@
     <div class="mainwrapper">
         <p class="titre_rouge"><b>Pronos en cours</b></p>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            {% if not questions_plus %}
+                    <p>Il n'y a aucun pronos en cours, mais reste à l'affût !</p>
+            {% else %}
             <form id="form" action="" method="POST">
             {% csrf_token %}
                 <div id="form_div">
@@ -84,6 +87,7 @@
                     {% endif %}
                 </div>
             </form>
+                {% endif %}
             <br>
         </div>
     </div>

@@ -25,7 +25,7 @@
                                     </div>
                                 </div>
                                 <div style="text-align: left; background-color: #3A4040; border-radius: 5px;
-                                padding: 10px 0px 10px 10px; ">{{ notif.message }}</div>
+                            padding: 10px 0px 10px 10px; "><a href="{{notif.lien}}" style="color: white;">{{ notif.message }}</a></div>
                             </td>
                         </tr>
                     </tbody>
@@ -50,7 +50,7 @@
                                                 </b>
                                             </div>
                                             <textarea name="nouveau_parent" id="nouveau_parent" maxlength="999" rows="2" style="width: 100%; margin: auto; margin-right: 10px;"></textarea>
-                                            <button class="btn btn-danger btn-sm" type="submit" style="height: 54px;"><i class="mdi mdi-send"></i></button>
+                                            <button class="btn btn-danger btn-sm" type="submit" style="height: 54px;" onclick="this.disabled=true,this.form.submit();"><i class="mdi mdi-send"></i></button>
                                         </div>
                                     </div>
                                 </td>
@@ -73,7 +73,7 @@
                                             <span style="font-size: 12px;">a écrit :</span>
                                         </div>
                                         <div style="padding-left: 15px; font-size: 12px; text-align: right;">
-                                            {{ message.insert_datetime|date:"d/m/Y"  }}, {{ message.insert_datetime|date:"h:i"  }}
+                                            {{ message.insert_datetime|date:"d/m/Y"  }}, {{ message.insert_datetime|date:"H:i"  }}
                                         </div>
                                     </div>
                                     <div style="text-align: left; background-color: #3A4040; border-radius: 5px;
@@ -137,6 +137,7 @@
                                                 send_button = document.createElement("button");
                                                 send_button.setAttribute("class", "btn btn-danger btn-sm");
                                                 send_button.setAttribute("type", "submit");
+                                                send_button.setAttribute("onclick", "this.disabled=true,this.form.submit();");
                                                 mdi_item = document.createElement("i");
                                                 mdi_item.setAttribute("class", "mdi mdi-send");
                                                 send_button.appendChild(mdi_item);
