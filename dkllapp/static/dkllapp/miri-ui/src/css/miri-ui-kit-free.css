@@ -8592,12 +8592,13 @@ footer {
     line-height: 30px; }
 
 .form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat .candidat_profile {
-    outline: 5px solid #DA071F;
+    box-shadow: 0 0 0 4pt #DA071F;
     border-radius: 50%;
     }
 
 .form-check_candidat .form-check-input_candidat[type=checkbox]:checked ~ .form-check-label_candidat .div_picto {
-    outline: 5px solid #DA071F;
+    box-shadow: 0 0 0 4pt #DA071F;
+    border-radius: 50%;
     }
 
 .form-check_candidat .form-check-input_candidat[type=checkbox] ~ .form-check-label_candidat p {
