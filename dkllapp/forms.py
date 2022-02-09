@@ -76,7 +76,7 @@ class ActivateChoiceForm(forms.Form):
 
 class MailAdminForm(forms.Form):
     sujet = forms.CharField(label='sujet', max_length=999)
-    corps = forms.CharField(label='corps', max_length=9999)
+    corps = forms.CharField(label='corps', max_length=99999)
     admin = forms.BooleanField(required=False)
     users = forms.BooleanField(required=False)
 

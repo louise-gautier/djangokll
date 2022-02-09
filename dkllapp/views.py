@@ -445,18 +445,34 @@ def admin(request):
                     return redirect('dkllapp:admin')
             # form mail
             if form_mail.is_valid():
-                subject = form_mail.cleaned_data.get("sujet")
-                message = form_mail.cleaned_data.get("corps")
+                print("email form ok")
+                current_user = request.user
+                current_site = get_current_site(request)
+                html_message = loader.render_to_string(  # topch_admin_mail
+                    'dkllapp/mails/topch_prono2.html',
+                    {
+                        'user': current_user,
+                        'domain': current_site.domain,
+                        'from_email': settings.EMAIL_HOST_USER,
+                        'message': form_mail.cleaned_data.get("corps"),
+                    }
+                )
+                email_subject = form_mail.cleaned_data.get("sujet")
                 email_from = settings.EMAIL_HOST_USER
                 recipient_list = []
                 if form_mail.cleaned_data.get('users') is True:
-                    for user in User.objects.all().values('email'):
-                        recipient_list.append(user)
+                    all_users = UserProfile.objects.values('user__email').filter(boolemail=True).all()
+                    for un_user in all_users:
+                        recipient_list.append(un_user['user__email'])
                 elif form_mail.cleaned_data.get('admin') is True:
                     recipient_list = ['louise_gautier@orange.fr', 'louise2004gautier@gmail.com']
                 else:
                     return redirect('dkllapp:admin')
-                send_mail(subject, message, email_from, recipient_list)
+                mail = EmailMultiAlternatives(
+                    email_subject, 'This is message', email_from, [], bcc=recipient_list)
+                mail.attach_alternative(html_message, "text/html")
+                print("mail", mail)
+                mail.send()
             # form notifications
             if form_notif.is_valid():
                 nouvelle_notif = Notif()
