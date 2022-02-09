@@ -3,5 +3,5 @@ Bonjour {{ user.username }},
 
 Ton compte Pili Pili a été créé avec succès, merci de confirmer ton adresse mail avec le lien suivant :
 
-http://{{ domain }}{% url 'dkllapp:activate' uidb64=uidb64 token=token %}
+https://{{ domain }}{% url 'dkllapp:activate' uidb64=uidb64 token=token %}
 {% endautoescape %}

@@ -498,7 +498,7 @@ def changer_episode(request):
             episode_a_changer.valeur = form.cleaned_data.get('new_episode')
             episode_a_changer.save()
             nouvelle_notif = Notif()
-            nouvelle_notif.message = "🎲 Les jeux sont faits pour l'épisode " + str(episode_a_changer.valeur - 1) + " !"
+            nouvelle_notif.message = "Zepartiii pour l’épisode " + str(episode_a_changer.valeur - 1) + ", on espère que tu as fait ta compo ! 🧑‍🍳"
             nouvelle_notif.lien = "/"
             nouvelle_notif.save()
 
