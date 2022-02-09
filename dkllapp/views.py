@@ -690,7 +690,7 @@ def ajouter_question(request, question_id):
                 current_user = request.user
                 current_site = get_current_site(request)
                 html_message = loader.render_to_string(
-                    'dkllapp/mails/topch_prono.html',
+                    'dkllapp/mails/topch_prono2.html',
                     {
                         'user': current_user,
                         'domain': current_site.domain,
@@ -707,7 +707,7 @@ def ajouter_question(request, question_id):
                 for un_user in all_users:
                     recipient_list.append(un_user['user__email'])
                 mail = EmailMultiAlternatives(
-                    email_subject, 'This is message', email_from, recipient_list)
+                    email_subject, 'This is message', email_from, [], bcc=recipient_list)
                 mail.attach_alternative(html_message, "text/html")
                 mail.send()
 
