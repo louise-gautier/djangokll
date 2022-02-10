@@ -402,6 +402,8 @@ def admin(request):
     poulains_ouvert = is_poulains()
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
+    nbr_users = len(UserProfile.objects.filter(email_confirmed=True).all()) - 1
+    nbr_users_actifs = len(Membre.objects.values('user_id').distinct())
     # Tableau règles
     regles = Regle.objects.all().order_by('insert_datetime')
     # Tableau questions
@@ -496,6 +498,7 @@ def admin(request):
     return render(request=request,
                   template_name="dkllapp/admin.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
+                           'nbr_users': nbr_users, 'nbr_users_actifs': nbr_users_actifs,
                            'form_mail': form_mail, 'form_notif': form_notif, 'form_regle': form_regle,
                            'regles': regles, 'evenements': evenements, 'questions_plus': questions_plus,
                            'isadmin': is_admin(request.user.id), 'poulains_ouvert': poulains_ouvert,
