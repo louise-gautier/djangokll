@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import IntegrityError
 from django.db.models import Sum, Q
@@ -1497,14 +1498,21 @@ def creation_ligue(request):
 
 
 @login_required
-def rejoindre_ligue(request):
+def rejoindre_ligue(request, message):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
+    message = message
     if request.method == "POST":
         form = LigueJoinForm(request.POST)
+        print("form.errors 1", form.errors)
         if form.is_valid():
-            ligue_a_rejoindre = Ligue.objects.filter(id=form.cleaned_data.get('ligue_id')).first()
+            print("form.errors 2", form.errors)
+            try:
+                ligue_a_rejoindre = Ligue.objects.filter(id=form.cleaned_data.get('ligue_id')).first()
+            except ValidationError:
+                message = "Code de la ligue incorrect"
+                return redirect('dkllapp:rejoindre_ligue', message)
             if ligue_a_rejoindre:
                 deja_membre = Membre.objects \
                     .filter(user_id=request.user.id) \
@@ -1521,6 +1529,7 @@ def rejoindre_ligue(request):
     return render(request=request,
                   template_name="dkllapp/rejoindre_ligue.html",
                   context={'rejoindre_ligue': rejoindre_ligue, 'ligues': ligues, 'form': form,
+                           'message': message,
                            'isadmin': is_admin(request.user.id)})
 
 

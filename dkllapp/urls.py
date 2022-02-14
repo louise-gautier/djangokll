@@ -38,7 +38,7 @@ urlpatterns = [
     path('changer_identifiant/<message>', views.changer_identifiant, name='changer_identifiant'),
     path('changer_mdp/<message>', views.changer_mdp, name='changer_mdp'),
     path('creation_ligue/', views.creation_ligue, name='creation_ligue'),
-    path('rejoindre_ligue/', views.rejoindre_ligue, name='rejoindre_ligue'),
+    path('rejoindre_ligue/<message>', views.rejoindre_ligue, name='rejoindre_ligue'),
     path('rejoindre_ligue_cgi/<ligue_id>', views.rejoindre_ligue_cgi, name='rejoindre_ligue_cgi'),
 
     path('generales/', views.generales, name='generales'),
