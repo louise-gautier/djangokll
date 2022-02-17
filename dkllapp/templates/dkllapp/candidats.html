@@ -12,7 +12,7 @@
             <p class="titre_rouge"><b>Candidats de la Saison 13</b></p>
             {% if isadmin == True %}
             <div class="btn-profil-container">
-                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des tribus</a>
+                <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des équipes TV</a>
                 <a href="{% url 'dkllapp:changer_statut' %}" class="btn btn-danger btn-sm">Changer des statuts</a>
             </div>
             {% endif %}
@@ -26,7 +26,7 @@
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
                             {% for candidat in candidats %}
-                            {% if candidat.equipe_tv == 'Bleue' %}
+                            {% if candidat.equipe_tv == 'Bleu' %}
                                 <div style="margin: 5px; text-align: center;">
                                     <img class="candidat_index" src="{% static candidat.chemin_img %}">
                                     <br>{{candidat.nom}}
@@ -76,7 +76,7 @@
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
                             {% for candidat in candidats %}
-                            {% if candidat.equipe_tv == 'Violette' %}
+                            {% if candidat.equipe_tv == 'Violet' %}
                                 <div style="margin: 5px; text-align: center;">
                                     <img class="candidat_index" src="{% static candidat.chemin_img %}">
                                     <br>{{candidat.nom}}
