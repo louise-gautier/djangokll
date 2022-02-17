@@ -321,24 +321,25 @@ def activate(request, uidb64, token):
 
 def login_request(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.userprofile.email_confirmed is True:
-                    login(request, user)
-                    return redirect("dkllapp:index")
-                else:
-                    messages.error(request, "Tu n'as pas confirmé ton e-mail.")
-                    print("mesages.error 1", messages.error)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        user_avec_email = User.objects.filter(email=username).first()
+        if user is not None:
+            if user.userprofile.email_confirmed is True:
+                login(request, user)
+                return redirect("dkllapp:index")
             else:
-                messages.error(request, "Login ou mot de passe incorrect.")
-                print("mesages.error 2", messages.error)
+                messages.error(request, "Tu n'as pas confirmé ton e-mail.")
+        elif user_avec_email:
+            user_avec_email_userprofile = UserProfile.objects.filter(user=user_avec_email).first()
+            if user_avec_email_userprofile.email_confirmed is True:
+                login(request, user_avec_email)
+                return redirect("dkllapp:index")
+            else:
+                messages.error(request, "Tu n'as pas confirmé ton e-mail.")
         else:
-            messages.error(request, "Login ou mot de passe incorrect.")
-            print("mesages.error 3", messages.error)
+            messages.error(request, "Login ou mot de passe incorrect 1.")
     form = AuthenticationForm()
     return render(request=request, template_name="dkllapp/login.html",
                   context={"login_form": form})
