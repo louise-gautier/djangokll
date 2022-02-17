@@ -1170,7 +1170,6 @@ def choix(request, type_choix, before, txt):
         else:
             new_fields[candidat['form_id']] = forms.BooleanField(initial=False, required=False)
     DynamicChoixCreationForm = type('DynamicChoixCreationForm', (ChoixCreationForm,), new_fields)
-    for key in new_fields['declared_fields']:
     if request.method == "POST":
         form = DynamicChoixCreationForm(request.POST)
         if form.is_valid():
