@@ -455,15 +455,7 @@ def admin(request):
                 print("email form ok")
                 current_user = request.user
                 current_site = get_current_site(request)
-                html_message = loader.render_to_string(  # topch_admin_mail
-                    'dkllapp/mails/topch_admin_mail.html',
-                    {
-                        'user': current_user,
-                        'domain': current_site.domain,
-                        'from_email': 'Brigade Pili²',
-                        'message': form_mail.cleaned_data.get("corps"),
-                    }
-                )
+                html_message = form_mail.cleaned_data.get("corps")
                 email_subject = form_mail.cleaned_data.get("sujet")
                 email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
                 recipient_list = []
