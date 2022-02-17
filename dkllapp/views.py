@@ -332,14 +332,17 @@ def login_request(request):
             else:
                 messages.error(request, "Tu n'as pas confirmé ton e-mail.")
         elif user_avec_email:
-            user_avec_email_userprofile = UserProfile.objects.filter(user=user_avec_email).first()
-            if user_avec_email_userprofile.email_confirmed is True:
-                login(request, user_avec_email)
-                return redirect("dkllapp:index")
+            user_email_authentifie = authenticate(username=user_avec_email.username, password=password)
+            if user_email_authentifie is not None:
+                if user_email_authentifie.userprofile.email_confirmed is True:
+                    login(request, user_email_authentifie)
+                    return redirect("dkllapp:index")
+                else:
+                    messages.error(request, "Tu n'as pas confirmé ton e-mail.")
             else:
-                messages.error(request, "Tu n'as pas confirmé ton e-mail.")
+                messages.error(request, "Login ou mot de passe incorrect.")
         else:
-            messages.error(request, "Login ou mot de passe incorrect 1.")
+            messages.error(request, "Login ou mot de passe incorrect.")
     form = AuthenticationForm()
     return render(request=request, template_name="dkllapp/login.html",
                   context={"login_form": form})
@@ -453,7 +456,6 @@ def admin(request):
                     return redirect('dkllapp:admin')
             # form mail
             if form_mail.is_valid():
-                print("email form ok")
                 current_user = request.user
                 current_site = get_current_site(request)
                 html_message = form_mail.cleaned_data.get("corps")
@@ -465,7 +467,6 @@ def admin(request):
                     for un_user in all_users:
                         recipient_list.append(un_user['user__email'])
                 elif form_mail.cleaned_data.get('admin') is True:
-                    print("ici")
                     #recipient_list = ['louise2004gautier@gmail.com']
                     recipient_list = ['louise2004gautier@gmail.com', 'lau.oberto@gmail.com', 'marieanne.baudin@gmail.com']
                     #recipient_list = ['jade.accabat@live.fr','louise.beugniet@gmail.com','sinda.tajouri@gmail.com','jordan.lorho@toucantoco.com','aurelien.crouzet@gmail.com','audrey.lacour01@gmail.com','pascal.delbosc@gmail.com','jonathan.chamignon@gmail.com','lau.oberto@gmail.com','marie.dubus@hotmail.com','nicoriri9@gmail.com','louise_gautier@orange.fr','clemdums@hotmail.com','thomasdanvin@gmail.com','marjo_0404@hotmail.fr','kevin.seysen@gmail.com','elsa.dechambrun@gmail.com','constance.laumone@gmail.com','TCL@TCL.fr','isaure.debecdelievre@gmail.com','ansel.buzancais@live.fr','raphbrl26@gmail.com','chloewibaux@gmail.com','timfirst@hotmail.fr','leila.zenak@gmail.com','marieanne.baudin@gmail.com','adeline_842@hotmail.com','fanny_mf@live.fr','cmll.granger@gmail.com','theofellous@gmail.com','normam4@wanadoo.fr','elodie.queyranne@gmail.com','mllemeissa@msn.com','lunahmt@gmail.com','etiennefauv@hotmail.fr','margaux.daguillon@gmail.com','agbo.romain@hotmail.fr','carod35@hotmail.fr','guerric1@yahoo.com','bestanlo@hotmail.com','baptiste.basket@hotmail.fr','aze2112@gmail.com','flore.giesler@gmail.com','romandilly@gmail.com','louisedamy@hotmail.fr','will.pnzk@gmail.com','mathieu.sanchez@outlook.fr','imen.braham@gmail.com','clement.fonteneau@yahoo.fr','jess_bertho@hotmail.fr','anpiwa@mailoo.org','coline.cros@gmail.com','julie.cavillot@hotmail.com','lea.fievet@iae-aix.com','charles.merriaud@gmail.com','justinelegal@hotmail.fr','charlene-brize@live.fr','malak.khalil@gmail.com','fanny.mijon@gmail.com','auguste.ballu@gmail.com','matthieu.raussou@gmail.com','martincosteau@hotmail.fr','justine.le-gal@hei.yncrea.fr','chloe.aubinaud@gmail.com','astrid.ngeto@hotmail.fr','ppaulinedenis@gmail.com','marie.prim@hotmail.fr','soltanar@hotmail.com','philippine.leon@icloud.com','celine270497@gmail.com','hortensefievet@hotmail.fr','louis.bolteau@gmail.com','mderoit@gmail.com','juliette.francois4@gmail.com','martin.herbelin@gmail.com','anthony.mat@hotmail.fr','ziatihicham2@gmail.com','merlin.aurelie@hotmail.fr','adeletoutain@hotmail.fr','marieandreo@msn.com','m.opinel@hotmail.fr','ines.girard-de-courtilles@hei.yncrea.fr','marion.cousseau@gmail.com','v.cousseau@gmx.fr','salome.jay@gmail.com','enzo-manent@hotmail.fr','elodie.coudry@hotmail.fr','c.grangechavanis@gmail.com','mylene.andreu@yahoo.fr','hh-f@hotmail.fr','josephine.ranson@hotmail.fr','mariie.fabre@gmail.com','ma.thiebaud@gmail.com','anais.kerdraon@hotmail.fr','melissa.langlois0@gmail.com','benallal.tayeb@gmail.com','jdemontes@audencia.com','margauxpons31@gmail.com','albangrangechavanis@gmail.com','florence.desthieux@gmail.com','thomas.dambrine1@gmail.com','mpouyal@gmail.com','rongere.audrey@gmail.com','laura.arnaud31@gmail.com','jeremy.margeot@gmail.com','claire.mvincent@gmail.com','cyrielle.cleenewerck@hotmail.fr','nonopetitbrun@hotmail.fr','louis.chene@gmail.com','yohan.hericher@gmail.com','laurie.lemaitre@shippingbo.com','pierre.bonhoure@shippingbo.com','caro271093@hotmail.fr','astrid.ngeto@gmail.com','laurewibaux@gmail.com','myriammontosamoysan@gmail.com','gregoire.ghuysen@hotmail.fr','galtier.catherine@gmail.com','rebecca.perdriault@gmail.com','cecileramond@gmail.com','carotte_pas_fraiche@hotmail.fr','ow_steven@hotmail.com','julie.cdlc@gmail.com','tieuma29@hotmail.fr','lkhiat@gmail.com','doualla.g@gmail.com','matthfo@gmail.com','pauline.guitton@gmail.com','camille.potier@hotmail.com','celine.degayffier@yahoo.fr','vlefrancois@audencia.com','yayem1996@gmail.com','benjaminecotten@hotmail.fr','hortense@agroptima.com','hort.giraud@gmail.com','louis_bondu@hotmail.com','annabelle-chalopin@hotmail.fr','darcissac.c@gmail.com','porral.mathieu@gmail.com','keller.laetitia@hotmail.com','pi.mauries@gmail.com','goran.stefanovic@ymail.com','theokraif1995@gmail.com','loucomte31@gmail.com','qh.hamonou@gmail.com','savannahsalvoni@gmail.com','matthieu2609@gmail.com','aderevel@gmail.com','hilairebesse@gmail.com','cel.touloum@gmail.com','nadal.maxime@gmail.com','nicolas.lemehaute@orange.fr','celia.raque@hec.edu','xavier.harder@edhec.com','mbacquet24@gmail.com','thomas.stage.machine@gmail.com','arthur.chatain@gmail.com','nicolasgervais@live.fr','nicofaivre@orange.fr','mickael_abtan@hotmail.com','vianney-t@hotmail.com','piko49@gmail.com','violette.dubois59@gmail.com','elise_enriquez@hotmail.fr','marine.abtan@gmail.com','anthony.bonin23@gmail.com','abitboljerem@gmail.com','n.moreau1001@gmail.com','erik.delecourt@gmail.com','nathanjaoui@gmail.com','h.chaouch@tbs-education.org','thomas.ziegler@outlook.fr','tatoon.fraisse@gmail.com','victor.bdf@icloud.com','martin.blondel7@gmail.com','anne.robert85@gmail.com','efrank93@gmail.com','guillaumedelmas25@gmail.com','guilhemsauvaire30@gmail.com','clemence.nepveux@gmail.com','arthur.chatain@wanadoo.fr','elsa.j26@wanadoo.fr','firmin.thibault@yahoo.fr','paul.petit13@gmail.com','solene-jacquart@hotmail.fr','fizzypolak@hotmail.fr','nicolas.dobro@gmail.com','cambourakis.jules@gmail.com','sashal@hotmail.fr','alexandre.keller@hec.edu','benjamin.dadolle@yahoo.fr','annelise.jaunet@gmail.com','cecileburdillat@hotmail.fr','herz@yopmail.co','herzhang@hotmail.com','theokraif.aviva@outlook.fr','clara.jaoui@hotmail.com','charles.modaine@gmail.com','henri.callens@hotmail.fr','evaingelaere@gmail.com','camillepignol@hotmail.fr','antoine.guichard35@gmail.com','benjamin.fagu@gmail.com','teddy-smith-35@hotmail.fr','cryptomatth@gmail.com','mathildeandrier@live.fr','jadesophie.valtat@gmail.com','quentindonsimon@gmail.com','emmanuel.Chomier@hotmail.fr','bgueugnon@em-normandie.fr','etienne.favre@outlook.com','julian.andreo@iae-aix.com','geoffrey.bugnon@gmail.com','marietoison@hotmail.fr','green__apple@hotmail.fr','Falanga.danielle@gmail.com','sandra.gillet@iae-aix.com','leaa.rem@gmail.com','amaury.andreetti@gmail.com','arnosbh@gmail.com','luc.mercereau@hotmail.fr','test@hotmail.fr','juliecendrier355@gmail.com','klein.vhb09@gmail.com','julie.doffemont@gmail.com','gregoire.poulin@outlook.fr','andra-@hotmail.fr','valentine.geindre@gmail.com','t.cloe@yahoo.fr','her@yopmail.com','savannah.s@hotmail.fr','yousra.namir3@gmail.com','antoinetezenas@yahoo.fr','chloecarreric@gmail.com','lynda.aob@gmail.com','flobonnet7@hotmail.com','thibaut.bousquet@gmail.com','emma.desgages@hotmail.fr','charlotte.guimier@outlook.com','qu_jessica@live.fr','alicia.desgrees@gmail.com','yves.matton@technofounders.com','tessier1902@gmail.com','t.martel@stimuli-technology.com','raph-tn@hotmail.fr','dbousquie@gmail.com','jeanne.raison@yahoo.fr','martin.huerre@orange.fr','rom20100@gmail.com','daveperrot@gmail.com','clementine.artemis@gmail.com','trogerantoine@gmail.com','agathe.sowinski@essec.edu','comefradetal@gmail.com','ragagnonj@gmail.com','mathilde.quere@gmx.fr','jean-baptiste.civit@wanadoo.fr','mathilde.pinatel@hotmail.fr','agathe.secall@sciencespo.fr','julien.noel111@gmail.com','heloisepeaud@gmail.com','ines.journois@gmail.com','lucas.andres.etu@gmail.com','florian.lequere@gmail.com','math.mattei@gmail.com','thomas.foucher33@gmail.com','chrsrodrigues@gmail.com','agnes.bucheli-civit@wanadoo.fr','lise.x.3@hotmail.fr','mathilde_carles@hotmail.com','sibyllegros@gmail.com','adrienvert10@hotmail.fr','a.pralong@yahoo.fr','johnatan.muallem@gmail.com','arielle.lebail@gmail.com','francoiseveillepeau@hotmail.com','gregoire.maisonneuve@orange.fr','ch.tassel@hotmail.com','ch.tassel@advance-capital.fr','guileneuf@hotmail.com','jean-baptiste@28ddesign.com','alix.civit@wanadoo.fr','alix@lgamanagement.com','christiphe.civit65@gmail.com','zajdlaurie@gmail.com','jdallagata@hotmail.fr','jeannepages@wanadoo.fr','estelle.godard@hotmail.com','marie.cozette2611@gmail.com','hanymyriam97@gmail.com','salome.papuchon.bba@edhec.com','gildas.eveno@gmail.com','valentindacosta92@gmail.com','morgane.nopper@gmail.com','marie.pralong83@gmail.com','yannis.kadiri@gmail.com','aurelplg@gmail.com','tom-pineau@hotmail.fr','firm1.b@gmail.com','edouardtrabuc@hotmail.fr','priscillegrange@hotmail.fr','camille-lt@hotmail.fr','grandhomme.leo@gmail.com','guillaume.tirel@essec.edu','gloriamailys@gmail.com','maite.m.richard@gmail.com','ellena.tessore@gmail.com','julie@belloir.fr','myriamhany@laposte.net','hanymyriam97@outlook.fr','aerolivesili@hotmail.fr','margaux.devroede@ieseg.fr','diane.gloria@hotmail.fr','jaybe2007@hotmail.fr','nicolas.bouvattier@digeiz.com','nicolasbouvattier@gmail.com','alicenovet3101@gmail.com','juliettepauthe@hotmail.com','louisemporcher@gmail.com','marion.bechu@playplay.com','hortense.drevon@gmail.com','camille.sampoux@gmail.com','charlotte.lequeux13@gmail.com','charlotte.fontan@hotmail.fr','baptiste.tignol@gmail.com','valentine.aguiar@hotmail.fr','agathe.loustalet@gmail.com','contact@floda.me','grinnyhermant@gmail.com','zaf.aflalo@gmail.com','sarahisal@hotmail.fr','nini.denfer@yahoo.fr','laura.genc@outlook.fr','albanededumast@hotmail.fr','ardonquentin@orange.fr','sabine.bardaune@gmail.com','marie-charlotte.dautel@hotmail.fr','irisdevillele@gmail.com','elodie.pradels@gmail.com','philippine.franc@gmail.com','alix.rodarie@gmail.com','cedric.souidaray@gmail.com','margedudela@hotmail.com','martinet.alix@gmail.com','ivan.valerio@gmail.com','mahomerlino@gmail.com','ayanamerlino@gmail.com','lucaskrumbholz@wanadoo.fr','jason.maurisset@gmail.com']
@@ -474,7 +475,6 @@ def admin(request):
                 mail = EmailMultiAlternatives(
                     email_subject, 'This is message', email_from, [], bcc=recipient_list)
                 mail.attach_alternative(html_message, "text/html")
-                print("mail", mail)
                 mail.send()
             # form notifications
             if form_notif.is_valid():
@@ -526,10 +526,8 @@ def changer_episode(request):
             for membre in membres:
                 poulains = Choix.objects.filter(user_id=membre.user_id).filter(type=1).order_by('id')
                 if len(poulains) == 6:
-                    print('1', membre)
                     equipe_poulains = Equipe.objects.filter(user_id=membre.user_id).filter(ligue_id=membre.ligue_id)\
                         .filter(type=1).filter(episode=episode_en_cours()).order_by('id')
-                    print('2', equipe_poulains)
                     if len(equipe_poulains) >= 1:
                         pass
                     else:
@@ -540,7 +538,6 @@ def changer_episode(request):
                         nouvelle_ligne_equipe.user_id = membre.user_id
                         nouvelle_ligne_equipe.ligue_id = membre.ligue_id
                         nouvelle_ligne_equipe.candidat_id = random.choice(poulains_id)
-                        print('3', nouvelle_ligne_equipe.user_id, nouvelle_ligne_equipe.ligue_id, nouvelle_ligne_equipe.candidat_id)
                         nouvelle_ligne_equipe.episode = episode_en_cours()
                         nouvelle_ligne_equipe.type = 1
                         nouvelle_ligne_equipe.save()
@@ -885,7 +882,6 @@ def mur(request, ligue_id):
         return redirect('dkllapp:mur', ligue_id)
     form = DynamicMessageMurForm()
     notif = Notif.objects.latest('insert_datetime')
-    print(notif)
     admin_user = UserProfile.objects.values('id', 'img', 'user__username').filter(id=2).first()
     return render(request=request,
                   template_name="dkllapp/mur.html",
@@ -920,7 +916,6 @@ def equipe(request, ligue_id):
         .order_by('candidat_id') \
         .values('id', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool', 'type')
-    print(equipe)
 
     equipes = Equipe.objects \
         .filter(user_id=request.user.id) \
@@ -930,7 +925,6 @@ def equipe(request, ligue_id):
         .order_by('candidat_id') \
         .values('id', 'episode', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool', 'type')
-    print(equipes)
     return render(request=request,
                   template_name="dkllapp/equipe.html",
                   context={'ligues': ligues, 'page': 'equipe',
@@ -1164,23 +1158,19 @@ def choix(request, type_choix, before, txt):
     episode_en_cours_ = episode_en_cours()
     txt_alert = txt
     choix_user = Choix.objects.values("candidat_id").filter(type=type_choix).filter(user_id=request.user.id).all()
-    print("0", choix_user)
     ids_choix = []
     for un_choix in choix_user:
         ids_choix.append(un_choix['candidat_id'])
-    print('1', ids_choix)
     candidats = Candidat.objects.all().order_by('id')\
         .values('id', 'nom', 'equipe_tv', 'chemin_img', 'statut', 'statut_bool', 'form_id')
     new_fields = {}
     for candidat in candidats:
         if candidat['id'] in ids_choix:
-            print('2', 'if true')
             new_fields[candidat['form_id']] = forms.BooleanField(initial=True, required=False)
         else:
             new_fields[candidat['form_id']] = forms.BooleanField(initial=False, required=False)
     DynamicChoixCreationForm = type('DynamicChoixCreationForm', (ChoixCreationForm,), new_fields)
     for key in new_fields['declared_fields']:
-        print(new_fields['declared_fields'][key].__dict__)
     if request.method == "POST":
         form = DynamicChoixCreationForm(request.POST)
         if form.is_valid():
@@ -1502,9 +1492,7 @@ def rejoindre_ligue(request, message):
     message = message
     if request.method == "POST":
         form = LigueJoinForm(request.POST)
-        print("form.errors 1", form.errors)
         if form.is_valid():
-            print("form.errors 2", form.errors)
             try:
                 ligue_a_rejoindre = Ligue.objects.filter(id=form.cleaned_data.get('ligue_id')).first()
             except ValidationError:
