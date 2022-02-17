@@ -13,24 +13,36 @@
                 <img style="height: 160px;" src="/static/dkllapp/img/pilixpili_login.png" alt="Pili Pili">
             </a>
             <br>
-            <h2 style="color: white; font-size: 20px; margin: 0 10% 0 10%;">Connexion</h2>
+            <h2 style="color: white; font-size: 20px; margin: 0 10% 0 10%;">Connexion <a style="color: white;" href="#" data-toggle="tooltip" data-placement="bottom"
+                                           title="Attention, l'identification se fait avec ton nom d'utilisateur, pas avec ton e-mail."><i aria-hidden="true" class="mdi mdi-help-circle-outline"></i>
+                                        </a>
+            </h2>
             <form method="POST" style="width: 80%; margin: 0 10% 5px 10%;">
                 {% csrf_token %}
                 <div id="div_id_username" class="control-group" style="padding-bottom: 5px;">
                     <div class="controls">
                         <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username"
-                               maxlength="150" class="textinput textInput btn-light btn-sm" placeholder="Identifiant" required=""
+                               maxlength="150" class="textinput textInput btn-light btn-sm" placeholder="Ton Nom" required=""
                                id="id_username" style="width: 100%; border-radius: 7px;">
                     </div>
                 </div>
                 <div id="div_id_password" class="control-group">
                     <div class="controls">
                         <input type="password" name="password" autocomplete="current-password"
-                               class="textinput textInput btn-light btn-sm" placeholder="Mot de Passe" required=""
+                               class="textinput textInput btn-light btn-sm" placeholder="Ton Mot de Passe" required=""
                                id="id_password" style="width: 100%; border-radius: 7px;">
                     </div>
                 </div>
                 <br>
+                <div>
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <button class="btn btn-danger" style="border: white solid 1px;" type="submit">Login</button>
                     <a href="{% url 'dkllapp:reinitialiser_mdp' '1' %}" style="color: white; text-decoration: underline; font-size: 12px; padding: 2px; text-align: right;">Mot de passe oublié ?</a>

@@ -243,7 +243,7 @@ def reinitialiser_mdp(request, message):
     if request.method == "POST":
         form = ReinitailiserMdpForm(request.POST)
         if form.is_valid():
-            current_user = User.objects.filter(email=form.cleaned_data.get('email')).first()
+            current_user = User.objects.filter(email=form.cleaned_data.get('email').lower()).first()
             if current_user:
                 nouveau_mdp = 'PxP_' + shortuuid.uuid()
                 current_user.set_password(nouveau_mdp)
@@ -332,12 +332,16 @@ def login_request(request):
                     return redirect("dkllapp:index")
                 else:
                     messages.error(request, "Tu n'as pas confirmé ton e-mail.")
+                    print("mesages.error 1", messages.error)
             else:
                 messages.error(request, "Login ou mot de passe incorrect.")
+                print("mesages.error 2", messages.error)
         else:
             messages.error(request, "Login ou mot de passe incorrect.")
+            print("mesages.error 3", messages.error)
     form = AuthenticationForm()
-    return render(request=request, template_name="dkllapp/login.html", context={"login_form": form})
+    return render(request=request, template_name="dkllapp/login.html",
+                  context={"login_form": form})
 
 
 @login_required
