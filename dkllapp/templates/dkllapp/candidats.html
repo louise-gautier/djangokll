@@ -95,13 +95,13 @@
             <table class="table2" cellspacing="0" >
                 <tbody>
                     <tr class="tr2">
-                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: yellow;">
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: #FF6F00;">
                             <span style="font-size: 35px;"></span>
                         </td>
                         <td class="td2" style="padding: 10px;">
                             <div style="display: flex; flex-flow: row wrap;">
                             {% for candidat in candidats %}
-                            {% if candidat.equipe_tv == 'Jaune' %}
+                            {% if candidat.equipe_tv == 'Orange' %}
                                 <div style="margin: 5px; text-align: center;">
                                     <img class="candidat_index" src="{% static candidat.chemin_img %}">
                                     <br>{{candidat.nom}}
@@ -110,7 +110,7 @@
                             {% endfor %}
                             </div>
                         </td>
-                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: yellow;">
+                        <td class="td2" width=1% style="padding: 10px; text-align: center; background-color: #FF6F00;">
                             <span style="font-size: 35px;"></span>
                         </td>
                     </tr>

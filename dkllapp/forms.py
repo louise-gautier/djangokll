@@ -40,7 +40,7 @@ class ChoixCreationForm(forms.Form):
 
 GROUPES_CHOICES = (
     ('Bleu', "Bleu"),
-    ('Jaune', "Jaune"),
+    ('Orange', "Orange"),
     ('Rouge', "Rouge"),
     ('Violet', "Violet"),
     ('Blanc', "Blanc"),
