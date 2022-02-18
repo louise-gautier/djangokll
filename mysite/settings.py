@@ -159,6 +159,8 @@ django_heroku.settings(locals())
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+SECURE_SSL_REDIRECT = True
+
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_HOST = config('MAILGUN_SMTP_SERVER')
 #EMAIL_PORT = config('MAILGUN_SMTP_PORT')
