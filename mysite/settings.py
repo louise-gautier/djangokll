@@ -154,12 +154,11 @@ EMAIL_USE_SSL = True
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 # **************** PROD **************
-DEBUG = False
 SECURE_SSL_REDIRECT = True
 
 # **************** DEV ***************
-#DEBUG = True
 #SECURE_SSL_REDIRECT = False
 
 #fin settings
