@@ -27,11 +27,6 @@ MAIN_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-#EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nameless-citadel-05521.herokuapp.com', 'pilixpili.fr']
 
@@ -48,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'whitenoise.runserver_nostatic',
     'webpush',
+    'sslserver',
 
 ]
 
@@ -63,7 +59,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mysite.urls'
-
 
 TEMPLATES = [
     {
@@ -83,10 +78,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -95,8 +88,6 @@ DATABASES = {
 }
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
-print(DATABASES)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -127,15 +118,10 @@ WEBPUSH_SETTINGS = {
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'Europe/Paris'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -159,33 +145,22 @@ django_heroku.settings(locals())
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-SECURE_SSL_REDIRECT = True
-
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = config('MAILGUN_SMTP_SERVER')
-#EMAIL_PORT = config('MAILGUN_SMTP_PORT')
-#SERVER_EMAIL = config('MAILGUN_SMTP_LOGIN')
-#EMAIL_HOST_USER = config('MAILGUN_SMTP_LOGIN')
-#EMAIL_HOST_PASSWORD = config('MAILGUN_SMTP_PASSWORD')
-#DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
-#EMAIL_USE_TLS = True
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('AMEN_SMTP_SERVER')
 EMAIL_PORT = config('AMEN_SMTP_PORT')
 SERVER_EMAIL = config('AMEN_SMTP_LOGIN')
 EMAIL_HOST_USER = config('AMEN_SMTP_LOGIN')
 EMAIL_HOST_PASSWORD = config('AMEN_SMTP_PASSWORD')
-#EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
 
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = config('MAILER_TO_GO_SMTP_SERVER')
-#EMAIL_PORT = config('MAILER_TO_GO_SMTP_PORT')
-#SERVER_EMAIL = config('MAILER_TO_GO_SMTP_LOGIN')
-#EMAIL_HOST_USER = config('MAILER_TO_GO_SMTP_LOGIN')
-#EMAIL_HOST_PASSWORD = config('MAILER_TO_GO_SMTP_PASSWORD')
-#DEFAULT_FROM_EMAIL = 'kauhlantaligue@gmail.com'
-#EMAIL_USE_TLS = True
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# **************** PROD **************
+DEBUG = False
+SECURE_SSL_REDIRECT = True
+
+# **************** DEV ***************
+#DEBUG = True
+#SECURE_SSL_REDIRECT = False
 
 #fin settings

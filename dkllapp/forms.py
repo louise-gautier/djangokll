@@ -83,6 +83,7 @@ class MailAdminForm(forms.Form):
 
 class NotifAdminForm(forms.Form):
     message = forms.CharField(label='corps', max_length=9999)
+    lien = forms.CharField(label='lien', max_length=999)
 
 
 class ModifierRegleForm(forms.Form):

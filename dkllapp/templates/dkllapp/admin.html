@@ -242,6 +242,9 @@
                 {% csrf_token %}
                     <label for="id_message">Notification à envoyer :</label>
                     <br>
+                    <label for="id_lien" class="control-label requiredField">Lien (à partir du / après .fr, exemple /generales pour les règles) :</label>
+                    <input type="text" name="lien" autofocus="" autocapitalize="none" autocomplete="lien" maxlength="999" class="textinput textInput" required="" id="id_lien" value="/">
+                    <br>
                     <textarea name="message" maxlength="9999" required="" id="id_message" rows="5" style="width: 100%;"></textarea>
                     <br>
                     <button class="btn btn-danger btn-sm" type="submit" onclick="this.disabled=true,this.form.submit();">Envoyer</button>

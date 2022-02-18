@@ -480,6 +480,7 @@ def admin(request):
             if form_notif.is_valid():
                 nouvelle_notif = Notif()
                 nouvelle_notif.message = form_notif.cleaned_data.get('message')
+                nouvelle_notif.lien = form_notif.cleaned_data.get('lien')
                 nouvelle_notif.save()
                 return redirect('dkllapp:admin')
             # form regles
