@@ -9,6 +9,10 @@
     <div class="mainwrapper">
         <p class="titre_rouge"><b>Pronos en cours</b></p>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
+            <div>
+                Chaque prono rapporte des <span class="badge badge-pill" style="background-color: #009051;">points</span> en cas de bonne réponses mais fait perdre des <span class="badge badge-pill" style="background-color: #941B30;">points</span> en cas de mauvaise réponse. L'absence de réponse vaut <span class="badge badge-pill" style="background-color: #e4e5e7; color: #272B2C;">0 point</span>.
+            </div>
+            <br>
             {% if not questions_plus %}
                     <p>Il n'y a aucun prono en cours, mais reste à l'affût !</p>
             {% else %}
@@ -16,7 +20,14 @@
             {% csrf_token %}
                 <div id="form_div">
                     {% for question_plus in questions_plus %}
-                        <p>{{ question_plus.question.enonce }}</p>
+                    <div style="display: flex;">
+                        <p style="padding-right: 5px;">{{ question_plus.question.enonce }}</p>
+                        <div>
+                            <span class="badge badge-pill" style="background-color: #009051;">{{ question_plus.question.bonus }}</span>
+                            <span class="badge badge-pill" style="background-color: #941B30;">{{ question_plus.question.malus }}</span>
+                        </div>
+                    </div>
+
                             <script>
                                 div_question = document.createElement("div");
                                 div_question.setAttribute("id","id_" + ("00" + {{question_plus.question.id}}).slice(-3));
