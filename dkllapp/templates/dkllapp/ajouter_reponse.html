@@ -13,6 +13,7 @@
             {% if isadmin == False %}
             <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
             {% else %}
+            <p>{{ question.enonce }}</p>
             <form method="POST">
                 {% csrf_token %}
                 {% for proposition in propositions %}

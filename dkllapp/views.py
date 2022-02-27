@@ -744,6 +744,7 @@ def ajouter_reponse(request, question_id):
         .filter(user_id=request.user.id).order_by('insert_datetime') \
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
+    question = Question.objects.filter(id=question_id).first()
     propositions = Proposition.objects.filter(question_id=question_id).all()
     if request.method == "POST":
         for proposition in propositions:
@@ -757,7 +758,7 @@ def ajouter_reponse(request, question_id):
     return render(request=request,
                   template_name="dkllapp/ajouter_reponse.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
-                           'propositions': propositions,
+                           'propositions': propositions, 'question': question,
                            'isadmin': is_admin(request.user.id)})
 
 

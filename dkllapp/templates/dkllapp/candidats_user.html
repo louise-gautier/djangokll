@@ -25,10 +25,21 @@
                         <td class="td2" width=10% style="padding: 10px;">
                             <span style="font-size: 35px;">🦄</span>
                         </td>
-                        <td class="td2" style="padding: 10px;">
+                        <td class="td2" style="padding: 10px; display: flex; flex-flow: row wrap;  min-width: 260px;">
                             {% for candidat in choix_user %}
                             {% if candidat.type == 1 %}
-                            <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
+                            <div style="display: flex;width: 80px;">
+                                <img class="candidat_profile" src="{% static candidat.candidat__chemin_img %}">
+                                    {% if candidat.candidat__equipe_tv == 'Bleu' %}
+                                    <img style="height: 30px; position: relative; top: 40px; left: -25px;" src="{% static 'dkllapp/img/tribus/toque_bleu.png' %}">
+                                    {% elif candidat.candidat__equipe_tv == 'Rouge' %}
+                                    <img style="height: 30px; position: relative; top: 40px; left: -25px;" src="{% static 'dkllapp/img/tribus/toque_rouge.png' %}">
+                                    {% elif candidat.candidat__equipe_tv == 'Orange' %}
+                                    <img style="height: 30px; position: relative; top: 40px; left: -25px;" src="{% static 'dkllapp/img/tribus/toque_orange.png' %}">
+                                    {% elif candidat.candidat__equipe_tv == 'Violet' %}
+                                    <img style="height: 30px; position: relative; top: 40px; left: -25px;" src="{% static 'dkllapp/img/tribus/toque_violet.png' %}">
+                                    {% endif %}
+                            </div>
                             {% endif %}
                             {% endfor %}
                         </td>

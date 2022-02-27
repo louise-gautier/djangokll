@@ -47,7 +47,35 @@
 
                                                                 input_tag = document.getElementById("{{ field.name }}");
                                                                 input_tag.parentNode.insertBefore(lbl, input_tag.nextSibling.nextSibling.nextSibling);
-                                                            } else {};
+
+                                                                toque = document.createElement("img");
+                                                                toque.setAttribute("style", "height: 30px; width: 30px; position: relative; top: 10px; right: 40px; border: none;")
+
+                                                                if ("{{candidat.equipe_tv}}" == "Bleu") {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_bleu.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);}
+                                                                else if ("{{candidat.equipe_tv}}" == "Rouge") {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_rouge.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);}
+                                                                else if ("{{candidat.equipe_tv}}" == "Orange") {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_orange.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);}
+                                                                else if ("{{candidat.equipe_tv}}" == "Violet") {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_violet.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);}
+                                                                else if ("{{candidat.equipe_tv}}" == "Blanche") {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_blanc.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);}
+                                                                else {
+                                                                    toque.setAttribute("src", "{% static 'dkllapp/img/tribus/toque_vide.png' %}");
+                                                                    input_tag = document.getElementById("{{ field.name }}");
+                                                                    input_tag.parentNode.insertBefore(toque, input_tag.nextSibling.nextSibling.nextSibling.nextSibling);};
+                                                                } else {};
                             </script>
                             {% endfor %}
                         </div>
