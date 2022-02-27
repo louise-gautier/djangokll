@@ -32,7 +32,7 @@ from .forms import NewUserForm, MailForm, LigueCreationForm, EquipeCreationForm,
     ModifierRegleForm, CreerRegleForm, AjouterEvenementForm, MessageMurForm, PronoAdminForm, AjouterQuestionForm, \
     PictoForm, ProfilMailForm, ChangerIdentifiantForm, ReinitailiserMdpForm, PronosGuessForm
 from .models import Candidat, Ligue, Mur, Notif, Choix, Episode, ActivationChoix, Membre, Equipe, Evenement, Points, \
-    Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu
+    Regle, Blip, UserProfile, Question, Guess, Proposition, PointsFeu, EquipesFaites
 from .token import account_activation_token
 
 
@@ -413,7 +413,7 @@ def admin(request):
     gagnant_ouvert = is_gagnant()
     nbr_users = len(UserProfile.objects.filter(email_confirmed=True).all()) - 1
     nbr_users_actifs = len(Membre.objects.values('user_id').distinct())
-    nbr_users_equipe_prochain_episode = len(Equipe.objects.filter(episode=episode_en_cours_).values('user_id').distinct())
+    nbr_users_equipe_prochain_episode = len(EquipesFaites.objects.filter(episode=episode_en_cours_).filter(count__gt=1).values('user_id').distinct())
     # Tableau règles
     regles = Regle.objects.all().order_by('insert_datetime')
     # Tableau questions

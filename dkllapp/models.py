@@ -167,6 +167,17 @@ class PointsFeu(models.Model):
         db_table = "dkllapp_points_feu"
 
 
+class EquipesFaites(models.Model):
+    user_id = models.IntegerField(default=0)
+    ligue_id = models.IntegerField(default=0)
+    episode = models.IntegerField(default=0)
+    count = models.IntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "dkllapp_equipes_faites"
+
+
 class Media(models.Model):
     TYPES = [('url', 'URL'), ('image', 'Image'), ('video', 'Video Clip')]
     type = models.CharField(max_length=100, verbose_name='Type', choices=TYPES)
