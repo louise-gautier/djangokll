@@ -9,6 +9,7 @@
     <div class="mainwrapper">
         <p class="titre_rouge"><b>Page d'administration</b></p>
         <p style="margin-left: 20px;">Il y a actuellement {{nbr_users}} utilisateurs dont {{nbr_users_actifs}} actifs.</p>
+        <p style="margin-left: 20px;">Il y a {{ nbr_users_equipe_prochain_episode }} utilsateurs qui ont fait leur equipe pour l'épisode 3.</p>
         {% if isadmin == False %}
             <p style="padding-left: 30px;">Désolé, tu n'es pas admin donc tu n'as pas accès à cette page !</p>
         {% else %}

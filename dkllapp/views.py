@@ -413,6 +413,7 @@ def admin(request):
     gagnant_ouvert = is_gagnant()
     nbr_users = len(UserProfile.objects.filter(email_confirmed=True).all()) - 1
     nbr_users_actifs = len(Membre.objects.values('user_id').distinct())
+    nbr_users_equipe_prochain_episode = len(Equipe.objects.filter(episode=episode_en_cours_).values('user_id').distinct())
     # Tableau règles
     regles = Regle.objects.all().order_by('insert_datetime')
     # Tableau questions
@@ -501,6 +502,7 @@ def admin(request):
                   template_name="dkllapp/admin.html",
                   context={'ligues': ligues, 'episode_en_cours_': episode_en_cours_,
                            'nbr_users': nbr_users, 'nbr_users_actifs': nbr_users_actifs,
+                           'nbr_users_equipe_prochain_episode': nbr_users_equipe_prochain_episode,
                            'form_mail': form_mail, 'form_notif': form_notif, 'form_regle': form_regle,
                            'regles': regles, 'evenements': evenements, 'questions_plus': questions_plus,
                            'isadmin': is_admin(request.user.id), 'poulains_ouvert': poulains_ouvert,
@@ -551,7 +553,7 @@ def changer_episode(request):
                     else:
                         for candidat in podium:
                             nouvelle_ligne_equipe = Equipe()
-                            nouvelle_ligne_equipe.user_id = request.user.id
+                            nouvelle_ligne_equipe.user_id = membre.user_id
                             nouvelle_ligne_equipe.ligue_id = membre.ligue_id
                             nouvelle_ligne_equipe.candidat_id = candidat.candidat_id
                             nouvelle_ligne_equipe.episode = episode_en_cours()
@@ -566,7 +568,7 @@ def changer_episode(request):
                     else:
                         for candidat in gagnant:
                             nouvelle_ligne_equipe = Equipe()
-                            nouvelle_ligne_equipe.user_id = request.user.id
+                            nouvelle_ligne_equipe.user_id = membre.user_id
                             nouvelle_ligne_equipe.ligue_id = membre.ligue_id
                             nouvelle_ligne_equipe.candidat_id = candidat.candidat_id
                             nouvelle_ligne_equipe.episode = episode_en_cours()
