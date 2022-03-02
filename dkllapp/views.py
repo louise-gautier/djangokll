@@ -1215,7 +1215,7 @@ def bareme(request):
     ligues = Membre.objects\
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
-    regles = Regle.objects.all().order_by('id')
+    regles = Regle.objects.exclude(id=17).exclude(id=21).order_by('id')
     return render(request=request,
                   template_name="dkllapp/bareme.html",
                   context={'ligues': ligues, 'page': 'bareme', 'regles': regles,
