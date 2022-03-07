@@ -1616,7 +1616,7 @@ def send_push(request):
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
 
-
+"""
 @login_required
 def test_mail(request):
     current_user = request.user
@@ -1646,4 +1646,4 @@ def test_mail(request):
                   template_name="dkllapp/test_mail.html",
                   context={'isadmin': is_admin(request.user.id)})
 
-
+"""
