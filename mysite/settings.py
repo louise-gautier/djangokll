@@ -157,7 +157,6 @@ EMAIL_USE_SSL = True
 DEBUG = True
 # **************** PROD **************
 SECURE_SSL_REDIRECT = True
-
 # **************** DEV ***************
 #SECURE_SSL_REDIRECT = False
 
