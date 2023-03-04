@@ -28,7 +28,7 @@ MAIN_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '192.168.1.20',
                  'pilixpili.fr', 'lgr.ddns.net']
 
 # Application definition
