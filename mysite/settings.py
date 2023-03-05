@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import os.path
 from pathlib import Path
-import django_heroku
+#import django_heroku
 import dj_database_url
 
 
