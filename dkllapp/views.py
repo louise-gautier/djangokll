@@ -42,7 +42,7 @@ from .token import account_activation_token
 
 #v############################### FONCTIONS GENERIQUES #########################################
 def is_admin(user_id):
-    admins = [1, 2, 18, 19] # 18 = Laura, 19 = MA
+    admins = [1, 2, 7, 9, 10]  # 18 = Laura, 19 = MA
     bool_admin = False
     if user_id in admins:
         bool_admin = True
