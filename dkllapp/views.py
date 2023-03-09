@@ -1,4 +1,8 @@
 import random
+import smtplib
+from email.mime.text import MIMEText
+
+from decouple import config
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -190,6 +194,19 @@ def choix_pour_un_type(user, type_candidat, selected_candidat):
         nouvelle_ligne_choix.save()
 
 
+def smtp_send_email(subject, body, sender, recipients):
+    smtp_sender = "pilixpiliapp@gmail.com"
+    smtp_password = config("smtp_pwd")
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipients)
+    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp_server.login(smtp_sender, smtp_password)
+    smtp_server.sendmail(smtp_sender, recipients, msg.as_string())
+    smtp_server.quit()
+
+
 ##########################################REGISTRATION ET LOGIN################################
 def register_request(request, message):
     if request.method == "POST":
@@ -210,7 +227,7 @@ def register_request(request, message):
             message = render_to_string('dkllapp/account_activation_email.html', context)
             email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
             recipient_list = [user.email]
-            send_mail(subject, message, email_from, recipient_list)
+            smtp_send_email(subject, message, email_from, recipient_list)
             user.save()
             return redirect('dkllapp:account_activation_sent')
         else:

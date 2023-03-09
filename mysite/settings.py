@@ -157,12 +157,12 @@ LOGIN_URL = '/login/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('AMEN_SMTP_SERVER')
-EMAIL_PORT = config('AMEN_SMTP_PORT')
-SERVER_EMAIL = config('AMEN_SMTP_LOGIN')
-EMAIL_HOST_USER = config('AMEN_SMTP_LOGIN')
-EMAIL_HOST_PASSWORD = config('AMEN_SMTP_PASSWORD')
-EMAIL_USE_SSL = True
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = 587
+SERVER_EMAIL = config('SERVER_EMAIL')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
