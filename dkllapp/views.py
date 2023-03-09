@@ -51,7 +51,7 @@ def episode_en_cours():
 
 
 def is_poulains():
-    etat = ActivationChoix.objects.filter(id=1).values().latest('insert_datetime')['etat']
+    etat = ActivationChoix.objects.filter(id=2).values().latest('insert_datetime')['etat']
     if etat == 1:
         activation_poulains = True
     else:
@@ -60,7 +60,7 @@ def is_poulains():
 
 
 def is_podium():
-    etat = ActivationChoix.objects.filter(id=2).values().latest('insert_datetime')['etat']
+    etat = ActivationChoix.objects.filter(id=3).values().latest('insert_datetime')['etat']
     if etat == 1:
         activation_podium = True
     else:
@@ -69,7 +69,7 @@ def is_podium():
 
 
 def is_gagnant():
-    etat = ActivationChoix.objects.filter(id=3).values().latest('insert_datetime')['etat']
+    etat = ActivationChoix.objects.filter(id=4).values().latest('insert_datetime')['etat']
     if etat == 1:
         activation_gagnant = True
     else:
