@@ -11,7 +11,7 @@
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
             <p class="titre_rouge"><b>Candidats de la Saison 14 - test</b></p>
             {% for candidat in candidats %}
-            <p>{{candidat.nom}}</p>
+            <p><img class="candidat_index" src="{% static candidat.chemin_img %}"></p>
             {% endfor %}
             {% if isadmin == True %}
             <div class="btn-profil-container">
