@@ -9,7 +9,10 @@
     <div class="mainwrapper">
         <br>
         <div class="title" style="margin-left: 20px; margin-right: 20px;">
-            <p class="titre_rouge"><b>Candidats de la Saison 13</b></p>
+            <p class="titre_rouge"><b>Candidats de la Saison 14 - test</b></p>
+            {% for candidat in candidats %}
+            <p>{{candidat.nom}}</p>
+            {% endfor %}
             {% if isadmin == True %}
             <div class="btn-profil-container">
                 <a href="{% url 'dkllapp:changer_equipe_tv' %}" class="btn btn-danger btn-sm">Changer des équipes TV</a>
