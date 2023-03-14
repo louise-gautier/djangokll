@@ -1,7 +1,7 @@
 """
 🪄 Taupe Chef Ligue fait peau neuve !
 
-Top Chef la saison Avectoujoursplusdefemmesaucastingetunsosiedebradleycooper c’est Mercredi à 21h et nous avons l’immmmense plaisir de vous dévoiler ENFIN votre nouvelle app : https://www.pilixpili.fr.
+Top Chef la saison Avectoujoursplusdefemmesaucastingetunsosiedebradleycooper c’est Mercredi à 21h et nous avons l’immmmense plaisir de vous dévoiler ENFIN votre nouvelle app : https://pilixpili.ddns.net.
 
 🙏🏻 Vous pouvez dès aujourd'hui :
 Vous créer un compte

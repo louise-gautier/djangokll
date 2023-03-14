@@ -277,7 +277,7 @@ def reinitialiser_mdp(request, message):
                     }
                 )
                 email_subject = "🔐 Réinitilisation de ton mot de passe Pili Pili"
-                email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+                email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
                 recipient_list = [current_user.email]
                 mail = EmailMultiAlternatives(
                     email_subject, 'This is message', email_from, recipient_list)
@@ -325,7 +325,7 @@ def activate(request, uidb64, token):
             }
         )
         email_subject = "🌶️🌶️ Bienvenue sur Pili Pili"
-        email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+        email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
         recipient_list = [current_user.email]
         mail = EmailMultiAlternatives(
             email_subject, 'This is message', email_from, recipient_list)
@@ -478,7 +478,7 @@ def admin(request):
                 current_site = get_current_site(request)
                 html_message = form_mail.cleaned_data.get("corps")
                 email_subject = form_mail.cleaned_data.get("sujet")
-                email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+                email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
                 recipient_list = []
                 if form_mail.cleaned_data.get('users') is True:
                     all_users = UserProfile.objects.values('user__email').filter(boolemail=True).all()
@@ -738,7 +738,7 @@ def ajouter_question(request, question_id):
                     }
                 )
                 email_subject = "🔥 Un nouveau prono est disponible !"
-                email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+                email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
                 all_users = UserProfile.objects.values('user__email').filter(boolemail=True).all()
                 recipient_list = []
                 for un_user in all_users:
@@ -1494,7 +1494,7 @@ def creation_ligue(request):
                 }
             )
             email_subject = "🌶️ Création de ta ligue Pili Pili"
-            email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+            email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
             recipient_list = [user.email]
             mail = EmailMultiAlternatives(
                 email_subject, 'This is message', email_from, recipient_list)
@@ -1657,7 +1657,7 @@ def test_mail(request):
         }
     )
     email_subject = "🔥 Un nouveau prono est disponible !"
-    email_from = '🌶️ Brigade Pili² <admin@pilixpili.fr>'
+    email_from = '🌶️ Brigade Pili² <pilixpiliapp@gmail.com>'
     recipient_list = ['louise_gautier@orange.fr']
     mail = EmailMultiAlternatives(
         email_subject, 'This is message', email_from, recipient_list)

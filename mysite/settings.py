@@ -29,7 +29,7 @@ MAIN_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '192.168.1.20',
-                 'pilixpili.fr', 'lgr.ddns.net', 'pilixpili.ddns.net']
+                 'lgr.ddns.net', 'pilixpili.ddns.net']
 
 # Application definition
 
