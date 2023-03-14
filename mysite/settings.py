@@ -169,6 +169,6 @@ DEBUG = True
 # **************** PROD **************
 #SECURE_SSL_REDIRECT = True
 # **************** DEV ***************
-SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = True
 
 #fin settings
