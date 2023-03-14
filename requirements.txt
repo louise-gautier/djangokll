@@ -10,3 +10,4 @@ django-webpush
 six
 requests
 shortuuid
+django-letsencrypt

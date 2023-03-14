@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'webpush',
     'gunicorn',
+    'letsencrypt',
 
 ]
 

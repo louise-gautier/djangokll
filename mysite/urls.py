@@ -19,4 +19,6 @@ from django.urls import include, path
 urlpatterns = [
     path('', include('dkllapp.urls')),
     path('djangadmin/', admin.site.urls),
+    path('.well-known/acme-challenge/', include('letsencrypt.urls')),
+
 ]
