@@ -141,8 +141,6 @@ STATIC_URL = '/static/'
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'dkllapp/static'),)
 
-ACME_CHALLENGE_CONTENT = config('ACME_CHALLENGE_CONTENT')
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -171,6 +169,6 @@ DEBUG = True
 # **************** PROD **************
 #SECURE_SSL_REDIRECT = True
 # **************** DEV ***************
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 #fin settings
