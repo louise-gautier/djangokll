@@ -214,7 +214,7 @@ def register_request(request, message):
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
-            user.userprofile.id = user.id
+            #user.userprofile.id = user.id
             user.userprofile.img = 'dkllapp/img/kitchen/default.png'
             user.userprofile.boolemail = True
             current_site = get_current_site(request)
