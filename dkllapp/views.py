@@ -863,7 +863,7 @@ def mur(request, ligue_id):
         .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
-    current_user = UserProfile.objects.filter(id=request.user.id).values('user__username', 'img')[0]
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).values('user__username', 'img')[0]
     mur = Mur.objects\
         .filter(ligue_id=ligue_id).order_by('-last_modified')\
         .values('id', 'ligue_id', 'user_id', 'parent_id',
@@ -910,7 +910,7 @@ def mur(request, ligue_id):
                   context={'ligues': ligues, 'page': 'mur', 'current_ligue': current_ligue,
                            'mur': mur, 'mur_inverse': mur_inverse,
                            'notif': notif, 'admin_user': admin_user,
-                           'current_user': current_user, 'form': form,
+                           'current_user': current_userprofile, 'form': form,
                            'isadmin': is_admin(request.user.id)})
 
 
@@ -1308,7 +1308,7 @@ def classement_general(request):
             'id': user_membre[0],
             'ligue': Ligue.objects.filter(id=user_membre[1]).values('nom')[0]['nom'],
             'username': User.objects.filter(id=user_membre[0]).values('username')[0]['username'],
-            'img': UserProfile.objects.filter(id=user_membre[0]).values('img')[0]['img'],
+            'img': UserProfile.objects.filter(user_id=user_membre[0]).values('img')[0]['img'],
             'points_poulains': membre_points[0]['somme_points_poulains__sum'],
             'points_podium': membre_points[0]['somme_points_podium__sum'],
             'points_gagnant': membre_points[0]['somme_points_gagnant__sum'],
@@ -1451,9 +1451,9 @@ def picto(request, txt_alert):
                 if "pict_" in field and form.cleaned_data[field]:
                     selected_picto.append(int(field[5:7]))
             if 0 < len(selected_picto) < 2:
-                current_user = UserProfile.objects.filter(user_id=request.user.id).first()
-                current_user.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
-                current_user.save()
+                current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+                current_userprofile.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
+                current_userprofile.save()
                 message_profil = "Le picto a été mis à jour"
                 return redirect('dkllapp:profil', message_profil)
             else:
@@ -1462,7 +1462,7 @@ def picto(request, txt_alert):
     form = DynamicPictoForm()
     return render(request=request,
                   template_name="dkllapp/picto.html",
-                  context={'pictos': pictos, 'form': form, 'txt_alert': txt_alert, 'range64': list(range(1,65)),
+                  context={'pictos': pictos, 'form': form, 'txt_alert': txt_alert, 'range64': list(range(1, 65)),
                            'isadmin': is_admin(request.user.id)})
 
 
