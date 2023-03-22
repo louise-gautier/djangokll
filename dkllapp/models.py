@@ -13,6 +13,7 @@ User._meta.get_field('username')._unique = True
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    id = models.IntegerField(default=0)
     img = models.CharField(max_length=999, default='dkllapp/img/kitchen/default.png')
     boolemail = models.BooleanField(default=True)
     email_confirmed = models.BooleanField(default=False)
