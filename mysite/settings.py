@@ -165,7 +165,7 @@ EMAIL_USE_TLS = True
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # **************** PROD **************
 SECURE_SSL_REDIRECT = True
 # **************** DEV ***************
