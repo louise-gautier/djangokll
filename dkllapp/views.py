@@ -1295,6 +1295,7 @@ def classement_general(request):
     users = User.objects.all().order_by('id')
     users_a_classer = []
     for user in users:
+        user_de_users_id = user.id
         user_profile = UserProfile.objects.filter(user_id=user.id).first()
         max_points_user = 0
         ligue_max_points_user = ""
@@ -1318,7 +1319,6 @@ def classement_general(request):
         else:
             pass
     membres_unsorted = []
-    print("ici03")
 
     for user_membre in users_a_classer:
         user_membre_profile = UserProfile.objects.filter(user_id=user_membre[0]).first()
@@ -1345,9 +1345,7 @@ def classement_general(request):
             membre_avec_points['points_feu'] = 0
             membre_avec_points['total'] = membre_avec_points['points_candidats']
         membres_unsorted.append(membre_avec_points)
-    print("ici")
     membres_sorted = sorted(membres_unsorted, key=lambda i: i['total'], reverse=True)
-    print("ici2")
     rang = 1
     for joueur in membres_sorted:
         joueur['rang'] = rang
