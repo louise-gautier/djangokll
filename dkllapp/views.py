@@ -1531,8 +1531,8 @@ def rejoindre_ligue(request, message):
                     pass
                 else:
                     nouveau_membre = Membre()
-                    userprofile_id = UserProfile.objects.filter(user_id=request.user.id).first()
-                    nouveau_membre.user_id = userprofile_id['id']
+                    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+                    nouveau_membre.user_id = current_userprofile.id
                     nouveau_membre.ligue_id = ligue_a_rejoindre.id
                     nouveau_membre.save()
                     return redirect('dkllapp:mur', ligue_a_rejoindre.id)
