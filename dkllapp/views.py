@@ -1295,7 +1295,6 @@ def classement_general(request):
     users = User.objects.all().order_by('id')
     users_a_classer = []
     for user in users:
-        user_de_users_id = user.id
         user_profile = UserProfile.objects.filter(user_id=user.id).first()
         max_points_user = 0
         ligue_max_points_user = ""
