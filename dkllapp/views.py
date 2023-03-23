@@ -165,15 +165,16 @@ def points_ligue_episode(ligue_id, un_episode):
 
 
 def equipe_pour_une_ligue(user, ligue_id, episode, selected_candidat):
+    current_userprofile = UserProfile.objects.filter(user_id=user.id).first()
     lignes_equipe = Equipe.objects \
-        .filter(user_id=user.id) \
+        .filter(user_id=current_userprofile.id) \
         .filter(ligue_id=ligue_id) \
         .filter(episode=episode) \
         .filter(type=1) \
         .delete()
     for candidat_id in selected_candidat:
         nouvelle_ligne_equipe = Equipe()
-        nouvelle_ligne_equipe.user_id = user.id
+        nouvelle_ligne_equipe.user_id = current_userprofile.id
         nouvelle_ligne_equipe.ligue_id = ligue_id
         nouvelle_ligne_equipe.episode = episode
         nouvelle_ligne_equipe.candidat_id = candidat_id
@@ -182,13 +183,14 @@ def equipe_pour_une_ligue(user, ligue_id, episode, selected_candidat):
 
 
 def choix_pour_un_type(user, type_candidat, selected_candidat):
+    current_userprofile = UserProfile.objects.filter(user_id=user.id).first()
     lignes_equipe = Choix.objects \
-        .filter(user_id=user.id) \
+        .filter(user_id=current_userprofile.id) \
         .filter(type=type_candidat) \
         .delete()
     for candidat_id in selected_candidat:
         nouvelle_ligne_choix = Choix()
-        nouvelle_ligne_choix.user_id = user.id
+        nouvelle_ligne_choix.user_id = current_userprofile.id
         nouvelle_ligne_choix.candidat_id = candidat_id
         nouvelle_ligne_choix.type = type_candidat
         nouvelle_ligne_choix.save()
@@ -379,14 +381,15 @@ def index(request):
     poulains_ouvert = is_poulains()
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     notif = Notif.objects.latest('insert_datetime')
     admin_user = UserProfile.objects.values('id', 'img', 'user__username').filter(id=2).first()
     choix_user = Choix.objects \
-        .filter(user_id=request.user.id).order_by('candidat_id') \
+        .filter(user_id=current_userprofile.id).order_by('candidat_id') \
         .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool')
     lignes_equipes = []
@@ -422,8 +425,9 @@ def index(request):
 ##########################################Admin################################
 @login_required
 def admin(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     poulains_ouvert = is_poulains()
@@ -529,8 +533,9 @@ def admin(request):
 
 @login_required
 def changer_episode(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     if request.method == "POST":
         form = EpisodeChangeForm(request.POST)
@@ -604,8 +609,9 @@ def changer_episode(request):
 
 @login_required
 def changer_equipe_tv(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
@@ -639,8 +645,9 @@ def changer_equipe_tv(request):
 
 @login_required
 def changer_statut(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
@@ -681,8 +688,9 @@ def changer_statut(request):
 
 @login_required
 def ajouter_question(request, question_id):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     question = Question.objects.filter(id=question_id).first()
@@ -760,8 +768,9 @@ def ajouter_question(request, question_id):
 
 @login_required
 def ajouter_reponse(request, question_id):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     question = Question.objects.filter(id=question_id).first()
@@ -784,8 +793,9 @@ def ajouter_reponse(request, question_id):
 
 @login_required
 def modifier_regle(request, regle_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     regle_a_modifier = Regle.objects.filter(id=regle_id).first()
@@ -818,8 +828,9 @@ def modifier_regle(request, regle_id):
 
 @login_required
 def ajouter_evenement(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     candidats = Candidat.objects.all().order_by('id')\
@@ -843,7 +854,7 @@ def ajouter_evenement(request):
                     nouvel_evenenement = Evenement()
                     nouvel_evenenement.episode = form.cleaned_data.get('episode')
                     nouvel_evenenement.typage = form.cleaned_data.get('typage')
-                    nouvel_evenenement.user_id = request.user.id
+                    nouvel_evenenement.user_id = current_userprofile.id
                     nouvel_evenenement.candidat_id = candidat_id
                     nouvel_evenenement.regle_id = form.cleaned_data.get('regle')
                     nouvel_evenenement.save()
@@ -859,11 +870,12 @@ def ajouter_evenement(request):
 ##########################################Ligues################################
 @login_required
 def mur(request, ligue_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
-    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).values('user__username', 'img')[0]
+    #values('user__username', 'img')
     mur = Mur.objects\
         .filter(ligue_id=ligue_id).order_by('-last_modified')\
         .values('id', 'ligue_id', 'user_id', 'parent_id',
@@ -887,13 +899,13 @@ def mur(request, ligue_id):
             elif request.POST[field]:
                 if field == 'nouveau_parent':
                     nouveau_message = Mur()
-                    nouveau_message.user_id = request.user.id
+                    nouveau_message.user_id = current_userprofile.id
                     nouveau_message.ligue_id = ligue_id
                     nouveau_message.message = request.POST[field]
                     nouveau_message.save()
                 elif 'area' in field:
                     nouveau_message = Mur()
-                    nouveau_message.user_id = request.user.id
+                    nouveau_message.user_id = current_userprofile.id
                     nouveau_message.ligue_id = ligue_id
                     nouveau_message.message = request.POST[field]
                     nouveau_message.parent_id = field[4:]
@@ -916,8 +928,9 @@ def mur(request, ligue_id):
 
 @login_required
 def equipe(request, ligue_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
@@ -927,11 +940,11 @@ def equipe(request, ligue_id):
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
     choix_user = Choix.objects \
-        .filter(user_id=request.user.id).order_by('candidat_id') \
+        .filter(user_id=current_userprofile.id).order_by('candidat_id') \
         .values('id', 'type', 'candidat_id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool')
     equipe = Equipe.objects \
-        .filter(user_id=request.user.id) \
+        .filter(user_id=current_userprofile.id) \
         .filter(ligue_id=current_ligue['id']) \
         .filter(episode=episode_en_cours_) \
         .filter(type=1) \
@@ -940,7 +953,7 @@ def equipe(request, ligue_id):
                 'candidat__statut', 'candidat__statut_bool', 'type')
 
     equipes = Equipe.objects \
-        .filter(user_id=request.user.id) \
+        .filter(user_id=current_userprofile.id) \
         .filter(ligue_id=current_ligue['id']) \
         .filter(type=1) \
         .order_by('-episode') \
@@ -959,8 +972,9 @@ def equipe(request, ligue_id):
 
 @login_required
 def resultat(request, ligue_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     membres = points_ligue_episode(ligue_id, 0)
@@ -973,8 +987,9 @@ def resultat(request, ligue_id):
 
 @login_required
 def details(request, ligue_id, selected_episode):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
@@ -994,8 +1009,9 @@ def details(request, ligue_id, selected_episode):
 
 @login_required
 def changer_nom_ligue(request, ligue_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
@@ -1022,8 +1038,9 @@ def changer_nom_ligue(request, ligue_id):
 ##########################################Pronos################################
 @login_required
 def pronos(request, message):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     questions = Question.objects.filter(episode=episode_en_cours_).order_by('-insert_datetime')
@@ -1032,7 +1049,7 @@ def pronos(request, message):
     new_fields = {}
     for question in questions:
         propositions = Proposition.objects.filter(question_id=question.id)
-        guess = Guess.objects.filter(question_id=question.id).filter(user_id=request.user.id).first()
+        guess = Guess.objects.filter(question_id=question.id).filter(user_id=current_userprofile.id).first()
         questions_plus.append({'question': question, 'guess': guess, 'propositions': propositions})
         radio_propositions = []
         for proposition in propositions:
@@ -1043,7 +1060,7 @@ def pronos(request, message):
     if request.method == "POST":
         form = DynamicPronosGuessForm(request.POST)
         if "btn_effacer" in request.POST:
-            Guess.objects.filter(question__episode=episode_en_cours()).filter(user_id=request.user.id).delete()
+            Guess.objects.filter(question__episode=episode_en_cours()).filter(user_id=current_userprofile.id).delete()
             message = "Réponses effacées"
             return redirect('dkllapp:pronos', message)
         else:
@@ -1052,19 +1069,19 @@ def pronos(request, message):
                     pass
                 for long_question_id in form.cleaned_data:
                     if form.cleaned_data[long_question_id]:
-                        current_user_guess = Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=request.user.id).first()
+                        current_user_guess = Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=current_userprofile.id).first()
                         guess_proposition_id = int(form.cleaned_data[long_question_id][4:7])
                         if current_user_guess:
-                            Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=request.user.id).delete()
+                            Guess.objects.filter(question_id=int(long_question_id)).filter(user_id=current_userprofile.id).delete()
                             nouveau_guess = Guess()
-                            nouveau_guess.user_id = request.user.id
+                            nouveau_guess.user_id = current_userprofile.id
                             nouveau_guess.question_id = int(long_question_id)
                             nouveau_guess.proposition_id = guess_proposition_id
                             nouveau_guess.save()
                             message = "Réponses validées"
                         else:
                             nouveau_guess = Guess()
-                            nouveau_guess.user_id = request.user.id
+                            nouveau_guess.user_id = current_userprofile.id
                             nouveau_guess.question_id = int(long_question_id)
                             nouveau_guess.proposition_id = guess_proposition_id
                             nouveau_guess.save()
@@ -1082,8 +1099,9 @@ def pronos(request, message):
 
 @login_required
 def bonus(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     questions = Question.objects.order_by('-episode').order_by('-insert_datetime')
     liste_episode = list(range(1, episode_en_cours() + 1))
@@ -1095,11 +1113,11 @@ def bonus(request):
         for proposition in propositions:
             if proposition.pertinence:
                 repondu = True
-        guess = Guess.objects.filter(question_id=question.id).filter(user_id=request.user.id)\
+        guess = Guess.objects.filter(question_id=question.id).filter(user_id=current_userprofile.id)\
             .values('id', 'user_id', 'question_id', 'proposition_id', 'proposition__pertinence').first()
         questions_plus.append({'question': question, 'guess': guess,
                                'propositions': propositions, 'repondu': repondu})
-    points_feu = PointsFeu.objects.filter(user_id=request.user.id).values('user_id', 'feu').order_by('user_id').first()
+    points_feu = PointsFeu.objects.filter(user_id=current_userprofile.id).values('user_id', 'feu').order_by('user_id').first()
     return render(request=request,
                   template_name="dkllapp/bonus.html",
                   context={'ligues': ligues, 'page': 'bonus', 'liste_episode': liste_episode,
@@ -1110,10 +1128,10 @@ def bonus(request):
 ##########################################Profil################################
 @login_required
 def profil(request, message):
-    ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
-        .values('id', 'ligue_id', 'ligue__nom')
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
     message = message
     if request.method == "POST":
         form = ProfilMailForm(request.POST)
@@ -1133,10 +1151,10 @@ def profil(request, message):
 
 @login_required
 def ligues_user(request):
-    ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
-        .values('id', 'ligue_id', 'ligue__nom')
     current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
+        .values('id', 'ligue_id', 'ligue__nom')
     for ligue in ligues:
         scores = points_ligue_episode(ligue['ligue_id'], 0)
         ligue['taille'] = len(scores)
@@ -1153,15 +1171,15 @@ def ligues_user(request):
 
 @login_required
 def candidats_user(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     poulains_ouvert = is_poulains()
     podium_ouvert = is_podium()
     gagnant_ouvert = is_gagnant()
-    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     choix_user = Choix.objects\
-        .filter(user_id=request.user.id).order_by('candidat_id')\
+        .filter(user_id=current_userprofile.id).order_by('candidat_id')\
         .values('id', 'type', 'candidat_id', 'candidat__nom',
                 'candidat__equipe_tv', 'candidat__chemin_img', 'candidat__statut', 'candidat__statut_bool')
     return render(request=request,
@@ -1174,12 +1192,13 @@ def candidats_user(request):
 
 @login_required
 def choix(request, type_choix, before, txt):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     episode_en_cours_ = episode_en_cours()
     txt_alert = txt
-    choix_user = Choix.objects.values("candidat_id").filter(type=type_choix).filter(user_id=request.user.id).all()
+    choix_user = Choix.objects.values("candidat_id").filter(type=type_choix).filter(user_id=current_userprofile.id).all()
     ids_choix = []
     for un_choix in choix_user:
         ids_choix.append(un_choix['candidat_id'])
@@ -1219,8 +1238,9 @@ def choix(request, type_choix, before, txt):
 ##########################################Règles################################
 @login_required
 def generales(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/generales.html",
@@ -1230,8 +1250,9 @@ def generales(request):
 
 @login_required
 def bareme(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     regles = Regle.objects.exclude(id=17).exclude(id=21).order_by('id')
     return render(request=request,
@@ -1242,8 +1263,9 @@ def bareme(request):
 
 @login_required
 def candidats(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     candidats = Candidat.objects.all().order_by('id')
     return render(request=request,
@@ -1254,8 +1276,9 @@ def candidats(request):
 
 @login_required
 def faq(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     return render(request=request,
                   template_name="dkllapp/faq.html",
@@ -1265,21 +1288,21 @@ def faq(request):
 
 @login_required
 def classement_general(request):
-    print("ici01")
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     users = User.objects.all().order_by('id')
     users_a_classer = []
-    print("ici02")
     for user in users:
+        user_profile = UserProfile.objects.filter(user_id=user.id).first()
         max_points_user = 0
         ligue_max_points_user = ""
-        ligues_user = Membre.objects.filter(user_id=user.id)\
+        ligues_user = Membre.objects.filter(user_id=user_profile.id)\
             .values('ligue_id')
         if ligues_user:
             for ligue in ligues_user:
-                points = Points.objects.filter(user_id=user.id).filter(ligue_id=ligue['ligue_id']) \
+                points = Points.objects.filter(user_id=user_profile.id).filter(ligue_id=ligue['ligue_id']) \
                     .values('ligue_id') \
                     .annotate(Sum('somme_points_selon_types'))
                 if points:
@@ -1298,7 +1321,8 @@ def classement_general(request):
     print("ici03")
 
     for user_membre in users_a_classer:
-        membre_points = Points.objects.filter(user_id=user_membre[0]).filter(ligue_id=user_membre[1]) \
+        user_membre_profile = UserProfile.objects.filter(user_id=user_membre[0]).first()
+        membre_points = Points.objects.filter(user_id=user_membre_profile.id).filter(ligue_id=user_membre[1]) \
             .values('ligue_id', 'user_id') \
             .annotate(Sum('somme_points_poulains')) \
             .annotate(Sum('somme_points_podium')) \
@@ -1313,7 +1337,7 @@ def classement_general(request):
             'points_podium': membre_points[0]['somme_points_podium__sum'],
             'points_gagnant': membre_points[0]['somme_points_gagnant__sum'],
             'points_candidats': membre_points[0]['somme_points_selon_types__sum']}
-        points_feu_user = PointsFeu.objects.values('user_id', 'feu').filter(user_id=user_membre[0]).order_by('user_id').first()
+        points_feu_user = PointsFeu.objects.values('user_id', 'feu').filter(user_id=user_membre_profile.id).order_by('user_id').first()
         if points_feu_user:
             membre_avec_points['points_feu'] = points_feu_user['feu']
             membre_avec_points['total'] = membre_avec_points['points_feu'] + membre_avec_points['points_candidats']
@@ -1336,8 +1360,9 @@ def classement_general(request):
 
 @login_required
 def stat_1(request):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     statistiques = 'statistiques'
     return render(request=request,
@@ -1348,8 +1373,9 @@ def stat_1(request):
 
 @login_required
 def stat_2(request):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     statistiques = 'statistiques'
     return render(request=request,
@@ -1360,8 +1386,9 @@ def stat_2(request):
 
 @login_required
 def stat_3(request):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     statistiques = 'statistiques'
     return render(request=request,
@@ -1372,8 +1399,9 @@ def stat_3(request):
 
 @login_required
 def changer_identifiant(request, message):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
@@ -1397,8 +1425,9 @@ def changer_identifiant(request, message):
 
 @login_required
 def changer_mdp(request, message):
-    ligues = Membre.objects \
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime') \
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
+    ligues = Membre.objects\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_user = User.objects.filter(id=request.user.id).first()
     if request.method == 'POST':
@@ -1433,8 +1462,9 @@ def changer_mdp(request, message):
 
 @login_required
 def picto(request, txt_alert):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     pictos = []
     new_fields = {}
@@ -1451,7 +1481,6 @@ def picto(request, txt_alert):
                 if "pict_" in field and form.cleaned_data[field]:
                     selected_picto.append(int(field[5:7]))
             if 0 < len(selected_picto) < 2:
-                current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
                 current_userprofile.img = "dkllapp/img/kitchen/png/" + "{:02d}".format(int(selected_picto[0])) + ".png"
                 current_userprofile.save()
                 message_profil = "Le picto a été mis à jour"
@@ -1468,8 +1497,9 @@ def picto(request, txt_alert):
 
 @login_required
 def creation_ligue(request):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     user = User.objects.filter(id=request.user.id).first()
     if request.method == "POST":
@@ -1479,7 +1509,7 @@ def creation_ligue(request):
             nouvelle_ligue.nom = form.cleaned_data.get('nom')
             nouvelle_ligue.save()
             nouveau_membre = Membre()
-            nouveau_membre.user_id = request.user.id
+            nouveau_membre.user_id = current_userprofile.id
             nouveau_membre.ligue_id = nouvelle_ligue.id
             nouveau_membre.save()
             #mail
@@ -1511,8 +1541,9 @@ def creation_ligue(request):
 
 @login_required
 def rejoindre_ligue(request, message):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     message = message
     if request.method == "POST":
@@ -1525,13 +1556,12 @@ def rejoindre_ligue(request, message):
                 return redirect('dkllapp:rejoindre_ligue', message)
             if ligue_a_rejoindre:
                 deja_membre = Membre.objects \
-                    .filter(user_id=request.user.id) \
+                    .filter(user_id=current_userprofile.id) \
                     .filter(ligue_id=ligue_a_rejoindre.id)
                 if deja_membre:
                     pass
                 else:
                     nouveau_membre = Membre()
-                    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
                     nouveau_membre.user_id = current_userprofile.id
                     nouveau_membre.ligue_id = ligue_a_rejoindre.id
                     nouveau_membre.save()
@@ -1546,13 +1576,14 @@ def rejoindre_ligue(request, message):
 
 @login_required
 def rejoindre_ligue_cgi(request, ligue_id):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligue_a_rejoindre = Ligue.objects.filter(id=ligue_id).first()
     deja_membre = Membre.objects.filter(user_id=request.user.id).filter(ligue_id=ligue_a_rejoindre.id).first()
     if deja_membre:
         return redirect('dkllapp:mur', ligue_a_rejoindre.id)
     else:
         nouveau_membre = Membre()
-        nouveau_membre.user_id = request.user.id
+        nouveau_membre.user_id = current_userprofile.id
         nouveau_membre.ligue_id = ligue_a_rejoindre.id
         nouveau_membre.save()
         return redirect('dkllapp:mur', ligue_a_rejoindre.id)
@@ -1560,13 +1591,14 @@ def rejoindre_ligue_cgi(request, ligue_id):
 
 @login_required
 def faire_equipe(request, ligue_id, before, txt):
+    current_userprofile = UserProfile.objects.filter(user_id=request.user.id).first()
     ligues = Membre.objects\
-        .filter(user_id=request.user.id).order_by('ligue__insert_datetime')\
+        .filter(user_id=current_userprofile.id).order_by('ligue__insert_datetime')\
         .values('id', 'ligue_id', 'ligue__nom')
     current_ligue = Ligue.objects.filter(id=ligue_id).values('id', 'nom')[0]
     episode_en_cours_ = episode_en_cours()
     txt_alert = txt
-    poulains = Choix.objects.filter(user_id=request.user.id).filter(type=1).order_by('id')\
+    poulains = Choix.objects.filter(user_id=current_userprofile.id).filter(type=1).order_by('id')\
         .values('id', 'candidat__id', 'candidat__nom', 'candidat__equipe_tv', 'candidat__chemin_img',
                 'candidat__statut', 'candidat__statut_bool', 'candidat__form_id')
     new_fields = {}
