@@ -1349,9 +1349,10 @@ def classement_general(request):
     for joueur in membres_sorted:
         joueur['rang'] = rang
         rang = rang + 1
+    membres_sorted_top10 = membres_sorted[:5]
     return render(request=request,
                   template_name="dkllapp/classement_general.html",
-                  context={'ligues': ligues, 'page': 'classement_general', 'membres_sorted': membres_sorted,
+                  context={'ligues': ligues, 'page': 'classement_general', 'membres_sorted': membres_sorted_top10,
                            'isadmin': is_admin(request.user.id)})
 
 
